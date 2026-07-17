@@ -1,0 +1,15 @@
+# Runtime dependencies — versions pinned for reproducible builds.
+# Domain-layer pins match TA-18222007 @ thesis-defense exactly (research parity).
+sqlalchemy==2.0.36
+pandas==2.2.3
+numpy==1.26.4
+scipy==1.14.1
+bcrypt==4.2.1
+scikit-learn==1.5.2
+psycopg2-binary==2.9.10
+
+# API layer (new in cdt-platform)
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+alembic==1.14.0
+pydantic-settings==2.7.0

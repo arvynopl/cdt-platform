@@ -1,0 +1,140 @@
+[
+  {
+    "stock_id": "BBCA.JK",
+    "ticker": "BBCA",
+    "name": "Bank Central Asia Tbk.",
+    "sector": "Finance",
+    "volatility_class": "low",
+    "bias_role": "Blue-chip anchor — tests disposition effect",
+    "description": "Bank swasta terbesar di Indonesia, dikenal dengan layanan digital perbankan yang luas dan stabil.",
+    "data_start": "2024-04-02",
+    "data_end": "2026-04-02",
+    "total_records": 471,
+    "avg_close": 8404.58,
+    "avg_volume": 120511619
+  },
+  {
+    "stock_id": "TLKM.JK",
+    "ticker": "TLKM",
+    "name": "Telkom Indonesia Tbk.",
+    "sector": "Telecom",
+    "volatility_class": "low_medium",
+    "bias_role": "Stable dividend stock — rational baseline",
+    "description": "Perusahaan telekomunikasi milik negara, penyedia jaringan internet dan telepon terbesar di Indonesia.",
+    "data_start": "2024-04-02",
+    "data_end": "2026-04-02",
+    "total_records": 471,
+    "avg_close": 2863.33,
+    "avg_volume": 117505185
+  },
+  {
+    "stock_id": "ANTM.JK",
+    "ticker": "ANTM",
+    "name": "Aneka Tambang Tbk.",
+    "sector": "Mining",
+    "volatility_class": "high",
+    "bias_role": "Commodity volatility — triggers loss aversion & overconfidence",
+    "description": "Perusahaan tambang emas dan nikel milik negara (BUMN), harganya sensitif terhadap harga komoditas global.",
+    "data_start": "2024-04-02",
+    "data_end": "2026-04-02",
+    "total_records": 471,
+    "avg_close": 2292.84,
+    "avg_volume": 128308159
+  },
+  {
+    "stock_id": "GOTO.JK",
+    "ticker": "GOTO",
+    "name": "GoTo Gojek Tokopedia Tbk.",
+    "sector": "Technology",
+    "volatility_class": "high",
+    "bias_role": "High-sentiment — elicits overtrading & emotional decisions",
+    "description": "Induk dari Gojek dan Tokopedia, platform super-app terbesar di Indonesia untuk transportasi dan e-commerce.",
+    "data_start": "2024-04-02",
+    "data_end": "2026-04-02",
+    "total_records": 471,
+    "avg_close": 64.44,
+    "avg_volume": 3797677410
+  },
+  {
+    "stock_id": "UNVR.JK",
+    "ticker": "UNVR",
+    "name": "Unilever Indonesia Tbk.",
+    "sector": "Consumer",
+    "volatility_class": "medium",
+    "bias_role": "Defensive with decline periods — tests holding losers",
+    "description": "Produsen produk konsumer rumah tangga dan perawatan diri, seperti sabun, shampo, dan makanan kemasan.",
+    "data_start": "2024-04-02",
+    "data_end": "2026-04-02",
+    "total_records": 471,
+    "avg_close": 1957.37,
+    "avg_volume": 33288332
+  },
+  {
+    "stock_id": "BBRI.JK",
+    "ticker": "BBRI",
+    "name": "Bank Rakyat Indonesia Tbk.",
+    "sector": "Finance",
+    "volatility_class": "medium",
+    "bias_role": "Widely held retail stock — familiar to pilot users",
+    "description": "Bank milik negara dengan jaringan terluas di Indonesia, fokus pada kredit UMKM dan segmen ritel.",
+    "data_start": "2024-04-02",
+    "data_end": "2026-04-02",
+    "total_records": 471,
+    "avg_close": 3890.83,
+    "avg_volume": 250981278
+  },
+  {
+    "stock_id": "ASII.JK",
+    "ticker": "ASII",
+    "name": "Astra International Tbk.",
+    "sector": "Conglomerate",
+    "volatility_class": "medium",
+    "bias_role": "Diversified conglomerate — baseline risk",
+    "description": "Konglomerat diversifikasi terbesar di Indonesia, bergerak di otomotif, alat berat, pertambangan, dan keuangan."
+  },
+  {
+    "stock_id": "BMRI.JK",
+    "ticker": "BMRI",
+    "name": "Bank Mandiri Tbk.",
+    "sector": "Finance",
+    "volatility_class": "low_medium",
+    "bias_role": "State bank — familiar to retail investors",
+    "description": "Bank BUMN terbesar berdasarkan aset, melayani korporasi, UMKM, dan nasabah ritel di seluruh Indonesia."
+  },
+  {
+    "stock_id": "ICBP.JK",
+    "ticker": "ICBP",
+    "name": "Indofood CBP Sukses Makmur Tbk.",
+    "sector": "Consumer",
+    "volatility_class": "low",
+    "bias_role": "Defensive consumer — rational hold anchor",
+    "description": "Produsen makanan kemasan terbesar di Indonesia, dikenal melalui merek Indomie dan produk konsumer sehari-hari."
+  },
+  {
+    "stock_id": "MDKA.JK",
+    "ticker": "MDKA",
+    "name": "Merdeka Copper Gold Tbk.",
+    "sector": "Mining",
+    "volatility_class": "high",
+    "bias_role": "High-beta mining — overconfidence trigger",
+    "description": "Perusahaan tambang tembaga dan emas berkapitalisasi besar, harganya sangat sensitif terhadap siklus komoditas."
+  },
+  {
+    "stock_id": "BRIS.JK",
+    "ticker": "BRIS",
+    "name": "Bank Syariah Indonesia Tbk.",
+    "sector": "Finance",
+    "volatility_class": "medium",
+    "bias_role": "Sharia bank — retail sentiment driven",
+    "description": "Bank syariah terbesar di Indonesia hasil merger tiga bank syariah BUMN, melayani segmen perbankan Islam."
+  },
+  {
+    "stock_id": "EMTK.JK",
+    "ticker": "EMTK",
+    "name": "Elang Mahkota Teknologi Tbk.",
+    "sector": "Media & Tech",
+    "volatility_class": "high",
+    "bias_role": "High-sentiment tech — emotional trading trigger",
+    "description": "Konglomerat media dan teknologi, pemilik Emtek Group yang mencakup platform digital dan jaringan televisi."
+  }
+]

@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environment & secrets
+.env
+*.env.local
+
+# Local databases — never commit
+*.db
+*.sqlite3
+
+# Logs
+*.log
+
+# Real participant data — never commit (UU PDP)
+exports/
+uat_export*/
+
+# Node / frontend
+node_modules/
+.next/
+out/
+frontend/.env*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

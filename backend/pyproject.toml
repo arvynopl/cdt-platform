@@ -1,0 +1,38 @@
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["alembic/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+ignore = [
+    "E501",  # long lines in ported domain docstrings; formatter handles code
+    "SIM108", # ternary rewrites reduce readability in ported formulas
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Ported thesis-defense code keeps its original layout (mid-file logger
+# setup, research-script style); the golden-master parity suite is the
+# authority on its behavior. New app/ code gets the full rule set.
+"modules/**" = ["B008", "E402"]
+"scripts/**" = ["E402", "B904", "B007"]
+"synthetic_validation/**" = ["B023", "E402"]
+"tests/**" = ["B", "SIM", "E702", "F841"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+check_untyped_defs = true
+warn_redundant_casts = true
+warn_unused_ignores = false
+# Fase 0 scope: new application code only. The ported domain layer still uses
+# pre-Mapped[] SQLAlchemy annotations (`id: int = Column(...)`) that mypy
+# cannot follow; Fase 1 migrates database/models.py to Mapped[]/mapped_column
+# and widens this list to ["app", "database", "modules"].
+files = ["app"]
+exclude = ["alembic/", "tests/"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["ignore::DeprecationWarning"]
