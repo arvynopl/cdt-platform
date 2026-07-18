@@ -8,10 +8,6 @@ services:
     # For fully-local development without Neon, comment env_file out:
     # the backend then falls back to SQLite inside the container.
 
-  frontend:
-    image: nginx:alpine
-    volumes:
-      - ./frontend/public:/usr/share/nginx/html:ro
-    ports:
-      - "3000:80"
-    # Placeholder static host — replaced by the Next.js dev server in Fase 2.
+  # Frontend (Fase 2): run the Next.js dev server directly —
+  #   cd frontend && npm install && npm run dev
+  # A containerised frontend service is added when the app is production-built.

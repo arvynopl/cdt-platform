@@ -1,36 +1,37 @@
-# Fly.io deployment — Singapore, co-located with Neon ap-southeast-1 (audit F1).
-# Deploy (from backend/):   fly deploy
-# Secrets:  fly secrets set CDT_DATABASE_URL=... CDT_CORS_ORIGINS=... SENTRY_DSN=...
-app = "cdt-platform-api"
-primary_region = "sin"
+# fly.toml app configuration file generated for cdt-platform-api on 2026-07-18T12:34:45+07:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'cdt-platform-api'
+primary_region = 'sin'
 
 [build]
-  dockerfile = "Dockerfile"
+  dockerfile = 'Dockerfile'
 
 [deploy]
-  # Schema is applied as a release step, never at container boot.
-  release_command = "alembic upgrade head"
+  release_command = 'alembic upgrade head'
 
 [env]
-  CDT_COOKIE_SECURE = "1"
-  CDT_ENV = "production"
+  CDT_COOKIE_SECURE = '1'
+  CDT_ENV = 'production'
 
 [http_service]
   internal_port = 8000
   force_https = true
-  auto_stop_machines = "stop"
+  auto_stop_machines = 'stop'
   auto_start_machines = true
-  # Keep one machine warm: cold starts would show up directly in the FR01
-  # action-latency budget. Free-allowance friendly at this size.
   min_machines_running = 1
 
   [[http_service.checks]]
-    interval = "30s"
-    timeout = "5s"
-    grace_period = "10s"
-    method = "GET"
-    path = "/healthz"
+    interval = '30s'
+    timeout = '5s'
+    grace_period = '10s'
+    method = 'GET'
+    path = '/healthz'
 
 [[vm]]
-  size = "shared-cpu-1x"
-  memory = "512mb"
+  size = 'shared-cpu-1x'
+  memory = '512mb'
+  cpus = 1
+  memory_mb = 512
