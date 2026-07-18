@@ -31,6 +31,7 @@ from database.models import (
     BiasMetric,
     FeedbackHistory,
     SessionSummary,
+    StockCatalog,
     UserAction,
 )
 from modules.analytics.bias_metrics import compute_and_save_metrics
@@ -227,6 +228,22 @@ def start_or_resume_session(db: Session, user_id: int) -> dict:
     assert summary.window_start_date is not None
     assert summary.window_end_date is not None
 
+    stocks_meta = [
+        {
+            "stock_id": s.stock_id,
+            "ticker": s.ticker,
+            "name": s.name,
+            "sector": s.sector,
+            "volatility_class": s.volatility_class,
+        }
+        for s in (
+            db.query(StockCatalog)
+            .filter(StockCatalog.stock_id.in_(engine.stock_ids))
+            .order_by(StockCatalog.stock_id)
+            .all()
+        )
+    ]
+
     round_idx = min(next_round, ROUNDS_PER_SESSION) - 1
     current_prices = {
         sid: snaps[round_idx]["close"] for sid, snaps in window.items()
@@ -234,6 +251,7 @@ def start_or_resume_session(db: Session, user_id: int) -> dict:
     return {
         "session_id": summary.session_id,
         "resumed": resumed,
+        "stocks": stocks_meta,
         "current_round": next_round,
         "rounds_total": ROUNDS_PER_SESSION,
         "rounds_complete": next_round > ROUNDS_PER_SESSION,

@@ -92,3 +92,110 @@ export interface RegisterPayload {
   onboarding_survey: OnboardingSurvey;
   consent: boolean;
 }
+
+// ---------------------------------------------------------------------------
+// Simulation types (mirror backend/app/services/simulation.py payloads)
+// ---------------------------------------------------------------------------
+
+export interface WindowRow {
+  id: number;
+  date: string;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+  ma_5: number | null;
+  ma_20: number | null;
+  rsi_14: number | null;
+  trend: string | null;
+  daily_return: number | null;
+}
+
+export interface StockMeta {
+  stock_id: string;
+  ticker: string;
+  name: string;
+  sector: string;
+  volatility_class: string;
+}
+
+export interface Holding {
+  stock_id: string;
+  quantity: number;
+  avg_price: number;
+  current_price: number;
+}
+
+export interface PortfolioState {
+  cash: number;
+  total_value: number;
+  realized_pnl: number;
+  holdings: Holding[];
+  sold_trade_count: number;
+}
+
+export interface SessionState {
+  session_id: string;
+  resumed: boolean;
+  stocks: StockMeta[];
+  current_round: number;
+  rounds_total: number;
+  rounds_complete: boolean;
+  window_start_date: string;
+  window_end_date: string;
+  stock_ids: string[];
+  window: Record<string, WindowRow[]>;
+  pre_window_history: Record<string, Partial<WindowRow>[]>;
+  portfolio: PortfolioState;
+}
+
+export interface Order {
+  stock_id: string;
+  action: "buy" | "sell";
+  quantity: number;
+}
+
+export interface RoundResult {
+  session_id: string;
+  round_number: number;
+  errors: string[];
+  next_round: number;
+  rounds_complete: boolean;
+  portfolio: PortfolioState;
+}
+
+export interface AnalysisStatus {
+  session_id: string;
+  status: "in_progress" | "processing" | "completed" | "error";
+  rounds_completed: number;
+  rounds_total: number;
+}
+
+export interface FeedbackItem {
+  bias_type: string;
+  severity: string;
+  explanation_text: string | null;
+  recommendation_text: string | null;
+}
+
+export interface SessionResults {
+  session_id: string;
+  final_portfolio_value: number | null;
+  initial_capital: number;
+  metric: {
+    overconfidence_score: number | null;
+    disposition_pgr: number | null;
+    disposition_plr: number | null;
+    disposition_dei: number | null;
+    loss_aversion_index: number | null;
+    dei_ci: [number | null, number | null];
+    ocs_ci: [number | null, number | null];
+    lai_ci: [number | null, number | null];
+    ci_low_confidence: boolean;
+  };
+  feedback: FeedbackItem[];
+}
+
+export const formatRupiah = (v: number): string =>
+  "Rp " + Math.round(v).toLocaleString("id-ID");

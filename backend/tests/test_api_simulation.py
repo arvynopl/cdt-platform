@@ -59,6 +59,11 @@ class TestSessionLifecycle:
         for sid in state["stock_ids"]:
             assert len(state["window"][sid]) == ROUNDS
         assert state["portfolio"]["cash"] == 10_000_000.0
+        # Stock metadata for the trading UI (Fase 2.2)
+        metas = {s["stock_id"]: s for s in state["stocks"]}
+        assert set(metas) == {"VOLH.JK", "VOLL.JK"}
+        assert metas["VOLH.JK"]["volatility_class"] == "high"
+        assert metas["VOLH.JK"]["name"]
 
     def test_full_session_pipeline_and_results(self, api_client):
         _register(api_client)
