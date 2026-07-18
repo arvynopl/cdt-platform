@@ -45,11 +45,15 @@ every deploy.
    quotes):
 
    ```bash
-   fly secrets set CDT_DATABASE_URL='postgresql://…-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require'
+   fly secrets set CDT_DATABASE_URL='<your-pooled-neon-uri>'
    ```
 
+   > **Never write the real connection string into this file** — it is
+   > committed to git. The real value lives in exactly two places:
+   > `backend/.env` (gitignored) and Fly's encrypted secrets store.
+
    If you have a Sentry DSN, add it the same way:
-   `fly secrets set SENTRY_DSN='https://…ingest.sentry.io/…'`.
+   `fly secrets set SENTRY_DSN='<your-sentry-dsn>'`.
 
    To activate the researcher/admin endpoints (`/api/researcher/*`,
    `/api/admin/summary`), set their access keys too — pick two long random
