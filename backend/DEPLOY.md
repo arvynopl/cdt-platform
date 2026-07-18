@@ -51,6 +51,17 @@ every deploy.
    If you have a Sentry DSN, add it the same way:
    `fly secrets set SENTRY_DSN='https://…ingest.sentry.io/…'`.
 
+   To activate the researcher/admin endpoints (`/api/researcher/*`,
+   `/api/admin/summary`), set their access keys too — pick two long random
+   strings and store them in your password manager:
+
+   ```bash
+   fly secrets set CDT_RESEARCHER_PASSWORD='<long-random-1>' CDT_ADMIN_TOKEN='<long-random-2>'
+   ```
+
+   Left unset, those endpoints simply return 503 (disabled) — the rest of
+   the app is unaffected.
+
    `CDT_COOKIE_SECURE=1` and `CDT_ENV=production` are already set in
    `fly.toml`'s `[env]` — nothing to do for those.
 
