@@ -70,7 +70,7 @@ export default function BerandaPage() {
       setUsername(clean);
       setStage(exists ? "login" : "register");
     } catch (err) {
-      setError(err instanceof ApiError ? err.detail : "Gagal terhubung ke server.");
+      setError(err instanceof ApiError ? err.detail : "Sambungan ke server terputus. Periksa koneksi Anda, lalu coba lagi.");
     } finally {
       setBusy(false);
     }
@@ -78,10 +78,10 @@ export default function BerandaPage() {
 
   return (
     <main className="mx-auto max-w-md">
-      <h2 className="mb-1 text-lg font-semibold">Selamat Datang</h2>
-      <p className="mb-6 text-sm text-slate-500">
-        Masuk menggunakan nama pengguna Anda. Bila Anda pengguna baru, sistem
-        akan memandu Anda melalui pendaftaran singkat.
+      <h2 className="mb-1 text-lg font-semibold">Selamat datang!</h2>
+      <p className="mb-6 text-sm leading-relaxed text-slate-500">
+        Masukkan nama pengguna Anda untuk mulai. Kalau Anda baru pertama kali
+        di sini, kami akan memandu pendaftaran singkat, kurang dari dua menit.
       </p>
 
       {error && (
@@ -151,7 +151,7 @@ function LoginForm(props: {
       props.onSuccess();
     } catch (err) {
       props.onError(
-        err instanceof ApiError ? err.detail : "Gagal terhubung ke server.",
+        err instanceof ApiError ? err.detail : "Sambungan ke server terputus. Periksa koneksi Anda, lalu coba lagi.",
       );
       setBusy(false);
     }
@@ -233,7 +233,7 @@ function RegisterForm(props: {
       props.onSuccess();
     } catch (err) {
       props.onError(
-        err instanceof ApiError ? err.detail : "Gagal terhubung ke server.",
+        err instanceof ApiError ? err.detail : "Sambungan ke server terputus. Periksa koneksi Anda, lalu coba lagi.",
       );
       setBusy(false);
     }
@@ -268,9 +268,10 @@ function RegisterForm(props: {
 
   return (
     <form onSubmit={submit} className="space-y-5">
-      <p className="text-sm">
+      <p className="text-sm leading-relaxed">
         Nama pengguna <b className="font-mono">{props.username}</b> belum
-        terdaftar. Silakan lengkapi pendaftaran singkat di bawah.
+        terdaftar. Yuk, lengkapi beberapa hal berikut; setelah itu Anda
+        langsung bisa mulai.
       </p>
 
       <h3 className="border-b pb-1 text-sm font-semibold">Data Diri</h3>
@@ -339,9 +340,9 @@ function RegisterForm(props: {
         Survei Awal Kecenderungan Bias
       </h3>
       <p className="text-xs text-slate-500">
-        Survei singkat ini membantu mengkalibrasi profil awal{" "}
-        <em>Cognitive Digital Twin</em> Anda. Pilih nilai yang paling mendekati
-        kecenderungan Anda.
+        Sembilan pernyataan singkat ini membantu sistem mengenali titik awal
+        Anda. Tidak ada jawaban benar atau salah; pilih saja yang paling
+        menggambarkan diri Anda.
       </p>
       {ONBOARDING_ITEMS.map(([key, prompt]) => (
         <label key={key} className="block text-sm">
@@ -374,7 +375,7 @@ function RegisterForm(props: {
       </label>
 
       <button className={btnCls} disabled={busy}>
-        {busy ? "Mendaftarkan…" : "Daftar & Mulai Simulasi"}
+        {busy ? "Menyiapkan akun…" : "Daftar dan Mulai"}
       </button>
       <button type="button" className={btnGhostCls} onClick={props.onBack}>
         ← Ganti nama pengguna

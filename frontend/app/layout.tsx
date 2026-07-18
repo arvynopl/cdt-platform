@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import HeaderBar from "@/components/HeaderBar";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -22,14 +23,17 @@ export default function RootLayout({
     <html lang="id">
       <body>
         <div className="mx-auto min-h-screen max-w-3xl px-4 py-6">
-          <header className="mb-8">
-            <h1 className="text-xl font-semibold">
-              Kenali Pola Investasi Anda
-            </h1>
-            <p className="text-sm text-slate-500">
-              Simulasi trading untuk memetakan bias pengambilan keputusan Anda,
-              ditenagai <em>Cognitive Digital Twin</em> (CDT).
-            </p>
+          <header className="mb-8 flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h1 className="text-xl font-semibold">
+                Kenali Pola Investasi Anda
+              </h1>
+              <p className="text-sm text-slate-500">
+                Simulasi investasi yang membantu Anda mengenali kebiasaan
+                mengambil keputusan, didukung <em>Cognitive Digital Twin</em>.
+              </p>
+            </div>
+            <HeaderBar />
           </header>
           {children}
         </div>

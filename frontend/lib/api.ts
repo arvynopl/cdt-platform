@@ -197,5 +197,10 @@ export interface SessionResults {
   feedback: FeedbackItem[];
 }
 
+// EYD V: currency written without a space after "Rp", thousands with periods.
 export const formatRupiah = (v: number): string =>
-  "Rp " + Math.round(v).toLocaleString("id-ID");
+  "Rp" + Math.round(v).toLocaleString("id-ID");
+
+// EYD V: decimals use a comma (0,5%), not a period.
+export const formatPct = (v: number, digits = 1): string =>
+  v.toFixed(digits).replace(".", ",") + "%";

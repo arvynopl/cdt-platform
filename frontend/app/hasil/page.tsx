@@ -11,6 +11,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   api,
   ApiError,
+  formatPct,
   formatRupiah,
   type SessionResults,
 } from "@/lib/api";
@@ -59,7 +60,7 @@ function HasilContent() {
       .then(setResults)
       .catch((err) =>
         setError(
-          err instanceof ApiError ? err.detail : "Gagal memuat hasil.",
+          err instanceof ApiError ? err.detail : "Hasil belum dapat dimuat. Coba muat ulang halaman ini.",
         ),
       );
   }, [sid, router]);
@@ -71,7 +72,7 @@ function HasilContent() {
       </div>
     );
   }
-  if (!results) return <p className="text-sm text-slate-500">Memuat hasil…</p>;
+  if (!results) return <p className="text-sm text-slate-500">Menyiapkan hasil analisis Anda…</p>;
 
   const returnPct =
     results.final_portfolio_value != null
@@ -82,7 +83,14 @@ function HasilContent() {
 
   return (
     <main className="space-y-5">
-      <h2 className="text-lg font-semibold">Hasil Analisis &amp; Umpan Balik</h2>
+      <div>
+        <h2 className="text-lg font-semibold">Hasil Analisis &amp; Umpan Balik</h2>
+        <p className="mt-1 text-sm text-slate-500">
+          Begini pola pengambilan keputusan Anda pada sesi ini. Bacalah dengan
+          santai; tidak ada nilai baik atau buruk, yang penting Anda semakin
+          mengenali kebiasaan sendiri.
+        </p>
+      </div>
 
       {/* Financial summary */}
       <section className="grid grid-cols-2 gap-2 rounded-xl border border-slate-200 bg-white p-4 text-center">
@@ -95,22 +103,22 @@ function HasilContent() {
           </p>
         </div>
         <div>
-          <p className="text-xs text-slate-500">Return Sesi</p>
+          <p className="text-xs text-slate-500">Imbal Hasil Sesi</p>
           <p
             className={`text-sm font-semibold ${
               (returnPct ?? 0) >= 0 ? "text-emerald-700" : "text-red-700"
             }`}
           >
-            {returnPct != null ? `${returnPct.toFixed(1)}%` : "—"}
+            {returnPct != null ? formatPct(returnPct) : "—"}
           </p>
         </div>
       </section>
 
       {results.metric.ci_low_confidence && (
         <p className="rounded-lg bg-slate-100 px-4 py-3 text-xs text-slate-600">
-          Sesi ini memiliki sedikit transaksi terealisasi, sehingga estimasi
-          bias memiliki ketidakpastian lebih tinggi. Selesaikan lebih banyak
-          sesi agar profil Anda semakin akurat.
+          Transaksi yang terealisasi pada sesi ini masih sedikit, jadi angka di
+          bawah sebaiknya dibaca sebagai indikasi awal. Semakin banyak sesi
+          yang Anda selesaikan, semakin tajam pula profilnya.
         </p>
       )}
 
@@ -152,7 +160,7 @@ function HasilContent() {
           onClick={() => router.push("/simulasi")}
           className="flex-1 rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-white"
         >
-          Mulai Sesi Baru →
+          Mulai Sesi Berikutnya →
         </button>
       </div>
     </main>
@@ -193,7 +201,8 @@ function PostSessionSurvey({ sessionId }: { sessionId: string }) {
   if (sent) {
     return (
       <p className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-        Terima kasih! Penilaian diri Anda telah tersimpan.
+        Terima kasih, penilaian Anda sudah tersimpan. Jawaban ini membantu
+        sistem memahami seberapa selaras hasil analisis dengan pengalaman Anda.
       </p>
     );
   }
@@ -203,10 +212,10 @@ function PostSessionSurvey({ sessionId }: { sessionId: string }) {
       onSubmit={submit}
       className="space-y-3 rounded-xl border border-slate-200 bg-white p-4"
     >
-      <h3 className="text-sm font-semibold">Penilaian Diri Singkat</h3>
+      <h3 className="text-sm font-semibold">Sebelum lanjut, dua menit untuk refleksi</h3>
       <p className="text-xs text-slate-500">
-        1 = tidak menyadari sama sekali / tidak berguna · 5 = sangat menyadari
-        / sangat berguna
+        Nilai 1 berarti tidak menyadari sama sekali (atau tidak berguna),
+        nilai 5 berarti sangat menyadari (atau sangat berguna).
       </p>
       {SURVEY_ITEMS.map((item) => (
         <div key={item.key} className="text-sm">
