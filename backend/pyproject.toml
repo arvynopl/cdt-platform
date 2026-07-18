@@ -14,6 +14,8 @@ ignore = [
 # Ported thesis-defense code keeps its original layout (mid-file logger
 # setup, research-script style); the golden-master parity suite is the
 # authority on its behavior. New app/ code gets the full rule set.
+# app/: B008 is FastAPI's documented `Depends(...)` default idiom.
+"app/**" = ["B008"]
 "modules/**" = ["B008", "E402"]
 "scripts/**" = ["E402", "B904", "B007"]
 "synthetic_validation/**" = ["B023", "E402"]
@@ -25,12 +27,17 @@ ignore_missing_imports = true
 check_untyped_defs = true
 warn_redundant_casts = true
 warn_unused_ignores = false
-# Fase 0 scope: new application code only. The ported domain layer still uses
-# pre-Mapped[] SQLAlchemy annotations (`id: int = Column(...)`) that mypy
-# cannot follow; Fase 1 migrates database/models.py to Mapped[]/mapped_column
-# and widens this list to ["app", "database", "modules"].
-files = ["app"]
+# database/models.py migrated to Mapped[]/mapped_column in Fase 1 (schema
+# verified drift-free via `alembic check` + golden-master parity). modules/
+# still uses research-era untyped style; it is checked behaviorally by the
+# 300-test domain + parity suite. Widening to ["app", "database", "modules"]
+# is a Fase 2+ cleanup.
+files = ["app", "database"]
 exclude = ["alembic/", "tests/"]
+
+[[tool.mypy.overrides]]
+module = ["modules.*", "config", "synthetic_validation.*"]
+ignore_errors = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
