@@ -5,6 +5,32 @@ from `backend/`. The app and database are co-located in Singapore by design
 (audit F1 — the thesis build's FR01/NFR01 latency breaches were cross-region
 network cost, not compute).
 
+## Two places configuration lives — don't mix them up
+
+| Where | File/command | Used for | Committed to git? |
+|---|---|---|---|
+| Your laptop | `backend/.env` (copy of `.env.example`) | Running the API locally | **Never** (gitignored) |
+| Fly.io | `fly secrets set NAME=value` | The deployed app | Never — Fly stores them encrypted; there is **no** `.env` file in production |
+
+`fly secrets set` is the production replacement for a `.env` file. You type it
+once; Fly keeps the values and injects them as environment variables into
+every deploy.
+
+## What you need before starting
+
+1. **Required — the Neon pooled connection string.** Neon console → project
+   `cdt-platform` → **Connect** panel → toggle **Connection pooling ON** →
+   copy the URI. It looks like
+   `postgresql://neondb_owner:xxxx@ep-…-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require`
+   (the `-pooler` in the hostname is how you know it's the right one).
+2. **Not needed yet — frontend domain (`CDT_CORS_ORIGINS`).** This is the
+   browser origin of the Next.js app, which doesn't exist until Fase 2. Skip
+   it now; the config default (`http://localhost:3000`) is fine. When the
+   frontend is deployed you'll set it to that site's URL (one line, step 5).
+3. **Optional — Sentry (`SENTRY_DSN`).** Only if you've created a (free)
+   Sentry project: sentry.io → Create Project → Python/FastAPI → copy the DSN.
+   Without it the app runs fine; you just don't get error alerting yet.
+
 ## One-time setup
 
 1. **Install flyctl** and sign in: `fly auth login`.
@@ -15,23 +41,31 @@ network cost, not compute).
    fly launch --no-deploy --copy-config
    ```
 
-3. **Set secrets** (never commit these; `CDT_DATABASE_URL` is the **pooled**
-   Neon connection string):
+3. **Set the one required secret** (paste your pooled Neon URI inside the
+   quotes):
 
    ```bash
-   fly secrets set \
-     CDT_DATABASE_URL='postgresql://…-pooler.ap-southeast-1.aws.neon.tech/…?sslmode=require' \
-     CDT_CORS_ORIGINS='https://<frontend-domain>' \
-     SENTRY_DSN='https://…@….ingest.sentry.io/…'
+   fly secrets set CDT_DATABASE_URL='postgresql://…-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require'
    ```
 
-   `CDT_COOKIE_SECURE=1` and `CDT_ENV=production` are already set in
-   `fly.toml`'s `[env]`.
+   If you have a Sentry DSN, add it the same way:
+   `fly secrets set SENTRY_DSN='https://…ingest.sentry.io/…'`.
 
-4. **Seed reference data** (stock catalog + market snapshots; idempotent):
+   `CDT_COOKIE_SECURE=1` and `CDT_ENV=production` are already set in
+   `fly.toml`'s `[env]` — nothing to do for those.
+
+4. **First deploy + seed reference data** (stock catalog + market snapshots;
+   idempotent):
 
    ```bash
+   fly deploy
    fly console --command "python -m database.seed"
+   ```
+
+5. **Later, when the Fase 2 frontend is live**, point CORS at it:
+
+   ```bash
+   fly secrets set CDT_CORS_ORIGINS='https://<the-frontend-url>'
    ```
 
 ## Routine deploy
