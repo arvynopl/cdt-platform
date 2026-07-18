@@ -23,6 +23,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.routers import auth as auth_router
 from app.routers import profile as profile_router
+from app.routers import researcher as researcher_router
 from app.routers import simulation as simulation_router
 from config import COOKIE_SECURE, CORS_ORIGINS, validate_api_config, validate_config
 
@@ -133,6 +134,8 @@ app.include_router(auth_router.router)
 app.include_router(simulation_router.router)
 app.include_router(profile_router.router)
 app.include_router(profile_router.survey_router)
+app.include_router(researcher_router.router)
+app.include_router(researcher_router.admin_router)
 
 
 @app.get("/healthz", tags=["ops"])
