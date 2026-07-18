@@ -92,3 +92,52 @@ def user(db):
     db.add(u)
     db.flush()
     return u
+
+
+# ---------------------------------------------------------------------------
+# API test fixtures (Fase 1)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture()
+def api_client(monkeypatch):
+    """FastAPI TestClient wired to a fresh in-memory DB with seeded market data.
+
+    Overrides database.connection's lazy engine/factory so the app, the
+    domain layer, and the background post-session pipeline all share one
+    StaticPool SQLite database for the duration of the test.
+    """
+    from fastapi.testclient import TestClient
+    from sqlalchemy import create_engine as _create_engine
+    from sqlalchemy.orm import sessionmaker as _sessionmaker
+    from sqlalchemy.pool import StaticPool
+
+    import database.connection as _conn
+    from database.models import Base as _Base
+
+    engine = _create_engine(
+        "sqlite://",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+    _Base.metadata.create_all(engine)
+    monkeypatch.setattr(_conn, "_engine", engine)
+    monkeypatch.setattr(
+        _conn, "_SessionFactory",
+        _sessionmaker(bind=engine, autoflush=True, autocommit=False),
+    )
+
+    from tests.fixtures.parity_scenarios import _seed_market
+
+    with _conn.get_session() as sess:
+        _seed_market(sess)
+
+    from app.main import app as _app
+
+    with TestClient(_app) as client:
+        yield client
+
+
+def csrf_headers(client) -> dict:
+    """Double-submit header matching the cdt_csrf cookie set at login."""
+    token = client.cookies.get("cdt_csrf")
+    return {"x-csrf-token": token} if token else {}
