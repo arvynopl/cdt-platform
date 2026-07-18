@@ -99,7 +99,18 @@ interface PracticeState {
   executed1: boolean;
 }
 
-export default function PracticeMode({ onComplete }: { onComplete: () => void }) {
+interface PracticeProps {
+  onComplete: () => void;
+  /**
+   * Replay mode: entered voluntarily from the help menu. Starts at step 1,
+   * never writes progress keys (a mid-replay exit must not re-lock the
+   * first-session gate), and shows an exit action throughout.
+   */
+  replay?: boolean;
+  onExit?: () => void;
+}
+
+export default function PracticeMode({ onComplete, replay = false, onExit }: PracticeProps) {
   const [tourOpen, setTourOpen] = useState(false);
   const [s, setS] = useState<PracticeState>(() => ({
     step: 1,
@@ -114,13 +125,14 @@ export default function PracticeMode({ onComplete }: { onComplete: () => void })
   const [flash, setFlash] = useState<string | null>(null);
   const [profit, setProfit] = useState<number | null>(null);
 
-  // Resume from saved progress.
+  // Resume from saved progress (first run only; replay always starts clean).
   useEffect(() => {
+    if (replay) return;
     const saved = localStorage.getItem(PROGRESS_KEY);
     if (saved === "2") setS((p) => ({ ...p, step: 2, shares: 100, cash: CAPITAL - 100 * PRICES[0], buyPrice: PRICES[0] }));
     if (saved === "3") setS((p) => ({ ...p, step: 3, shares: 100, cash: CAPITAL - 100 * PRICES[0], buyPrice: PRICES[0], executed1: true }));
     if (!localStorage.getItem(TOUR_KEY)) setTourOpen(true);
-  }, []);
+  }, [replay]);
 
   const round = s.step;
   const price = PRICES[round - 1];
@@ -170,7 +182,7 @@ export default function PracticeMode({ onComplete }: { onComplete: () => void })
   }, [round, pendingBuy, pendingSell, s.executed1]);
 
   function saveProgress(step: string) {
-    localStorage.setItem(PROGRESS_KEY, step);
+    if (!replay) localStorage.setItem(PROGRESS_KEY, step);
   }
 
   function execute() {
@@ -224,14 +236,15 @@ export default function PracticeMode({ onComplete }: { onComplete: () => void })
           membaca dampaknya pada portofolio.
         </p>
         <p className="text-sm leading-relaxed text-slate-600">
-          Sekarang saatnya yang sebenarnya: 14 putaran dengan 12 saham IDX dan
-          data historis asli. Selamat berlatih mengenali gaya Anda sendiri.
+          {replay
+            ? "Ingatan sudah segar kembali. Silakan lanjutkan sesi Anda."
+            : "Sekarang saatnya yang sebenarnya: 14 putaran dengan 12 saham IDX dan data historis asli. Selamat berlatih mengenali gaya Anda sendiri."}
         </p>
         <button
           onClick={onComplete}
           className="rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white"
         >
-          Masuk ke Simulasi →
+          {replay ? "Kembali ke Simulasi →" : "Masuk ke Simulasi →"}
         </button>
       </main>
     );
@@ -254,9 +267,19 @@ export default function PracticeMode({ onComplete }: { onComplete: () => void })
       )}
 
       <div className="rounded-xl border border-brand/30 bg-brand-soft px-4 py-3">
-        <p className="text-xs font-semibold uppercase tracking-wide text-brand">
-          Mode Latihan
-        </p>
+        <div className="flex items-start justify-between gap-2">
+          <p className="text-xs font-semibold uppercase tracking-wide text-brand">
+            Mode Latihan{replay ? " (pengulangan)" : ""}
+          </p>
+          {replay && onExit && (
+            <button
+              onClick={onExit}
+              className="text-xs font-medium text-slate-500 underline-offset-2 hover:underline"
+            >
+              Kembali ke simulasi
+            </button>
+          )}
+        </div>
         <h2 className="mt-0.5 text-sm font-semibold">{narration.title}</h2>
         <p className="mt-1 text-sm leading-relaxed text-slate-700">
           {narration.body}

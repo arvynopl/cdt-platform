@@ -53,6 +53,8 @@ export default function SimulasiPage() {
   const [selected, setSelected] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [tourOpen, setTourOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
+  const [practiceReplay, setPracticeReplay] = useState(false);
   const [busy, setBusy] = useState(false);
   const roundStartRef = useRef<number>(Date.now());
 
@@ -243,6 +245,19 @@ export default function SimulasiPage() {
     );
   }
 
+  // Voluntary replay from the help menu: rendered instead of the trading UI,
+  // but the session state stays mounted, so leaving practice returns the
+  // user to exactly the round they were on.
+  if (practiceReplay) {
+    return (
+      <PracticeMode
+        replay
+        onComplete={() => setPracticeReplay(false)}
+        onExit={() => setPracticeReplay(false)}
+      />
+    );
+  }
+
   if (!me || !state) {
     return (
       <main>
@@ -316,15 +331,45 @@ export default function SimulasiPage() {
         />
       )}
 
-      <button
-        onClick={() => setTourOpen(true)}
-        aria-label="Buka panduan"
-        className="fixed bottom-20 right-4 z-40 h-10 w-10 rounded-full border
-                   border-slate-300 bg-white text-lg font-semibold text-brand
-                   shadow-md hover:bg-brand-soft"
-      >
-        ?
-      </button>
+      <div className="fixed bottom-20 right-4 z-40 flex flex-col items-end gap-2">
+        {helpOpen && (
+          <div className="w-56 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl">
+            <button
+              onClick={() => {
+                setHelpOpen(false);
+                setTourOpen(true);
+              }}
+              className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-brand-soft"
+            >
+              Putar ulang panduan halaman
+              <span className="block text-xs text-slate-500">
+                Tur singkat mengenal setiap bagian layar
+              </span>
+            </button>
+            <button
+              onClick={() => {
+                setHelpOpen(false);
+                setPracticeReplay(true);
+              }}
+              className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-brand-soft"
+            >
+              Ulangi mode latihan
+              <span className="block text-xs text-slate-500">
+                Tiga putaran percobaan; sesi Anda tetap aman
+              </span>
+            </button>
+          </div>
+        )}
+        <button
+          onClick={() => setHelpOpen((v) => !v)}
+          aria-label="Bantuan"
+          aria-expanded={helpOpen}
+          className="h-10 w-10 rounded-full border border-slate-300 bg-white
+                     text-lg font-semibold text-brand shadow-md hover:bg-brand-soft"
+        >
+          ?
+        </button>
+      </div>
 
       {/* Progress + portfolio summary */}
       <section
