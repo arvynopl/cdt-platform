@@ -35,6 +35,7 @@ class SimulationEngine:
         session_id: str,
         db_session: Session,
         start_date: date | None = None,
+        exclude_start_dates: set[date] | None = None,
     ) -> None:
         self.user_id = user_id
         self.session_id = session_id
@@ -47,17 +48,30 @@ class SimulationEngine:
         self._start_date = None
         self._end_date = None
 
-        self._select_window(fixed_start_date=start_date)
+        self._select_window(
+            fixed_start_date=start_date,
+            exclude_start_dates=exclude_start_dates,
+        )
 
     # ------------------------------------------------------------------
     # Window selection
     # ------------------------------------------------------------------
 
-    def _select_window(self, fixed_start_date: date | None = None) -> None:
+    def _select_window(
+        self,
+        fixed_start_date: date | None = None,
+        exclude_start_dates: set[date] | None = None,
+    ) -> None:
         """Pick a contiguous ROUNDS_PER_SESSION-day trading window.
 
         When ``fixed_start_date`` is supplied (resume path) the window starts
         at that exact trading date; otherwise a random start index is chosen.
+
+        ``exclude_start_dates`` (audit F14 / thesis Bab VI limitation 4)
+        removes start dates the user has already played, so repeat sessions
+        cannot memorise a previously seen price path. When every candidate is
+        excluded (heavy repeat user), the exclusion is dropped rather than
+        refusing a session — non-repetition is best-effort by design.
 
         Strategy:
             1. Fetch all distinct trading dates shared across all stocks.
@@ -96,7 +110,15 @@ class SimulationEngine:
                     "ahead of it."
                 )
         else:
-            start_idx = random.randint(0, max_start)
+            candidate_idx = list(range(max_start + 1))
+            if exclude_start_dates:
+                fresh = [
+                    i for i in candidate_idx
+                    if all_dates[i] not in exclude_start_dates
+                ]
+                if fresh:
+                    candidate_idx = fresh
+            start_idx = random.choice(candidate_idx)
         window_dates = all_dates[start_idx : start_idx + ROUNDS_PER_SESSION]
 
         self._start_date = window_dates[0]

@@ -180,3 +180,44 @@ def validate_config() -> None:
         raise ValueError("AUTH_RATE_LIMIT_WINDOW_SEC must be >= 1 second")
     if AUTH_PASSWORD_MIN_LEN < 6:
         raise ValueError("AUTH_PASSWORD_MIN_LEN must be >= 6")
+
+
+# ---------------------------------------------------------------------------
+# API session cookies (cdt-platform Fase 1 — audit F5/F6)
+# ---------------------------------------------------------------------------
+# Absolute lifetime from login; the session dies at this point regardless of
+# activity. Sliding idle window: each authenticated request refreshes
+# last_seen_at, and a session idle longer than the window is rejected.
+SESSION_ABSOLUTE_TTL_HOURS: int = int(os.environ.get("CDT_SESSION_ABSOLUTE_TTL_HOURS", "720"))   # 30 days
+SESSION_IDLE_TTL_HOURS: int = int(os.environ.get("CDT_SESSION_IDLE_TTL_HOURS", "168"))           # 7 days
+
+SESSION_COOKIE_NAME: str = "cdt_session"
+CSRF_COOKIE_NAME: str = "cdt_csrf"
+CSRF_HEADER_NAME: str = "x-csrf-token"
+
+# Secure flag on cookies. Default False so localhost http development works
+# out of the box; production deployment MUST set CDT_COOKIE_SECURE=1
+# (fly.toml does). app.main logs a warning when it boots insecure.
+COOKIE_SECURE: bool = os.environ.get("CDT_COOKIE_SECURE", "0") == "1"
+
+# Comma-separated list of allowed browser origins for the API (the Next.js
+# frontend). Credentialed CORS, so wildcard is not permitted.
+CORS_ORIGINS: list[str] = [
+    o.strip()
+    for o in os.environ.get("CDT_CORS_ORIGINS", "http://localhost:3000").split(",")
+    if o.strip()
+]
+
+
+def validate_api_config() -> None:
+    """Constraint checks for the Fase 1 API additions (mirrors validate_config)."""
+    if SESSION_ABSOLUTE_TTL_HOURS < 1:
+        raise ValueError("SESSION_ABSOLUTE_TTL_HOURS must be >= 1")
+    if not (1 <= SESSION_IDLE_TTL_HOURS <= SESSION_ABSOLUTE_TTL_HOURS):
+        raise ValueError(
+            "SESSION_IDLE_TTL_HOURS must be in [1, SESSION_ABSOLUTE_TTL_HOURS]"
+        )
+    if not CORS_ORIGINS:
+        raise ValueError("CDT_CORS_ORIGINS must list at least one origin")
+    if any(o == "*" for o in CORS_ORIGINS):
+        raise ValueError("wildcard origin is not allowed with credentialed CORS")

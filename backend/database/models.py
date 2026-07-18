@@ -15,7 +15,6 @@ from sqlalchemy import (
     JSON,
     BigInteger,
     Boolean,
-    Column,
     Date,
     DateTime,
     Float,
@@ -26,7 +25,7 @@ from sqlalchemy import (
     Text,
     UniqueConstraint,
 )
-from sqlalchemy.orm import DeclarativeBase, relationship
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
 class Base(DeclarativeBase):
@@ -43,20 +42,20 @@ class User(Base):
 
     __tablename__ = "users"
 
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
 
     # v6 auth fields — nullable in schema to preserve legacy fixtures, but
     # the auth service treats them as required when registering.
-    username: str | None = Column(String(64), unique=True, nullable=True, index=True)
-    password_hash: str | None = Column(String(128), nullable=True)
-    last_login_at: datetime | None = Column(DateTime(timezone=True), nullable=True)
+    username: Mapped[str | None] = mapped_column(String(64), unique=True, nullable=True, index=True)
+    password_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    last_login_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     # Legacy fields — retained for backward compatibility.
-    alias: str | None = Column(String(64), unique=True, nullable=True)
-    experience_level: str = Column(
+    alias: Mapped[str | None] = mapped_column(String(64), unique=True, nullable=True)
+    experience_level: Mapped[str] = mapped_column(
         String(20), nullable=False, default="beginner"
     )  # beginner | intermediate | advanced
-    created_at: datetime = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC))
 
     # Relationships — cascade delete ensures child rows are removed with the user
     actions = relationship("UserAction", back_populates="user", lazy="dynamic", cascade="all, delete-orphan")
@@ -96,19 +95,19 @@ class UserProfile(Base):
 
     __tablename__ = "user_profiles"
 
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
-    user_id: int = Column(
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("users.id"), unique=True, nullable=False
     )
-    full_name: str = Column(String(128), nullable=False)
-    age: int = Column(Integer, nullable=False)
+    full_name: Mapped[str] = mapped_column(String(128), nullable=False)
+    age: Mapped[int] = mapped_column(Integer, nullable=False)
     # "laki-laki" | "perempuan" | "lainnya"
-    gender: str = Column(String(16), nullable=False)
+    gender: Mapped[str] = mapped_column(String(16), nullable=False)
     # "konservatif" | "moderat" | "agresif"
-    risk_profile: str = Column(String(32), nullable=False)
+    risk_profile: Mapped[str] = mapped_column(String(32), nullable=False)
     # "pemula" | "menengah" | "berpengalaman"
-    investing_capability: str = Column(String(32), nullable=False)
-    created_at: datetime = Column(
+    investing_capability: Mapped[str] = mapped_column(String(32), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(UTC),
@@ -134,25 +133,25 @@ class OnboardingSurvey(Base):
 
     __tablename__ = "onboarding_surveys"
 
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
-    user_id: int = Column(
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("users.id"), unique=True, nullable=False
     )
 
     # DEI items (1–5 Likert)
-    dei_q1: int = Column(Integer, nullable=False)
-    dei_q2: int = Column(Integer, nullable=False)
-    dei_q3: int = Column(Integer, nullable=False)
+    dei_q1: Mapped[int] = mapped_column(Integer, nullable=False)
+    dei_q2: Mapped[int] = mapped_column(Integer, nullable=False)
+    dei_q3: Mapped[int] = mapped_column(Integer, nullable=False)
     # OCS items (1–5 Likert)
-    ocs_q1: int = Column(Integer, nullable=False)
-    ocs_q2: int = Column(Integer, nullable=False)
-    ocs_q3: int = Column(Integer, nullable=False)
+    ocs_q1: Mapped[int] = mapped_column(Integer, nullable=False)
+    ocs_q2: Mapped[int] = mapped_column(Integer, nullable=False)
+    ocs_q3: Mapped[int] = mapped_column(Integer, nullable=False)
     # LAI items (1–5 Likert)
-    lai_q1: int = Column(Integer, nullable=False)
-    lai_q2: int = Column(Integer, nullable=False)
-    lai_q3: int = Column(Integer, nullable=False)
+    lai_q1: Mapped[int] = mapped_column(Integer, nullable=False)
+    lai_q2: Mapped[int] = mapped_column(Integer, nullable=False)
+    lai_q3: Mapped[int] = mapped_column(Integer, nullable=False)
 
-    submitted_at: datetime = Column(
+    submitted_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(UTC),
@@ -184,13 +183,13 @@ class StockCatalog(Base):
 
     __tablename__ = "stock_catalog"
 
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
-    stock_id: str = Column(String(20), unique=True, nullable=False)  # e.g. "BBCA.JK"
-    ticker: str = Column(String(10), nullable=False)                  # e.g. "BBCA"
-    name: str = Column(String(128), nullable=False)
-    sector: str = Column(String(64), nullable=False)
-    volatility_class: str = Column(String(20), nullable=False)  # low|low_medium|medium|high
-    bias_role: str = Column(Text, nullable=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    stock_id: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)  # e.g. "BBCA.JK"
+    ticker: Mapped[str] = mapped_column(String(10), nullable=False)                  # e.g. "BBCA"
+    name: Mapped[str] = mapped_column(String(128), nullable=False)
+    sector: Mapped[str] = mapped_column(String(64), nullable=False)
+    volatility_class: Mapped[str] = mapped_column(String(20), nullable=False)  # low|low_medium|medium|high
+    bias_role: Mapped[str] = mapped_column(Text, nullable=True)
 
     # Relationships
     snapshots = relationship("MarketSnapshot", back_populates="stock", lazy="dynamic")
@@ -204,26 +203,26 @@ class MarketSnapshot(Base):
 
     __tablename__ = "market_snapshots"
 
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
-    stock_id: str = Column(
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    stock_id: Mapped[str] = mapped_column(
         String(20), ForeignKey("stock_catalog.stock_id"), nullable=False
     )
-    date: date_type = Column(Date, nullable=False)
+    date: Mapped[date_type] = mapped_column(Date, nullable=False)
 
     # OHLCV
-    open: float = Column(Float, nullable=False)
-    high: float = Column(Float, nullable=False)
-    low: float = Column(Float, nullable=False)
-    close: float = Column(Float, nullable=False)
-    volume: int = Column(BigInteger, nullable=False)
+    open: Mapped[float] = mapped_column(Float, nullable=False)
+    high: Mapped[float] = mapped_column(Float, nullable=False)
+    low: Mapped[float] = mapped_column(Float, nullable=False)
+    close: Mapped[float] = mapped_column(Float, nullable=False)
+    volume: Mapped[int] = mapped_column(BigInteger, nullable=False)
 
     # Technical indicators (may be None for early rows)
-    ma_5: float | None = Column(Float, nullable=True)
-    ma_20: float | None = Column(Float, nullable=True)
-    rsi_14: float | None = Column(Float, nullable=True)
-    volatility_20d: float | None = Column(Float, nullable=True)
-    trend: str | None = Column(String(20), nullable=True)    # bullish|bearish|neutral
-    daily_return: float | None = Column(Float, nullable=True)
+    ma_5: Mapped[float | None] = mapped_column(Float, nullable=True)
+    ma_20: Mapped[float | None] = mapped_column(Float, nullable=True)
+    rsi_14: Mapped[float | None] = mapped_column(Float, nullable=True)
+    volatility_20d: Mapped[float | None] = mapped_column(Float, nullable=True)
+    trend: Mapped[str | None] = mapped_column(String(20), nullable=True)    # bullish|bearish|neutral
+    daily_return: Mapped[float | None] = mapped_column(Float, nullable=True)
 
     __table_args__ = (
         UniqueConstraint("stock_id", "date", name="uq_snapshot_stock_date"),
@@ -244,21 +243,21 @@ class UserAction(Base):
         Index("ix_useraction_user_session", "user_id", "session_id"),
     )
 
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
-    user_id: int = Column(Integer, ForeignKey("users.id"), nullable=False)
-    session_id: str = Column(String(36), nullable=False)    # UUID string
-    scenario_round: int = Column(Integer, nullable=False)   # 1–14
-    stock_id: str = Column(
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
+    session_id: Mapped[str] = mapped_column(String(36), nullable=False)    # UUID string
+    scenario_round: Mapped[int] = mapped_column(Integer, nullable=False)   # 1–14
+    stock_id: Mapped[str] = mapped_column(
         String(20), ForeignKey("stock_catalog.stock_id"), nullable=False
     )
-    snapshot_id: int = Column(
+    snapshot_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("market_snapshots.id"), nullable=False
     )
-    action_type: str = Column(String(10), nullable=False)   # buy|sell|hold
-    quantity: int = Column(Integer, nullable=False, default=0)
-    action_value: float = Column(Float, nullable=False, default=0.0)
-    response_time_ms: int = Column(Integer, nullable=False, default=0)
-    timestamp: datetime = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC))
+    action_type: Mapped[str] = mapped_column(String(10), nullable=False)   # buy|sell|hold
+    quantity: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    action_value: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    response_time_ms: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC))
 
     # Relationships
     user = relationship("User", back_populates="actions")
@@ -280,31 +279,31 @@ class BiasMetric(Base):
         Index("ix_biasmetric_user_session", "user_id", "session_id"),
     )
 
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
-    user_id: int = Column(Integer, ForeignKey("users.id"), nullable=False)
-    session_id: str = Column(String(36), nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
+    session_id: Mapped[str] = mapped_column(String(36), nullable=False)
 
     # Overconfidence
-    overconfidence_score: float | None = Column(Float, nullable=True)
+    overconfidence_score: Mapped[float | None] = mapped_column(Float, nullable=True)
 
     # Disposition Effect
-    disposition_pgr: float | None = Column(Float, nullable=True)
-    disposition_plr: float | None = Column(Float, nullable=True)
-    disposition_dei: float | None = Column(Float, nullable=True)
+    disposition_pgr: Mapped[float | None] = mapped_column(Float, nullable=True)
+    disposition_plr: Mapped[float | None] = mapped_column(Float, nullable=True)
+    disposition_dei: Mapped[float | None] = mapped_column(Float, nullable=True)
 
     # Loss Aversion
-    loss_aversion_index: float | None = Column(Float, nullable=True)
+    loss_aversion_index: Mapped[float | None] = mapped_column(Float, nullable=True)
 
     # 95% bootstrap confidence interval bounds
-    dei_ci_lower: float | None = Column(Float, nullable=True)
-    dei_ci_upper: float | None = Column(Float, nullable=True)
-    ocs_ci_lower: float | None = Column(Float, nullable=True)
-    ocs_ci_upper: float | None = Column(Float, nullable=True)
-    lai_ci_lower: float | None = Column(Float, nullable=True)
-    lai_ci_upper: float | None = Column(Float, nullable=True)
-    ci_low_confidence: bool | None = Column(Boolean, nullable=True)
+    dei_ci_lower: Mapped[float | None] = mapped_column(Float, nullable=True)
+    dei_ci_upper: Mapped[float | None] = mapped_column(Float, nullable=True)
+    ocs_ci_lower: Mapped[float | None] = mapped_column(Float, nullable=True)
+    ocs_ci_upper: Mapped[float | None] = mapped_column(Float, nullable=True)
+    lai_ci_lower: Mapped[float | None] = mapped_column(Float, nullable=True)
+    lai_ci_upper: Mapped[float | None] = mapped_column(Float, nullable=True)
+    ci_low_confidence: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
 
-    computed_at: datetime = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC))
+    computed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC))
 
     # Relationships
     user = relationship("User", back_populates="bias_metrics")
@@ -320,25 +319,25 @@ class CognitiveProfile(Base):
 
     __tablename__ = "cognitive_profiles"
 
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
-    user_id: int = Column(
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("users.id"), unique=True, nullable=False
     )
 
     # JSON: {"overconfidence": float, "disposition": float, "loss_aversion": float}
-    bias_intensity_vector: dict = Column(JSON, nullable=False, default=lambda: {
+    bias_intensity_vector: Mapped[dict] = mapped_column(JSON, nullable=False, default=lambda: {
         "overconfidence": 0.0,
         "disposition": 0.0,
         "loss_aversion": 0.0,
     })
 
-    risk_preference: float = Column(Float, nullable=False, default=0.0)
-    stability_index: float = Column(Float, nullable=False, default=0.0)
+    risk_preference: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    stability_index: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
     # JSON: {"ocs_dei": float|null, "ocs_lai": float|null, "dei_lai": float|null}
     # Null values indicate insufficient data or zero-variance series.
-    interaction_scores: dict | None = Column(JSON, nullable=True, default=None)
-    session_count: int = Column(Integer, nullable=False, default=0)
-    last_updated_at: datetime = Column(DateTime(timezone=True), nullable=True)
+    interaction_scores: Mapped[dict | None] = mapped_column(JSON, nullable=True, default=None)
+    session_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    last_updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
 
     # Relationships
     user = relationship("User", back_populates="cognitive_profile")
@@ -358,14 +357,14 @@ class FeedbackHistory(Base):
         Index("ix_feedbackhistory_user_session", "user_id", "session_id"),
     )
 
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
-    user_id: int = Column(Integer, ForeignKey("users.id"), nullable=False)
-    session_id: str = Column(String(36), nullable=False)
-    bias_type: str = Column(String(30), nullable=False)    # overconfidence|disposition_effect|loss_aversion
-    severity: str = Column(String(10), nullable=False)     # none|mild|moderate|severe
-    explanation_text: str = Column(Text, nullable=True)
-    recommendation_text: str = Column(Text, nullable=True)
-    delivered_at: datetime = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC))
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
+    session_id: Mapped[str] = mapped_column(String(36), nullable=False)
+    bias_type: Mapped[str] = mapped_column(String(30), nullable=False)    # overconfidence|disposition_effect|loss_aversion
+    severity: Mapped[str] = mapped_column(String(10), nullable=False)     # none|mild|moderate|severe
+    explanation_text: Mapped[str] = mapped_column(Text, nullable=True)
+    recommendation_text: Mapped[str] = mapped_column(Text, nullable=True)
+    delivered_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC))
 
     # Relationships
     user = relationship("User", back_populates="feedback_history")
@@ -382,14 +381,14 @@ class ConsentLog(Base):
 
     __tablename__ = "consent_logs"
 
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
-    user_id: int = Column(Integer, ForeignKey("users.id"), nullable=False)
-    consent_given: bool = Column(Boolean, nullable=False, default=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
+    consent_given: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     # Optional verbatim consent text snapshot for audit
-    consent_text: str | None = Column(Text, nullable=True)
+    consent_text: Mapped[str | None] = mapped_column(Text, nullable=True)
     # SHA-256 of remote IP for audit purposes (not PII linkable without original IP)
-    ip_hash: str | None = Column(String(64), nullable=True)
-    created_at: datetime = Column(
+    ip_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC)
     )
 
@@ -408,22 +407,22 @@ class UserSurvey(Base):
 
     __tablename__ = "user_surveys"
 
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
-    user_id: int = Column(
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("users.id"), nullable=False, index=True
     )
 
     # Likert scale 1-5 for each question
-    q_risk_tolerance: int = Column(Integer, nullable=False)      # 1=sangat menghindari risiko, 5=sangat menyukai risiko
-    q_loss_sensitivity: int = Column(Integer, nullable=False)     # 1=tidak terganggu, 5=sangat terganggu
-    q_trading_frequency: int = Column(Integer, nullable=False)    # 1=sangat jarang, 5=sangat sering
-    q_holding_behavior: int = Column(Integer, nullable=False)     # 1=langsung jual, 5=selalu menahan
+    q_risk_tolerance: Mapped[int] = mapped_column(Integer, nullable=False)      # 1=sangat menghindari risiko, 5=sangat menyukai risiko
+    q_loss_sensitivity: Mapped[int] = mapped_column(Integer, nullable=False)     # 1=tidak terganggu, 5=sangat terganggu
+    q_trading_frequency: Mapped[int] = mapped_column(Integer, nullable=False)    # 1=sangat jarang, 5=sangat sering
+    q_holding_behavior: Mapped[int] = mapped_column(Integer, nullable=False)     # 1=langsung jual, 5=selalu menahan
 
-    survey_type: str = Column(
+    survey_type: Mapped[str] = mapped_column(
         String(24), nullable=False, default="session_level"
     )  # "onboarding" | "session_level"
 
-    submitted_at: datetime = Column(
+    submitted_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC)
     )
 
@@ -442,17 +441,17 @@ class SessionSummary(Base):
 
     __tablename__ = "session_summaries"
 
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
-    user_id: int = Column(Integer, ForeignKey("users.id"), nullable=False)
-    session_id: str = Column(String(36), unique=True, nullable=False)
-    started_at: datetime = Column(DateTime(timezone=True), nullable=False)
-    completed_at: datetime | None = Column(DateTime(timezone=True), nullable=True)
-    rounds_completed: int = Column(Integer, nullable=False, default=0)
-    final_portfolio_value: float | None = Column(Float, nullable=True)
-    window_start_date: date_type | None = Column(Date, nullable=True)
-    window_end_date: date_type | None = Column(Date, nullable=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
+    session_id: Mapped[str] = mapped_column(String(36), unique=True, nullable=False)
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    rounds_completed: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    final_portfolio_value: Mapped[float | None] = mapped_column(Float, nullable=True)
+    window_start_date: Mapped[date_type | None] = mapped_column(Date, nullable=True)
+    window_end_date: Mapped[date_type | None] = mapped_column(Date, nullable=True)
     # in_progress | completed | abandoned
-    status: str = Column(String(20), nullable=False, default="in_progress")
+    status: Mapped[str] = mapped_column(String(20), nullable=False, default="in_progress")
 
     def __repr__(self) -> str:
         return (
@@ -476,21 +475,21 @@ class CdtSnapshot(Base):
         Index("ix_cdtsnapshot_user_session", "user_id", "session_id"),
     )
 
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
-    user_id: int = Column(Integer, ForeignKey("users.id"), nullable=False)
-    session_id: str = Column(String(36), nullable=False)   # UUID of the session that produced this snapshot
-    session_number: int = Column(Integer, nullable=False)  # CognitiveProfile.session_count at snapshot time
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
+    session_id: Mapped[str] = mapped_column(String(36), nullable=False)   # UUID of the session that produced this snapshot
+    session_number: Mapped[int] = mapped_column(Integer, nullable=False)  # CognitiveProfile.session_count at snapshot time
 
     # Bias intensity vector components
-    cdt_overconfidence: float = Column(Float, nullable=False, default=0.0)
-    cdt_disposition: float = Column(Float, nullable=False, default=0.0)
-    cdt_loss_aversion: float = Column(Float, nullable=False, default=0.0)
+    cdt_overconfidence: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    cdt_disposition: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    cdt_loss_aversion: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
 
     # Other CDT state
-    cdt_risk_preference: float = Column(Float, nullable=False, default=0.0)
-    cdt_stability_index: float = Column(Float, nullable=False, default=0.0)
+    cdt_risk_preference: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    cdt_stability_index: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
 
-    snapshotted_at: datetime = Column(
+    snapshotted_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC)
     )
 
@@ -513,19 +512,19 @@ class PostSessionSurvey(Base):
         UniqueConstraint("user_id", "session_id", name="uq_post_survey_user_session"),
     )
 
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
-    user_id: int = Column(Integer, ForeignKey("users.id"), nullable=False)
-    session_id: str = Column(String(36), nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
+    session_id: Mapped[str] = mapped_column(String(36), nullable=False)
 
     # Self-assessed bias awareness: 1 = tidak menyadari sama sekali, 5 = sangat menyadari
-    self_overconfidence: int = Column(Integer, nullable=False)
-    self_disposition: int = Column(Integer, nullable=False)
-    self_loss_aversion: int = Column(Integer, nullable=False)
+    self_overconfidence: Mapped[int] = mapped_column(Integer, nullable=False)
+    self_disposition: Mapped[int] = mapped_column(Integer, nullable=False)
+    self_loss_aversion: Mapped[int] = mapped_column(Integer, nullable=False)
 
     # Overall feedback usefulness: 1 = tidak berguna, 5 = sangat berguna
-    feedback_usefulness: int = Column(Integer, nullable=False)
+    feedback_usefulness: Mapped[int] = mapped_column(Integer, nullable=False)
 
-    submitted_at: datetime = Column(
+    submitted_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC)
     )
 
@@ -551,25 +550,25 @@ class UATFeedback(Base):
         Index("ix_uatfeedback_user", "user_id"),
     )
 
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
-    user_id: int = Column(Integer, ForeignKey("users.id"), nullable=False)
-    session_id: str | None = Column(String(36), nullable=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
+    session_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
 
-    sus_q1: int = Column(Integer, nullable=False)
-    sus_q2: int = Column(Integer, nullable=False)
-    sus_q3: int = Column(Integer, nullable=False)
-    sus_q4: int = Column(Integer, nullable=False)
-    sus_q5: int = Column(Integer, nullable=False)
-    sus_q6: int = Column(Integer, nullable=False)
-    sus_q7: int = Column(Integer, nullable=False)
-    sus_q8: int = Column(Integer, nullable=False)
-    sus_q9: int = Column(Integer, nullable=False)
-    sus_q10: int = Column(Integer, nullable=False)
+    sus_q1: Mapped[int] = mapped_column(Integer, nullable=False)
+    sus_q2: Mapped[int] = mapped_column(Integer, nullable=False)
+    sus_q3: Mapped[int] = mapped_column(Integer, nullable=False)
+    sus_q4: Mapped[int] = mapped_column(Integer, nullable=False)
+    sus_q5: Mapped[int] = mapped_column(Integer, nullable=False)
+    sus_q6: Mapped[int] = mapped_column(Integer, nullable=False)
+    sus_q7: Mapped[int] = mapped_column(Integer, nullable=False)
+    sus_q8: Mapped[int] = mapped_column(Integer, nullable=False)
+    sus_q9: Mapped[int] = mapped_column(Integer, nullable=False)
+    sus_q10: Mapped[int] = mapped_column(Integer, nullable=False)
 
-    open_confusing: str | None = Column(Text, nullable=True)
-    open_useful: str | None = Column(Text, nullable=True)
+    open_confusing: Mapped[str | None] = mapped_column(Text, nullable=True)
+    open_useful: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    submitted_at: datetime = Column(
+    submitted_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(UTC),
@@ -609,12 +608,12 @@ class SessionError(Base):
         Index("ix_sessionerror_session", "session_id"),
     )
 
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
-    user_id: int | None = Column(Integer, ForeignKey("users.id"), nullable=True)
-    session_id: str | None = Column(String(36), nullable=True)
-    error_type: str = Column(String(64), nullable=False)
-    message: str | None = Column(Text, nullable=True)
-    occurred_at: datetime = Column(
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("users.id"), nullable=True)
+    session_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    error_type: Mapped[str] = mapped_column(String(64), nullable=False)
+    message: Mapped[str | None] = mapped_column(Text, nullable=True)
+    occurred_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(UTC),
@@ -623,3 +622,65 @@ class SessionError(Base):
     def __repr__(self) -> str:
         sid = (self.session_id or "")[:8]
         return f"<SessionError session={sid} type={self.error_type}>"
+
+
+class AuthSession(Base):
+    """Server-side login session backing the httpOnly ``cdt_session`` cookie.
+
+    The browser holds an opaque random token; only its SHA-256 digest is
+    stored here, so a database leak cannot be replayed as a live session.
+    Expiry policy (audit F6): an absolute cap from creation plus a sliding
+    idle window refreshed on each authenticated request. ``revoked_at`` set
+    on logout gives server-side revocation.
+    """
+
+    __tablename__ = "auth_sessions"
+    __table_args__ = (
+        Index("ix_authsession_user", "user_id"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True, nullable=False, index=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False,
+        default=lambda: datetime.now(UTC),
+    )
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    last_seen_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False,
+        default=lambda: datetime.now(UTC),
+    )
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    user_agent: Mapped[str | None] = mapped_column(String(256), nullable=True)
+
+    def __repr__(self) -> str:
+        state = "revoked" if self.revoked_at else "active"
+        return f"<AuthSession user={self.user_id} {state}>"
+
+
+class LoginAttempt(Base):
+    """Audit row per authentication attempt, backing DB rate limiting (audit F7).
+
+    Survives redeploys (unlike the legacy in-memory limiter) and adds an IP
+    dimension. The client IP is stored only as a SHA-256 digest — the same
+    pseudonymisation contract as ``ConsentLog.ip_hash`` (UU PDP).
+    """
+
+    __tablename__ = "login_attempts"
+    __table_args__ = (
+        Index("ix_loginattempt_username_time", "username", "attempted_at"),
+        Index("ix_loginattempt_ip_time", "ip_hash", "attempted_at"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    username: Mapped[str] = mapped_column(String(64), nullable=False)
+    ip_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    success: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    attempted_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False,
+        default=lambda: datetime.now(UTC),
+    )
+
+    def __repr__(self) -> str:
+        return f"<LoginAttempt {self.username!r} success={self.success}>"

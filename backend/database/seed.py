@@ -92,9 +92,10 @@ def seed_market_snapshots(session: Session) -> int:
     df = pd.read_csv(MARKET_SNAPSHOTS_FILE)
 
     # Collect existing (stock_id, date) pairs to skip duplicates
-    existing_pairs = set(
-        session.query(MarketSnapshot.stock_id, MarketSnapshot.date).all()
-    )
+    existing_pairs: set[tuple[str, date]] = {
+        (sid, d)
+        for sid, d in session.query(MarketSnapshot.stock_id, MarketSnapshot.date)
+    }
 
     inserted = 0
     skipped_bad = 0
