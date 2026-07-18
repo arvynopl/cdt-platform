@@ -1,21 +1,27 @@
 """
 tests/test_postgres_compat.py — Smoke tests for Postgres deployment.
 
-These tests exercise the real connection path (config.DATABASE_URL → engine →
-init_db → seed → log_action → query) to confirm the codebase works end-to-end
-against a Postgres instance such as Neon.
+These tests exercise the real connection path (engine → init_db → seed →
+log_action → query) to confirm the codebase works end-to-end against a
+Postgres instance such as Neon.
 
-By design the entire module is skipped unless CDT_DATABASE_URL points to a
-Postgres database, so the default ``pytest tests/`` run on SQLite is unaffected.
+SAFETY CONTRACT: the module is armed ONLY by ``CDT_TEST_POSTGRES_URL`` — a
+variable that exists for no other purpose than designating a *disposable*
+test database (a Neon branch, a local Postgres, CI service container).
+It deliberately does NOT read ``CDT_DATABASE_URL``: that variable points at
+real deployments (and is auto-loaded from backend/.env since Fase 1), and a
+test suite must never create tables in — or write rows to — whatever the
+application happens to be configured against. This bit us once: the suite
+ran with a developer .env present and silently issued ``create_all`` against
+the production Neon project.
 
-Run locally against a Postgres DB::
+Run locally against a disposable Postgres DB::
 
-    export CDT_DATABASE_URL='postgresql://user:pass@host/db?sslmode=require'
+    set CDT_TEST_POSTGRES_URL=postgresql://user:pass@host/testdb?sslmode=require
     pytest tests/test_postgres_compat.py -v
 
 The tests insert into and clean up from a freshly initialised schema. They do
-NOT drop the database; only the rows they create. Run against a throwaway
-schema or a dedicated test DB.
+NOT drop the database; only the rows they create.
 """
 
 from __future__ import annotations
@@ -26,27 +32,44 @@ from datetime import UTC, date, datetime, timedelta
 
 import pytest
 
-_DB_URL = os.environ.get("CDT_DATABASE_URL", "")
+_DB_URL = os.environ.get("CDT_TEST_POSTGRES_URL", "")
 _IS_POSTGRES = _DB_URL.startswith("postgres://") or _DB_URL.startswith("postgresql")
 
 pytestmark = pytest.mark.skipif(
     not _IS_POSTGRES,
-    reason="CDT_DATABASE_URL is not set to a Postgres URL; skipping Postgres compat tests.",
+    reason=(
+        "CDT_TEST_POSTGRES_URL is not set; skipping Postgres compat tests. "
+        "(Deliberately ignores CDT_DATABASE_URL — see module docstring.)"
+    ),
 )
 
 
 @pytest.fixture(scope="module")
 def pg_engine():
-    """Return the live engine and ensure schema exists; yield for module-scoped tests."""
-    from database.connection import get_engine, init_db
+    """Engine for the designated TEST database, swapped into the shared
+    factory for the duration of the module so get_session() (used by tests
+    and their cleanup) also targets the test DB — never the app's default."""
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import sessionmaker
 
-    init_db()
-    engine = get_engine()
+    import database.connection as conn
+    from database.models import Base
+
+    engine = create_engine(conn._normalize_db_url(_DB_URL), pool_pre_ping=True)
     assert engine.dialect.name == "postgresql", (
         f"Expected postgresql dialect, got {engine.dialect.name!r}. "
-        "Check that CDT_DATABASE_URL is correctly set."
+        "Check that CDT_TEST_POSTGRES_URL is correctly set."
     )
-    yield engine
+    Base.metadata.create_all(engine)
+
+    saved = (conn._engine, conn._SessionFactory)
+    conn._engine = engine
+    conn._SessionFactory = sessionmaker(bind=engine, autoflush=True, autocommit=False)
+    try:
+        yield engine
+    finally:
+        conn._engine, conn._SessionFactory = saved
+        engine.dispose()
 
 
 @pytest.fixture()
