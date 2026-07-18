@@ -139,3 +139,11 @@ app.include_router(profile_router.survey_router)
 def healthz() -> dict[str, str]:
     """Liveness probe for uptime monitoring (audit F9)."""
     return {"status": "ok"}
+
+
+if os.environ.get("CDT_ENV") != "production":
+    # Sentry setup verification, development only: fly.toml pins
+    # CDT_ENV=production, so this route never exists on the deployed app.
+    @app.get("/sentry-debug", tags=["ops"], include_in_schema=False)
+    def sentry_debug() -> None:
+        raise ZeroDivisionError("sentry verification event (intentional)")

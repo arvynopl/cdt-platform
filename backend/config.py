@@ -14,11 +14,20 @@ Environment variables:
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
+
+# Local development convenience: backend/.env (gitignored) is loaded before
+# any os.environ reads below, so `uvicorn app.main:app` and `alembic` pick up
+# CDT_DATABASE_URL / SENTRY_DSN without shell exports. Real environment
+# variables win over .env values (override=False); production (Fly.io) has
+# no .env file and is unaffected. python-dotenv ships with pydantic-settings.
+load_dotenv(BASE_DIR / ".env", override=False)
 
 # ---------------------------------------------------------------------------
 # Database
