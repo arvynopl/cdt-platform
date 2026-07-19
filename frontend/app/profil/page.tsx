@@ -15,6 +15,7 @@
  */
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PlotlyChart from "@/components/PlotlyChart";
 import {
@@ -265,11 +266,12 @@ function ProfileContent({ data }: { data: ProfileResponse }) {
           <h3 className="mb-1 text-sm font-semibold">Metrik per Sesi</h3>
           <PlotlyChart
             data={metricLines}
-            height={300}
+            height={340}
             ariaLabel="Grafik metrik bias per sesi"
             layout={{
+              margin: { l: 56, r: 20, t: 24, b: 64 },
               yaxis: { range: [0, 1], title: { text: "Intensitas (0–1)", font: { size: 10 } } },
-              legend: { orientation: "h", y: -0.2 },
+              legend: { orientation: "h", y: -0.28 },
             }}
           />
         </section>
@@ -289,11 +291,12 @@ function ProfileContent({ data }: { data: ProfileResponse }) {
           </p>
           <PlotlyChart
             data={trajectoryLines}
-            height={300}
+            height={340}
             ariaLabel="Grafik perjalanan profil CDT"
             layout={{
+              margin: { l: 48, r: 20, t: 24, b: 64 },
               yaxis: { range: [0, 1] },
-              legend: { orientation: "h", y: -0.2 },
+              legend: { orientation: "h", y: -0.28 },
             }}
           />
         </section>
@@ -301,7 +304,16 @@ function ProfileContent({ data }: { data: ProfileResponse }) {
 
       <HistoryTable />
 
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-3">
+        <button
+          onClick={() =>
+            router.push(`/hasil?sid=${latest.session_id}&review=1`)
+          }
+          className="flex-1 rounded-lg border border-slate-300 px-4 py-2.5
+                     text-sm font-medium text-slate-700 hover:bg-slate-100"
+        >
+          Lihat Hasil Sesi Terakhir
+        </button>
         <button
           onClick={() => router.push("/simulasi")}
           className="flex-1 rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-white"
@@ -369,6 +381,7 @@ function HistoryTable() {
                   {h}
                 </th>
               ))}
+              <th className="py-1.5 font-medium">Hasil</th>
             </tr>
           </thead>
           <tbody>
@@ -379,6 +392,18 @@ function HistoryTable() {
                     {r[h] == null ? "—" : String(r[h])}
                   </td>
                 ))}
+                <td className="py-1.5 whitespace-nowrap">
+                  {r.session_id ? (
+                    <Link
+                      href={`/hasil?sid=${String(r.session_id)}&review=1`}
+                      className="font-medium text-brand hover:underline"
+                    >
+                      Lihat →
+                    </Link>
+                  ) : (
+                    "—"
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

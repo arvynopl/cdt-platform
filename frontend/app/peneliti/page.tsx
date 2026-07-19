@@ -321,11 +321,12 @@ function Dashboard({ keys, onLock }: { keys: Keys; onLock: () => void }) {
                 </p>
                 <PlotlyChart
                   data={progLines}
-                  height={300}
+                  height={340}
                   ariaLabel="Grafik progres bias kohort per sesi"
                   layout={{
+                    margin: { l: 56, r: 20, t: 24, b: 64 },
                     yaxis: { range: [0, 1], title: { text: "Intensitas (0–1)", font: { size: 10 } } },
-                    legend: { orientation: "h", y: -0.2 },
+                    legend: { orientation: "h", y: -0.28 },
                   }}
                 />
               </section>
@@ -338,13 +339,14 @@ function Dashboard({ keys, onLock }: { keys: Keys; onLock: () => void }) {
                 </p>
                 <PlotlyChart
                   data={distTraces}
-                  height={300}
+                  height={340}
                   ariaLabel="Histogram distribusi intensitas bias"
                   layout={{
+                    margin: { l: 56, r: 20, t: 24, b: 64 },
                     barmode: "overlay",
                     xaxis: { range: [0, 1], title: { text: "Intensitas (0–1)", font: { size: 10 } } },
                     yaxis: { title: { text: "Jumlah sesi", font: { size: 10 } } },
-                    legend: { orientation: "h", y: -0.2 },
+                    legend: { orientation: "h", y: -0.28 },
                   }}
                 />
               </section>

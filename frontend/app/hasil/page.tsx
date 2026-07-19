@@ -46,7 +46,12 @@ export default function HasilPage() {
 
 function HasilContent() {
   const router = useRouter();
-  const sid = useSearchParams().get("sid");
+  const params = useSearchParams();
+  const sid = params.get("sid");
+  // Review mode (opened from Profil / history): show the explanation of a
+  // past session but hide the post-session survey, so revisiting can't
+  // overwrite the answers the user already gave right after that session.
+  const review = params.get("review") === "1";
   const [results, setResults] = useState<SessionResults | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -84,11 +89,13 @@ function HasilContent() {
   return (
     <main className="space-y-5">
       <div>
-        <h2 className="text-lg font-semibold">Hasil Analisis &amp; Umpan Balik</h2>
+        <h2 className="text-lg font-semibold">
+          {review ? "Hasil Sesi Anda" : "Hasil Analisis & Umpan Balik"}
+        </h2>
         <p className="mt-1 text-sm text-slate-500">
-          Begini pola pengambilan keputusan Anda pada sesi ini. Bacalah dengan
-          santai; tidak ada nilai baik atau buruk, yang penting Anda semakin
-          mengenali kebiasaan sendiri.
+          {review
+            ? "Anda meninjau kembali hasil salah satu sesi. Bacalah dengan santai; tidak ada nilai baik atau buruk, yang penting Anda semakin mengenali kebiasaan sendiri."
+            : "Begini pola pengambilan keputusan Anda pada sesi ini. Bacalah dengan santai; tidak ada nilai baik atau buruk, yang penting Anda semakin mengenali kebiasaan sendiri."}
         </p>
       </div>
 
@@ -153,7 +160,7 @@ function HasilContent() {
         </section>
       ))}
 
-      <PostSessionSurvey sessionId={results.session_id} />
+      {!review && <PostSessionSurvey sessionId={results.session_id} />}
 
       <div className="flex gap-3 pb-8">
         <button

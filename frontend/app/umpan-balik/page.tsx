@@ -128,7 +128,7 @@ export default function UmpanBalikPage() {
       <form onSubmit={submit} className="space-y-5">
         <section className="space-y-4 rounded-xl border border-slate-200 bg-white p-4">
           <h3 className="text-sm font-semibold">
-            Bagian 1: seberapa nyaman sistem ini digunakan?
+            Bagian 1: Seberapa nyaman sistem ini digunakan?
           </h3>
           <p className="text-xs text-slate-500">
             Nilai 1 berarti sangat tidak setuju, nilai 5 berarti sangat setuju.
@@ -163,7 +163,7 @@ export default function UmpanBalikPage() {
 
         <section className="space-y-4 rounded-xl border border-slate-200 bg-white p-4">
           <h3 className="text-sm font-semibold">
-            Bagian 2: cerita Anda (boleh dikosongkan)
+            Bagian 2: Cerita Anda (opsional)
           </h3>
           <p className="text-xs text-slate-500">
             Sekecil apa pun, cerita Anda membantu kami memahami angka-angka di
