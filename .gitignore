@@ -29,6 +29,13 @@ node_modules/
 out/
 frontend/.env*
 
+# Playwright E2E artifacts
+frontend/test-results/
+frontend/playwright-report/
+frontend/blob-report/
+frontend/.playwright/
+playwright/.cache/
+
 # OS / editor
 .DS_Store
 Thumbs.db
