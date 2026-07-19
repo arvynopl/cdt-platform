@@ -112,7 +112,14 @@ app.add_middleware(
     allow_origins=CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["GET", "POST"],
-    allow_headers=["content-type", "x-csrf-token"],
+    allow_headers=[
+        "content-type",
+        "x-csrf-token",
+        # Key-gated researcher/admin endpoints authenticate on these request
+        # headers; the browser only sends them cross-origin if CORS allows them.
+        "x-researcher-key",
+        "x-admin-token",
+    ],
 )
 
 
