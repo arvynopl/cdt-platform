@@ -27,12 +27,28 @@ function csrfToken(): string {
   return match ? decodeURIComponent(match[1]) : "";
 }
 
+async function detailFromResponse(resp: Response): Promise<string> {
+  let detail = `HTTP ${resp.status}`;
+  try {
+    const data = await resp.json();
+    if (typeof data?.detail === "string") detail = data.detail;
+    else if (Array.isArray(data?.detail))
+      detail = data.detail
+        .map((d: { msg?: string }) => d.msg ?? "")
+        .join("; ");
+  } catch {
+    /* non-JSON error body */
+  }
+  return detail;
+}
+
 async function request<T>(
   method: "GET" | "POST",
   path: string,
   body?: unknown,
+  extraHeaders?: Record<string, string>,
 ): Promise<T> {
-  const headers: Record<string, string> = {};
+  const headers: Record<string, string> = { ...(extraHeaders ?? {}) };
   if (body !== undefined) headers["content-type"] = "application/json";
   if (method !== "GET") headers["x-csrf-token"] = csrfToken();
 
@@ -43,27 +59,36 @@ async function request<T>(
     body: body !== undefined ? JSON.stringify(body) : undefined,
   });
 
-  if (!resp.ok) {
-    let detail = `HTTP ${resp.status}`;
-    try {
-      const data = await resp.json();
-      if (typeof data?.detail === "string") detail = data.detail;
-      else if (Array.isArray(data?.detail))
-        detail = data.detail
-          .map((d: { msg?: string }) => d.msg ?? "")
-          .join("; ");
-    } catch {
-      /* non-JSON error body */
-    }
-    throw new ApiError(resp.status, detail);
-  }
+  if (!resp.ok) throw new ApiError(resp.status, await detailFromResponse(resp));
   return resp.json() as Promise<T>;
 }
 
 export const api = {
-  get: <T>(path: string) => request<T>("GET", path),
+  get: <T>(path: string, extraHeaders?: Record<string, string>) =>
+    request<T>("GET", path, undefined, extraHeaders),
   post: <T>(path: string, body?: unknown) => request<T>("POST", path, body),
 };
+
+/**
+ * Download a keyed CSV endpoint as a file. The researcher/admin endpoints
+ * authenticate on a request header (not the session cookie), so an anchor
+ * `href` can't carry the key — we fetch with the header, then save the blob.
+ */
+export async function keyedDownload(
+  path: string,
+  headers: Record<string, string>,
+  filename: string,
+): Promise<void> {
+  const resp = await fetch(`${API_BASE}${path}`, { method: "GET", headers });
+  if (!resp.ok) throw new ApiError(resp.status, await detailFromResponse(resp));
+  const blob = await resp.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 // ---------------------------------------------------------------------------
 // Shared response types (mirror backend/app/schemas.py)
@@ -254,6 +279,62 @@ export interface ProfileResponse {
 
 export interface HistoryResponse {
   rows: Record<string, unknown>[];
+}
+
+// ---------------------------------------------------------------------------
+// Researcher dashboard types (mirror backend/modules/utils/research_export.py
+// and backend/app/routers/researcher.py). These endpoints are key-gated on
+// request headers (X-Researcher-Key / X-Admin-Token), not the session cookie.
+// ---------------------------------------------------------------------------
+
+export interface CohortSummary {
+  total_users: number;
+  total_sessions: number;
+  users_with_consent: number;
+  users_with_survey: number;
+  users_with_min_3_sessions: number;
+  mean_dei: number;
+  sd_dei: number;
+  mean_ocs: number;
+  sd_ocs: number;
+  mean_lai: number;
+  sd_lai: number;
+  mean_stability_index: number;
+  completion_rate: number;
+  excluded_non_participants: number;
+}
+
+export interface ProgressionRow {
+  bias: "dei" | "ocs" | "lai";
+  session_number: number;
+  values: number[];
+  n: number;
+}
+
+export interface ProgressionResponse {
+  progression: ProgressionRow[];
+}
+
+export interface MlPerformance {
+  available: boolean;
+  summary: Record<string, unknown> | null;
+  classification_report: Record<string, string>[] | null;
+  feature_importance_path: string | null;
+  decision_tree_path: string | null;
+  generated_at: string | null;
+}
+
+export interface AdminSummary {
+  total_users: number;
+  total_sessions: number;
+  sessions_by_status: Record<string, number>;
+  completed_sessions: number;
+  completion_rate: number;
+  total_bias_metrics: number;
+  total_session_errors: number;
+  error_rate_per_session: number;
+  total_uat_feedback: number;
+  avg_sus_score: number | null;
 }
 
 // EYD V: currency written without a space after "Rp", thousands with periods.
