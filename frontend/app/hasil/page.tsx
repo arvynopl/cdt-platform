@@ -157,6 +157,13 @@ function HasilContent() {
 
       <div className="flex gap-3 pb-8">
         <button
+          onClick={() => router.push("/profil")}
+          className="flex-1 rounded-lg border border-slate-300 px-4 py-2.5
+                     text-sm font-medium text-slate-700 hover:bg-slate-100"
+        >
+          Lihat Profil Saya
+        </button>
+        <button
           onClick={() => router.push("/simulasi")}
           className="flex-1 rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-white"
         >

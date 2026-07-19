@@ -197,6 +197,65 @@ export interface SessionResults {
   feedback: FeedbackItem[];
 }
 
+// ---------------------------------------------------------------------------
+// Profile types (mirror backend/app/routers/profile.py payload)
+// ---------------------------------------------------------------------------
+
+export interface MetricPoint {
+  session_num: number;
+  session_id: string;
+  ocs: number;
+  dei: number;
+  dei_raw: number;
+  pgr: number;
+  plr: number;
+  lai_norm: number;
+  lai_raw: number;
+  computed_at: string | null;
+}
+
+export interface CdtSnapshotPoint {
+  session_number: number;
+  cdt_overconfidence: number;
+  cdt_disposition: number;
+  cdt_loss_aversion: number;
+  cdt_risk_preference: number;
+  cdt_stability_index: number;
+}
+
+export interface BiasVector {
+  overconfidence: number;
+  disposition: number;
+  loss_aversion: number;
+}
+
+export interface ThresholdSet {
+  dei: number;
+  ocs: number;
+  lai: number;
+}
+
+export interface ProfileResponse {
+  profile: {
+    bias_intensity_vector: BiasVector;
+    risk_preference: number;
+    stability_index: number;
+    session_count: number;
+    interaction_scores: Record<string, number | null> | null;
+    last_updated_at: string | null;
+  } | null;
+  metrics: MetricPoint[];
+  cdt_snapshots: CdtSnapshotPoint[];
+  thresholds: {
+    scientific: ThresholdSet;
+    personal: { values: ThresholdSet; is_fallback: boolean } | null;
+  };
+}
+
+export interface HistoryResponse {
+  rows: Record<string, unknown>[];
+}
+
 // EYD V: currency written without a space after "Rp", thousands with periods.
 export const formatRupiah = (v: number): string =>
   "Rp" + Math.round(v).toLocaleString("id-ID");

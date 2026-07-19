@@ -7,8 +7,15 @@
  */
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { api, type Me } from "@/lib/api";
+
+const NAV = [
+  { href: "/simulasi", label: "Simulasi" },
+  { href: "/profil", label: "Profil Saya" },
+  { href: "/umpan-balik", label: "Umpan Balik" },
+];
 
 export default function HeaderBar() {
   const router = useRouter();
@@ -40,17 +47,37 @@ export default function HeaderBar() {
   }
 
   return (
-    <div className="flex items-center gap-3 text-sm">
-      <span className="text-slate-500">
-        Masuk sebagai <b className="text-slate-800">{me.username}</b>
-      </span>
-      <button
-        onClick={logout}
-        className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs
-                   font-medium text-slate-600 hover:bg-slate-100"
-      >
-        Keluar
-      </button>
+    <div className="flex w-full flex-col gap-2 sm:w-auto sm:items-end">
+      <div className="flex items-center gap-3 text-sm">
+        <span className="text-slate-500">
+          Masuk sebagai <b className="text-slate-800">{me.username}</b>
+        </span>
+        <button
+          onClick={logout}
+          className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs
+                     font-medium text-slate-600 hover:bg-slate-100"
+        >
+          Keluar
+        </button>
+      </div>
+      <nav aria-label="Navigasi utama" className="flex gap-1">
+        {NAV.map((item) => {
+          const active = pathname.startsWith(item.href);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+                active
+                  ? "bg-brand text-white"
+                  : "text-slate-600 hover:bg-slate-100"
+              }`}
+            >
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
     </div>
   );
 }
