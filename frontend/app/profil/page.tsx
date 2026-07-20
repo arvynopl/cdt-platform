@@ -18,6 +18,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PlotlyChart from "@/components/PlotlyChart";
+import Term from "@/components/Term";
 import {
   api,
   ApiError,
@@ -193,7 +194,9 @@ function ProfileContent({ data }: { data: ProfileResponse }) {
           <p className="text-base font-semibold">{profile.session_count}</p>
         </div>
         <div>
-          <p className="text-xs text-slate-500">Konsistensi Pola</p>
+          <p className="text-xs text-slate-500">
+            <Term id="stability">Konsistensi Pola</Term>
+          </p>
           <p className="text-base font-semibold">
             {formatPct(profile.stability_index * 100, 0)}
           </p>
@@ -235,6 +238,9 @@ function ProfileContent({ data }: { data: ProfileResponse }) {
           </>
         )}
       </section>
+
+      {/* Cross-bias interaction (rendered only when ≥3 sessions produced scores) */}
+      <InteractionSection scores={profile.interaction_scores} />
 
       {/* Radar */}
       <section className="rounded-xl border border-slate-200 bg-white p-4">
@@ -322,6 +328,108 @@ function ProfileContent({ data }: { data: ProfileResponse }) {
         </button>
       </div>
     </main>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Cross-bias interaction readout
+//
+// Renders the already-computed CognitiveProfile.interaction_scores (pairwise
+// Pearson r between OCS, |DEI|, normalised LAI over the recent-session window).
+// Read-only presentation of an existing metric — no new computation, so it does
+// not touch the parity-frozen pipeline. The backend returns scores only after
+// three sessions (and null per-pair when a series has no variance), so this
+// section self-hides until there is something meaningful to show.
+// The 0.65 "erat" cutoff mirrors the backend's _INTERACTION_THRESHOLD (Cohen 1988).
+// ---------------------------------------------------------------------------
+
+const INTERACTION_PAIRS: {
+  key: string;
+  label: string;
+  strong: (positive: boolean) => string;
+}[] = [
+  {
+    key: "ocs_dei",
+    label: "Keyakinan Berlebih ↔ Efek Disposisi",
+    strong: (pos) =>
+      pos
+        ? "Saat Anda banyak bertransaksi, kecenderungan menjual saham yang untung terlalu cepat ikut menguat. Coba beri ruang lebih bagi posisi yang sedang menguntungkan."
+        : "Menariknya, saat transaksi Anda meningkat, Anda justru lebih sabar menahan posisi yang untung — sebuah tanda kehati-hatian.",
+  },
+  {
+    key: "ocs_lai",
+    label: "Keyakinan Berlebih ↔ Menghindari Kerugian",
+    strong: (pos) =>
+      pos
+        ? "Makin sering Anda bertransaksi, makin lama pula Anda menahan posisi yang rugi. Kombinasi ini dapat menggerus modal; pertimbangkan batas kerugian yang jelas."
+        : "Saat aktif bertransaksi, Anda justru lebih disiplin memotong kerugian — kebiasaan yang sehat.",
+  },
+  {
+    key: "dei_lai",
+    label: "Efek Disposisi ↔ Menghindari Kerugian",
+    strong: (pos) =>
+      pos
+        ? "Dua pola saling memperkuat: menjual yang untung terlalu cepat sekaligus menahan yang rugi terlalu lama. Dampaknya ke portofolio lebih besar daripada masing-masing sendiri."
+        : "Kedua kebiasaan ini cenderung saling mengimbangi, bukan muncul bersamaan.",
+  },
+];
+
+function InteractionSection({
+  scores,
+}: {
+  scores: Record<string, number | null> | null;
+}) {
+  // Nothing to show until the backend has produced scores (≥3 sessions) and at
+  // least one pair has a defined correlation.
+  if (!scores || INTERACTION_PAIRS.every((p) => scores[p.key] == null)) return null;
+
+  const strengthLabel = (r: number) =>
+    Math.abs(r) >= 0.65 ? "erat" : Math.abs(r) >= 0.3 ? "sedang" : "lemah";
+  const fmt = (r: number) => {
+    const s = r.toFixed(2).replace(".", ",");
+    return r > 0 ? `+${s}` : s;
+  };
+
+  return (
+    <section className="rounded-xl border border-slate-200 bg-white p-4">
+      <h3 className="mb-1 text-sm font-semibold">
+        <Term id="interaction">Keterkaitan Antar-Bias</Term>
+      </h3>
+      <p className="mb-3 text-xs leading-relaxed text-slate-500">
+        Selain seberapa kuat tiap bias, penting melihat apakah beberapa bias
+        cenderung muncul bersamaan. Angka berikut mengukur keterkaitan pola Anda
+        selama beberapa sesi terakhir (−1 sampai +1; makin jauh dari nol, makin
+        erat kaitannya).
+      </p>
+      <ul className="space-y-2.5">
+        {INTERACTION_PAIRS.map((p) => {
+          const r = scores[p.key];
+          const isStrong = r != null && Math.abs(r) >= 0.65;
+          return (
+            <li
+              key={p.key}
+              className={`rounded-lg px-3 py-2 text-sm ${
+                isStrong ? "bg-amber-50 text-amber-900" : "bg-slate-50 text-slate-700"
+              }`}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-medium">{p.label}</span>
+                <span className="whitespace-nowrap font-mono text-xs">
+                  {r == null ? "—" : `${fmt(r)} (${strengthLabel(r)})`}
+                </span>
+              </div>
+              {isStrong && (
+                <p className="mt-1 text-xs leading-relaxed">{p.strong(r! > 0)}</p>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+      <p className="mt-3 text-xs leading-relaxed text-slate-400">
+        Keterkaitan mulai dihitung setelah tiga sesi. Tanda “—” berarti ragam
+        data pada sesi-sesi tersebut belum cukup untuk menyimpulkan keterkaitan.
+      </p>
+    </section>
   );
 }
 
