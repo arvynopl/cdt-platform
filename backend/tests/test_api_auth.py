@@ -43,6 +43,26 @@ class TestRegistration:
         assert me.status_code == 200
         assert me.json()["username"] == "budi.santoso"
 
+    def test_auth_responses_carry_csrf_token(self, api_client):
+        # The token in the body must equal the cdt_csrf cookie so a cross-site
+        # frontend (which can't read the API-domain cookie) can echo it in the
+        # X-CSRF-Token header on mutations.
+        reg = _register(api_client).json()
+        cookie = api_client.cookies.get("cdt_csrf")
+        assert cookie
+        assert reg["csrf_token"] == cookie
+
+        me = api_client.get("/api/auth/me").json()
+        assert me["csrf_token"] == cookie
+
+        api_client.cookies.clear()
+        login = api_client.post(
+            "/api/auth/login",
+            json={"username": "budi.santoso", "password": "rahasia-123"},
+        ).json()
+        new_cookie = api_client.cookies.get("cdt_csrf")
+        assert login["csrf_token"] == new_cookie and new_cookie
+
     def test_duplicate_username_conflicts(self, api_client):
         _register(api_client)
         resp = api_client.post(

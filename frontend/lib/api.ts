@@ -21,7 +21,15 @@ export class ApiError extends Error {
   }
 }
 
+// The CSRF double-submit token. In a cross-site deployment (frontend and API
+// on different domains) the browser stores the `cdt_csrf` cookie against the
+// API's domain, so `document.cookie` here can't read it. The auth responses
+// (login / register / me) therefore return the token in their body; we cache it
+// and prefer the cache, falling back to the cookie for same-site/local dev.
+let csrfCache: string | null = null;
+
 function csrfToken(): string {
+  if (csrfCache) return csrfCache;
   if (typeof document === "undefined") return "";
   const match = document.cookie.match(/(?:^|;\s*)cdt_csrf=([^;]+)/);
   return match ? decodeURIComponent(match[1]) : "";
@@ -60,7 +68,13 @@ async function request<T>(
   });
 
   if (!resp.ok) throw new ApiError(resp.status, await detailFromResponse(resp));
-  return resp.json() as Promise<T>;
+  const data = await resp.json();
+  // Auth responses carry the CSRF token in their body; cache it for the header
+  // on subsequent mutations (see csrfToken).
+  if (data && typeof data.csrf_token === "string" && data.csrf_token) {
+    csrfCache = data.csrf_token;
+  }
+  return data as T;
 }
 
 export const api = {
@@ -98,6 +112,7 @@ export interface Me {
   user_id: number;
   username: string;
   experience_level: string;
+  csrf_token?: string;
 }
 
 export interface OnboardingSurvey {

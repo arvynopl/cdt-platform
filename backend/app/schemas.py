@@ -61,6 +61,10 @@ class MeOut(BaseModel):
     user_id: int
     username: str
     experience_level: str
+    # The CSRF double-submit token, echoed in the body so a cross-site frontend
+    # (different domain from the API) can read it — document.cookie cannot see a
+    # cookie scoped to the API's domain. Empty when no session cookie is present.
+    csrf_token: str = ""
 
 
 # ---------------------------------------------------------------------------

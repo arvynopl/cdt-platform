@@ -24,7 +24,7 @@ from app.security.sessions import (
     revoke_auth_session,
     set_session_cookies,
 )
-from config import SESSION_COOKIE_NAME
+from config import CSRF_COOKIE_NAME, SESSION_COOKIE_NAME
 from database.models import ConsentLog, User, UserSurvey
 from modules.auth import (
     AuthError,
@@ -107,6 +107,7 @@ def register(
         user_id=user.id,
         username=user.username or "",
         experience_level=user.experience_level,
+        csrf_token=csrf,
     )
 
 
@@ -145,6 +146,7 @@ def login(
         user_id=user.id,
         username=user.username or "",
         experience_level=user.experience_level,
+        csrf_token=csrf,
     )
 
 
@@ -160,9 +162,12 @@ def logout(
 
 
 @router.get("/me", response_model=schemas.MeOut)
-def me(user: User = Depends(current_user)) -> schemas.MeOut:
+def me(request: Request, user: User = Depends(current_user)) -> schemas.MeOut:
+    # Echo the CSRF cookie so a cross-site frontend can recover the token after
+    # a page reload (it can't read the API-domain cookie via document.cookie).
     return schemas.MeOut(
         user_id=user.id,
         username=user.username or user.alias or "",
         experience_level=user.experience_level,
+        csrf_token=request.cookies.get(CSRF_COOKIE_NAME) or "",
     )
