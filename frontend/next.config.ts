@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 /**
  * Security headers.
@@ -25,7 +26,23 @@ try {
   // keep the fallback if NEXT_PUBLIC_API_BASE is malformed
 }
 
-const connectSrc = ["'self'", apiOrigin, ...(isDev ? ["ws:", "wss:"] : [])];
+// When a Sentry DSN is configured, the browser SDK POSTs events to the
+// project's ingest host — allow it in connect-src or the CSP would block them.
+let sentryOrigin: string | null = null;
+if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
+  try {
+    sentryOrigin = new URL(process.env.NEXT_PUBLIC_SENTRY_DSN).origin;
+  } catch {
+    // ignore a malformed DSN; Sentry init would no-op on it anyway
+  }
+}
+
+const connectSrc = [
+  "'self'",
+  apiOrigin,
+  ...(sentryOrigin ? [sentryOrigin] : []),
+  ...(isDev ? ["ws:", "wss:"] : []),
+];
 const scriptSrc = ["'self'", "'unsafe-inline'", ...(isDev ? ["'unsafe-eval'"] : [])];
 
 const csp = [
@@ -65,4 +82,10 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// withSentryConfig adds source-map handling + tunneling. Without an auth token
+// (SENTRY_AUTH_TOKEN) it simply skips source-map upload; the build still works,
+// and everything stays a no-op at runtime until NEXT_PUBLIC_SENTRY_DSN is set.
+export default withSentryConfig(nextConfig, {
+  silent: !process.env.CI,
+  widenClientFileUpload: true,
+});
