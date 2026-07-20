@@ -8,6 +8,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Term from "@/components/Term";
 import {
   api,
   ApiError,
@@ -20,6 +21,13 @@ const BIAS_LABELS: Record<string, string> = {
   overconfidence: "Bias Keyakinan Berlebih (Overconfidence)",
   disposition_effect: "Efek Disposisi (Disposition Effect)",
   loss_aversion: "Menghindari Kerugian (Loss Aversion)",
+};
+
+// Maps a feedback bias_type to its glossary entry id (lib/glossary.ts).
+const BIAS_TERM: Record<string, string> = {
+  overconfidence: "overconfidence",
+  disposition_effect: "disposition",
+  loss_aversion: "loss_aversion",
 };
 
 const SEVERITY_STYLE: Record<string, string> = {
@@ -137,7 +145,13 @@ function HasilContent() {
         >
           <div className="mb-2 flex items-center justify-between gap-2">
             <h3 className="text-sm font-semibold">
-              {BIAS_LABELS[f.bias_type] ?? f.bias_type}
+              {BIAS_TERM[f.bias_type] ? (
+                <Term id={BIAS_TERM[f.bias_type]}>
+                  {BIAS_LABELS[f.bias_type] ?? f.bias_type}
+                </Term>
+              ) : (
+                (BIAS_LABELS[f.bias_type] ?? f.bias_type)
+              )}
             </h3>
             <span
               className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${

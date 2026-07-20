@@ -14,6 +14,7 @@ import { api, type Me } from "@/lib/api";
 const NAV = [
   { href: "/simulasi", label: "Simulasi" },
   { href: "/profil", label: "Profil Saya" },
+  { href: "/metodologi", label: "Metodologi" },
   { href: "/umpan-balik", label: "Umpan Balik" },
   { href: "/akun", label: "Akun" },
 ];

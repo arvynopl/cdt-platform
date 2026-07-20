@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Link from "next/link";
 import HeaderBar from "@/components/HeaderBar";
 import "./globals.css";
 
@@ -36,6 +37,13 @@ export default function RootLayout({
             <HeaderBar />
           </header>
           {children}
+          <footer className="mt-12 border-t border-slate-200 pt-4 text-xs text-slate-400">
+            <Link href="/metodologi" className="hover:text-slate-600 hover:underline">
+              Metodologi &amp; istilah
+            </Link>
+            <span className="mx-2">·</span>
+            Alat bantu edukasi, bukan nasihat investasi.
+          </footer>
         </div>
       </body>
     </html>
