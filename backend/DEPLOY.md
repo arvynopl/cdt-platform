@@ -83,6 +83,17 @@ every deploy.
    fly secrets set CDT_CORS_ORIGINS='https://<the-frontend-url>'
    ```
 
+   > **Cross-site cookies (automatic — no action needed, just so you know).**
+   > The frontend (e.g. `your-app.vercel.app`) and this API (`…fly.dev`) are
+   > different sites, so the browser only sends the login cookie if it is
+   > `SameSite=None; Secure`. Because `CDT_COOKIE_SECURE=1` is set in
+   > `fly.toml`, the app emits exactly that in production; on localhost it uses
+   > `SameSite=Lax`. CSRF is still enforced by the double-submit token, so this
+   > does not weaken security. If you later serve the frontend on the **same**
+   > registrable domain as the API (e.g. `app.example.com` + `api.example.com`),
+   > you can set `fly secrets set CDT_COOKIE_SAMESITE=lax` instead — but the
+   > default is correct for a Vercel + Fly split.
+
 ## Routine deploy
 
 ```bash
