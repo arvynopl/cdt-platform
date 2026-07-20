@@ -6,9 +6,9 @@ The browser receives two cookies at login:
     digest is persisted (`AuthSession.token_hash`), so a leaked database
     cannot mint live sessions.
   * ``cdt_csrf`` — JS-readable, the CSRF double-submit token. Mutating
-    requests must echo it in the ``X-CSRF-Token`` header; SameSite=Lax plus
-    the header check blocks cross-site request forgery without server-side
-    CSRF state.
+    requests must echo it in the ``X-CSRF-Token`` header; the header check is
+    the CSRF defence and does not rely on SameSite (which is None in a
+    cross-site prod deployment — see config.COOKIE_SAMESITE).
 
 Expiry: absolute cap (SESSION_ABSOLUTE_TTL_HOURS from creation) plus a
 sliding idle window (SESSION_IDLE_TTL_HOURS since last authenticated
@@ -21,11 +21,13 @@ import hashlib
 import hmac
 import secrets
 from datetime import UTC, datetime, timedelta
+from typing import Literal, cast
 
 from fastapi import Response
 from sqlalchemy.orm import Session
 
 from config import (
+    COOKIE_SAMESITE,
     COOKIE_SECURE,
     CSRF_COOKIE_NAME,
     SESSION_ABSOLUTE_TTL_HOURS,
@@ -33,6 +35,10 @@ from config import (
     SESSION_IDLE_TTL_HOURS,
 )
 from database.models import AuthSession
+
+# set_cookie types samesite as a Literal; COOKIE_SAMESITE is validated to one
+# of these three at config load (validate_api_config).
+_SAMESITE = cast('Literal["lax", "strict", "none"]', COOKIE_SAMESITE)
 
 
 def _hash_token(token: str) -> str:
@@ -118,15 +124,21 @@ def set_session_cookies(response: Response, session_token: str, csrf_token: str)
     response.set_cookie(
         SESSION_COOKIE_NAME, session_token,
         max_age=max_age, httponly=True, secure=COOKIE_SECURE,
-        samesite="lax", path="/",
+        samesite=_SAMESITE, path="/",
     )
     response.set_cookie(
         CSRF_COOKIE_NAME, csrf_token,
         max_age=max_age, httponly=False, secure=COOKIE_SECURE,
-        samesite="lax", path="/",
+        samesite=_SAMESITE, path="/",
     )
 
 
 def clear_session_cookies(response: Response) -> None:
-    response.delete_cookie(SESSION_COOKIE_NAME, path="/")
-    response.delete_cookie(CSRF_COOKIE_NAME, path="/")
+    # Match secure/samesite so the browser actually clears the cookie it set;
+    # a SameSite=None;Secure cookie won't be removed by a bare delete.
+    response.delete_cookie(
+        SESSION_COOKIE_NAME, path="/", secure=COOKIE_SECURE, samesite=_SAMESITE,
+    )
+    response.delete_cookie(
+        CSRF_COOKIE_NAME, path="/", secure=COOKIE_SECURE, samesite=_SAMESITE,
+    )

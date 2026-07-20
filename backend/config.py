@@ -209,6 +209,17 @@ CSRF_HEADER_NAME: str = "x-csrf-token"
 # (fly.toml does). app.main logs a warning when it boots insecure.
 COOKIE_SECURE: bool = os.environ.get("CDT_COOKIE_SECURE", "0") == "1"
 
+# SameSite policy for the auth cookies. A Vercel frontend calling the fly.dev
+# API is a CROSS-site request, and cross-site cookies are only delivered with
+# SameSite=None — which browsers accept only alongside Secure. So couple it to
+# COOKIE_SECURE: "none" in production (HTTPS), "lax" for localhost/dev (where
+# cross-port is still same-site anyway). Override with CDT_COOKIE_SAMESITE for a
+# same-registrable-domain deployment. This does NOT weaken CSRF defence, which
+# is the double-submit token (X-CSRF-Token), independent of SameSite.
+COOKIE_SAMESITE: str = (
+    os.environ.get("CDT_COOKIE_SAMESITE") or ("none" if COOKIE_SECURE else "lax")
+).lower()
+
 # Comma-separated list of allowed browser origins for the API (the Next.js
 # frontend). Credentialed CORS, so wildcard is not permitted.
 CORS_ORIGINS: list[str] = [
@@ -230,3 +241,15 @@ def validate_api_config() -> None:
         raise ValueError("CDT_CORS_ORIGINS must list at least one origin")
     if any(o == "*" for o in CORS_ORIGINS):
         raise ValueError("wildcard origin is not allowed with credentialed CORS")
+    if COOKIE_SAMESITE not in {"lax", "strict", "none"}:
+        raise ValueError(
+            "CDT_COOKIE_SAMESITE must be one of lax|strict|none, "
+            f"got {COOKIE_SAMESITE!r}"
+        )
+    if COOKIE_SAMESITE == "none" and not COOKIE_SECURE:
+        # Browsers silently drop SameSite=None cookies without Secure, which
+        # would break auth. Fail fast instead.
+        raise ValueError(
+            "CDT_COOKIE_SAMESITE=none requires CDT_COOKIE_SECURE=1 "
+            "(SameSite=None cookies must be Secure)"
+        )
