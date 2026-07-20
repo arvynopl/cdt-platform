@@ -104,6 +104,26 @@ export async function keyedDownload(
   URL.revokeObjectURL(url);
 }
 
+/**
+ * Download a cookie-authenticated binary endpoint (e.g. the /akun CSV/ZIP
+ * export) as a file. Unlike keyedDownload, this rides the session cookie, so
+ * it sends credentials and no custom headers.
+ */
+export async function download(path: string, filename: string): Promise<void> {
+  const resp = await fetch(`${API_BASE}${path}`, {
+    method: "GET",
+    credentials: "include",
+  });
+  if (!resp.ok) throw new ApiError(resp.status, await detailFromResponse(resp));
+  const blob = await resp.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 // ---------------------------------------------------------------------------
 // Shared response types (mirror backend/app/schemas.py)
 // ---------------------------------------------------------------------------

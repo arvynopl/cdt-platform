@@ -12,7 +12,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { api, ApiError, type Me } from "@/lib/api";
+import { api, ApiError, download, type Me } from "@/lib/api";
 
 const CONFIRM_WORD = "HAPUS";
 
@@ -53,11 +53,11 @@ export default function AkunPage() {
 }
 
 function ExportSection() {
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState<null | "json" | "csv">(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function download() {
-    setBusy(true);
+  async function downloadJson() {
+    setBusy("json");
     setError(null);
     try {
       const data = await api.get<Record<string, unknown>>("/api/me/export");
@@ -77,7 +77,23 @@ function ExportSection() {
           : "Data belum dapat diunduh. Coba lagi sebentar.",
       );
     } finally {
-      setBusy(false);
+      setBusy(null);
+    }
+  }
+
+  async function downloadCsv() {
+    setBusy("csv");
+    setError(null);
+    try {
+      await download("/api/me/export/csv", "data_saya_cdt_csv.zip");
+    } catch (err) {
+      setError(
+        err instanceof ApiError
+          ? err.detail
+          : "Data belum dapat diunduh. Coba lagi sebentar.",
+      );
+    } finally {
+      setBusy(null);
     }
   }
 
@@ -85,18 +101,30 @@ function ExportSection() {
     <section className="rounded-xl border border-slate-200 bg-white p-4">
       <h3 className="text-sm font-semibold">Unduh Data Saya</h3>
       <p className="mt-1 text-sm leading-relaxed text-slate-600">
-        Sebuah berkas JSON berisi profil, jawaban survei, seluruh sesi, dan
-        umpan balik Anda. Cocok untuk arsip pribadi atau diolah sendiri.
+        Berisi profil, jawaban survei, seluruh sesi, dan umpan balik Anda.
+        Pilih <b>JSON</b> untuk satu berkas lengkap, atau <b>CSV</b> (berkas ZIP
+        berisi satu tabel per jenis data) agar mudah dibuka di aplikasi lembar
+        kerja seperti Excel.
       </p>
       {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
-      <button
-        onClick={download}
-        disabled={busy}
-        className="mt-3 rounded-lg border border-slate-300 px-4 py-2 text-sm
-                   font-medium text-slate-700 hover:bg-slate-100 disabled:opacity-50"
-      >
-        {busy ? "Menyiapkan…" : "⤓ Unduh Data Saya (JSON)"}
-      </button>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button
+          onClick={downloadJson}
+          disabled={busy !== null}
+          className="rounded-lg border border-slate-300 px-4 py-2 text-sm
+                     font-medium text-slate-700 hover:bg-slate-100 disabled:opacity-50"
+        >
+          {busy === "json" ? "Menyiapkan…" : "⤓ Unduh (JSON)"}
+        </button>
+        <button
+          onClick={downloadCsv}
+          disabled={busy !== null}
+          className="rounded-lg border border-slate-300 px-4 py-2 text-sm
+                     font-medium text-slate-700 hover:bg-slate-100 disabled:opacity-50"
+        >
+          {busy === "csv" ? "Menyiapkan…" : "⤓ Unduh (CSV/ZIP)"}
+        </button>
+      </div>
     </section>
   );
 }
