@@ -18,6 +18,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import PlotlyChart from "@/components/PlotlyChart";
+import { Skeleton, SkeletonChart } from "@/components/Skeleton";
 import {
   ApiError,
   api,
@@ -277,9 +278,19 @@ function Dashboard({ keys, onLock }: { keys: Keys; onLock: () => void }) {
       )}
 
       {loading && !error && (
-        <div className="flex items-center gap-3 text-sm text-slate-500">
-          <span className="h-4 w-4 animate-spin rounded-full border-2 border-brand border-t-transparent" />
-          Memuat data kohort…
+        <div className="space-y-5" role="status" aria-label="Memuat data kohort">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div
+                key={i}
+                className="space-y-2 rounded-xl border border-slate-200 bg-white p-3"
+              >
+                <Skeleton className="h-3 w-20" />
+                <Skeleton className="h-5 w-12" />
+              </div>
+            ))}
+          </div>
+          <SkeletonChart height={320} />
         </div>
       )}
 

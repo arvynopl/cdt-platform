@@ -9,6 +9,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Term from "@/components/Term";
+import { Skeleton, SkeletonCard } from "@/components/Skeleton";
 import {
   api,
   ApiError,
@@ -85,7 +86,23 @@ function HasilContent() {
       </div>
     );
   }
-  if (!results) return <p className="text-sm text-slate-500">Menyiapkan hasil analisis Anda…</p>;
+  if (!results) {
+    return (
+      <div className="space-y-5" role="status" aria-label="Memuat hasil">
+        <Skeleton className="h-6 w-56" />
+        <div className="grid grid-cols-2 gap-2 rounded-xl border border-slate-200 bg-white p-4">
+          {[0, 1].map((i) => (
+            <div key={i} className="space-y-2 text-center">
+              <Skeleton className="mx-auto h-3 w-24" />
+              <Skeleton className="mx-auto h-4 w-20" />
+            </div>
+          ))}
+        </div>
+        <SkeletonCard lines={3} />
+        <SkeletonCard lines={3} />
+      </div>
+    );
+  }
 
   const returnPct =
     results.final_portfolio_value != null
@@ -95,7 +112,7 @@ function HasilContent() {
       : null;
 
   return (
-    <main className="space-y-5">
+    <main className="animate-fade-in space-y-5">
       <div>
         <h2 className="text-lg font-semibold">
           {review ? "Hasil Sesi Anda" : "Hasil Analisis & Umpan Balik"}

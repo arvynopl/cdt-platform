@@ -108,7 +108,7 @@ export default function UmpanBalikPage() {
   }
 
   return (
-    <main className="space-y-5 pb-10">
+    <main className="animate-fade-in space-y-5 pb-10">
       <div>
         <h2 className="text-lg font-semibold">Umpan Balik Anda</h2>
         <p className="mt-1 text-sm leading-relaxed text-slate-500">
