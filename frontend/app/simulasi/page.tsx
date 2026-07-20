@@ -57,6 +57,18 @@ export default function SimulasiPage() {
   const [practiceReplay, setPracticeReplay] = useState(false);
   const [busy, setBusy] = useState(false);
   const roundStartRef = useRef<number>(Date.now());
+  const confirmRef = useRef<HTMLDivElement>(null);
+
+  // Confirmation dialog: focus it on open and close on Escape (a11y).
+  useEffect(() => {
+    if (!confirmOpen) return;
+    confirmRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setConfirmOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [confirmOpen]);
 
   const startSession = useCallback(async () => {
     try {
@@ -262,11 +274,17 @@ export default function SimulasiPage() {
     return (
       <main>
         {error ? (
-          <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div
+            role="alert"
+            className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700"
+          >
             {error}
           </div>
         ) : (
-          <div className="flex items-center gap-3 text-sm text-slate-500">
+          <div
+            role="status"
+            className="flex items-center gap-3 text-sm text-slate-500"
+          >
             <span className="h-4 w-4 animate-spin rounded-full border-2 border-brand border-t-transparent" />
             Menyiapkan sesi Anda…
           </div>
@@ -280,15 +298,15 @@ export default function SimulasiPage() {
       <main className="mx-auto max-w-md space-y-4 pt-6 text-center">
         <h2 className="text-lg font-semibold">Sesi Selesai 🎯</h2>
         {phase === "analyzing" ? (
-          <>
+          <div role="status" aria-live="polite" className="space-y-4">
             <p className="text-sm leading-relaxed text-slate-600">
               Seluruh {state.rounds_total} putaran sudah Anda selesaikan.
               Tunggu sebentar, sistem sedang membaca pola keputusan Anda.
             </p>
             <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-brand border-t-transparent" />
-          </>
+          </div>
         ) : (
-          <>
+          <div role="alert" className="space-y-4">
             <p className="text-sm leading-relaxed text-slate-600">
               Keputusan Anda pada seluruh putaran sudah tersimpan dengan aman.
               Hanya tahap analisisnya yang sempat gagal, jadi cukup jalankan
@@ -300,11 +318,11 @@ export default function SimulasiPage() {
             >
               Jalankan Analisis Ulang
             </button>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500">
               Bila masalah berlanjut, hubungi tim kami dengan kode sesi{" "}
               <code>{state.session_id.slice(0, 8)}</code>.
             </p>
-          </>
+          </div>
         )}
       </main>
     );
@@ -419,7 +437,10 @@ export default function SimulasiPage() {
       </section>
 
       {(error || roundErrors.length > 0) && (
-        <div className="space-y-1 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <div
+          role="alert"
+          className="space-y-1 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800"
+        >
           {error && <p>{error}</p>}
           {roundErrors.map((e, i) => (
             <p key={i}>
@@ -525,12 +546,12 @@ export default function SimulasiPage() {
             {pendingList.length > 0 ? (
               <>
                 <b>{pendingList.length}</b> order menunggu ·{" "}
-                <span className="text-slate-400">
+                <span className="text-slate-500">
                   {autoHoldCount} saham lainnya ditahan
                 </span>
               </>
             ) : (
-              <span className="text-slate-400">
+              <span className="text-slate-500">
                 Belum ada order; seluruh saham akan ditahan
               </span>
             )}
@@ -548,9 +569,20 @@ export default function SimulasiPage() {
 
       {/* F12: explicit confirmation dialog */}
       {confirmOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
-            <h3 className="text-base font-semibold">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          onClick={() => setConfirmOpen(false)}
+        >
+          <div
+            ref={confirmRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="konfirmasi-judul"
+            tabIndex={-1}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl outline-none"
+          >
+            <h3 id="konfirmasi-judul" className="text-base font-semibold">
               Konfirmasi Putaran {currentRound}
             </h3>
             {pendingList.length > 0 ? (
@@ -633,6 +665,7 @@ function OrderTicket(props: {
           <button
             key={a}
             onClick={() => setAction(a)}
+            aria-pressed={action === a}
             className={`flex-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
               action === a
                 ? a === "buy"

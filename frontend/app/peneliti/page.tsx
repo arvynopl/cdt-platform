@@ -131,7 +131,7 @@ function Gate({ onUnlock }: { onUnlock: (k: Keys) => void }) {
         </div>
         <div>
           <label htmlFor="akey" className="block text-sm font-medium text-slate-700">
-            Token Admin <span className="font-normal text-slate-400">(opsional)</span>
+            Token Admin <span className="font-normal text-slate-500">(opsional)</span>
           </label>
           <input
             id="akey"
@@ -142,7 +142,7 @@ function Gate({ onUnlock }: { onUnlock: (k: Keys) => void }) {
             className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm
                        focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
           />
-          <p className="mt-1 text-xs text-slate-400">
+          <p className="mt-1 text-xs text-slate-500">
             Diperlukan hanya untuk ringkasan operasional. Biarkan kosong jika
             Anda tidak memilikinya.
           </p>
@@ -314,7 +314,7 @@ function Dashboard({ keys, onLock }: { keys: Keys; onLock: () => void }) {
               value={formatPct(summary.mean_stability_index * 100, 0)}
             />
           </section>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-500">
             {summary.users_with_consent} menyetujui keikutsertaan ·{" "}
             {summary.users_with_survey} mengisi survei awal ·{" "}
             {summary.excluded_non_participants} akun non-partisipan dikecualikan.
@@ -380,7 +380,7 @@ function Dashboard({ keys, onLock }: { keys: Keys; onLock: () => void }) {
               ) : admin ? (
                 <AdminCards admin={admin} />
               ) : (
-                <p className="text-sm text-slate-400">Memuat ringkasan operasional…</p>
+                <p className="text-sm text-slate-500">Memuat ringkasan operasional…</p>
               )}
             </section>
           )}
@@ -413,7 +413,7 @@ function Stat({
     <div className="rounded-xl border border-slate-200 bg-white p-4">
       <p className="text-xs text-slate-500">{label}</p>
       <p className="mt-1 text-lg font-semibold tabular-nums">{value}</p>
-      {sub && <p className="mt-0.5 text-xs text-slate-400">{sub}</p>}
+      {sub && <p className="mt-0.5 text-xs text-slate-500">{sub}</p>}
     </div>
   );
 }
@@ -434,7 +434,7 @@ function AdminCards({ admin }: { admin: AdminSummary }) {
           <p className="mt-1 text-lg font-semibold tabular-nums">
             {sus == null ? "—" : dec(sus, 1)}
           </p>
-          <p className="mt-0.5 text-xs text-slate-400">Target ≥68 · skripsi 64,0</p>
+          <p className="mt-0.5 text-xs text-slate-500">Target ≥68 · skripsi 64,0</p>
         </div>
         <Stat label="Umpan Balik UAT" value={admin.total_uat_feedback} />
         <Stat
@@ -448,7 +448,7 @@ function AdminCards({ admin }: { admin: AdminSummary }) {
         <p className="mb-2 text-xs font-medium text-slate-500">Sesi menurut status</p>
         <div className="flex flex-wrap gap-2">
           {Object.entries(admin.sessions_by_status).length === 0 ? (
-            <span className="text-xs text-slate-400">Belum ada sesi.</span>
+            <span className="text-xs text-slate-500">Belum ada sesi.</span>
           ) : (
             Object.entries(admin.sessions_by_status).map(([status, count]) => (
               <span
@@ -486,7 +486,7 @@ function MlSection({ ml }: { ml: MlPerformance | null }) {
     <section className="rounded-xl border border-slate-200 bg-white p-4">
       <h3 className="mb-1 text-sm font-semibold">Validasi Model</h3>
       {ml.generated_at && (
-        <p className="mb-2 text-xs text-slate-400">Dibuat {ml.generated_at}</p>
+        <p className="mb-2 text-xs text-slate-500">Dibuat {ml.generated_at}</p>
       )}
       {summaryEntries.length > 0 && (
         <div className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-3">

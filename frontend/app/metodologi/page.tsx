@@ -92,7 +92,7 @@ export default function MetodologiPage() {
         </dl>
       </section>
 
-      <p className="text-xs leading-relaxed text-slate-400">
+      <p className="text-xs leading-relaxed text-slate-500">
         Aplikasi ini adalah alat bantu edukasi untuk mengenali pola pengambilan
         keputusan, bukan nasihat investasi. Metrik bersifat indikatif dan paling
         bermakna setelah beberapa sesi.

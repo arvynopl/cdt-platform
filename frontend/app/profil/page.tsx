@@ -462,7 +462,7 @@ function InteractionSection({
           );
         })}
       </ul>
-      <p className="mt-3 text-xs leading-relaxed text-slate-400">
+      <p className="mt-3 text-xs leading-relaxed text-slate-500">
         Keterkaitan mulai dihitung setelah tiga sesi. Tanda “—” berarti ragam
         data pada sesi-sesi tersebut belum cukup untuk menyimpulkan keterkaitan.
       </p>

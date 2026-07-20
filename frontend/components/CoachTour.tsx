@@ -114,7 +114,7 @@ export default function CoachTour({ steps, onBeforeStep, onFinish, onSkip }: Pro
         <div className="mt-4 flex items-center justify-between gap-2">
           <button
             onClick={onSkip}
-            className="text-xs text-slate-400 hover:text-slate-600"
+            className="text-xs text-slate-500 hover:text-slate-700"
           >
             Lewati panduan
           </button>
