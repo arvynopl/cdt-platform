@@ -23,14 +23,16 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import Candlestick from "@/components/Candlestick";
 import CoachTour from "@/components/CoachTour";
 import PracticeMode, { TOUR_STEPS } from "@/components/PracticeMode";
+import AnalysisPending from "@/components/simulasi/AnalysisPending";
+import ConfirmRoundDialog from "@/components/simulasi/ConfirmRoundDialog";
+import HelpMenu from "@/components/simulasi/HelpMenu";
+import PortfolioSummary from "@/components/simulasi/PortfolioSummary";
+import StockCard from "@/components/simulasi/StockCard";
 import {
   api,
   ApiError,
-  formatPct,
-  formatRupiah,
   type AnalysisStatus,
   type Me,
   type Order,
@@ -57,18 +59,6 @@ export default function SimulasiPage() {
   const [practiceReplay, setPracticeReplay] = useState(false);
   const [busy, setBusy] = useState(false);
   const roundStartRef = useRef<number>(Date.now());
-  const confirmRef = useRef<HTMLDivElement>(null);
-
-  // Confirmation dialog: focus it on open and close on Escape (a11y).
-  useEffect(() => {
-    if (!confirmOpen) return;
-    confirmRef.current?.focus();
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setConfirmOpen(false);
-    };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [confirmOpen]);
 
   const startSession = useCallback(async () => {
     try {
@@ -295,36 +285,12 @@ export default function SimulasiPage() {
 
   if (phase === "analyzing" || phase === "analysis_error") {
     return (
-      <main className="mx-auto max-w-md space-y-4 pt-6 text-center">
-        <h2 className="text-lg font-semibold">Sesi Selesai 🎯</h2>
-        {phase === "analyzing" ? (
-          <div role="status" aria-live="polite" className="space-y-4">
-            <p className="text-sm leading-relaxed text-slate-600">
-              Seluruh {state.rounds_total} putaran sudah Anda selesaikan.
-              Tunggu sebentar, sistem sedang membaca pola keputusan Anda.
-            </p>
-            <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-brand border-t-transparent" />
-          </div>
-        ) : (
-          <div role="alert" className="space-y-4">
-            <p className="text-sm leading-relaxed text-slate-600">
-              Keputusan Anda pada seluruh putaran sudah tersimpan dengan aman.
-              Hanya tahap analisisnya yang sempat gagal, jadi cukup jalankan
-              ulang.
-            </p>
-            <button
-              onClick={retryAnalysis}
-              className="rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-white"
-            >
-              Jalankan Analisis Ulang
-            </button>
-            <p className="text-xs text-slate-500">
-              Bila masalah berlanjut, hubungi tim kami dengan kode sesi{" "}
-              <code>{state.session_id.slice(0, 8)}</code>.
-            </p>
-          </div>
-        )}
-      </main>
+      <AnalysisPending
+        failed={phase === "analysis_error"}
+        roundsTotal={state.rounds_total}
+        sessionIdShort={state.session_id.slice(0, 8)}
+        onRetry={retryAnalysis}
+      />
     );
   }
 
@@ -349,92 +315,27 @@ export default function SimulasiPage() {
         />
       )}
 
-      <div className="fixed bottom-20 right-4 z-40 flex flex-col items-end gap-2">
-        {helpOpen && (
-          <div className="w-56 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl">
-            <button
-              onClick={() => {
-                setHelpOpen(false);
-                setTourOpen(true);
-              }}
-              className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-brand-soft"
-            >
-              Putar ulang panduan halaman
-              <span className="block text-xs text-slate-500">
-                Tur singkat mengenal setiap bagian layar
-              </span>
-            </button>
-            <button
-              onClick={() => {
-                setHelpOpen(false);
-                setPracticeReplay(true);
-              }}
-              className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-brand-soft"
-            >
-              Ulangi mode latihan
-              <span className="block text-xs text-slate-500">
-                Tiga putaran percobaan; sesi Anda tetap aman
-              </span>
-            </button>
-          </div>
-        )}
-        <button
-          onClick={() => setHelpOpen((v) => !v)}
-          aria-label="Bantuan"
-          aria-expanded={helpOpen}
-          className="h-10 w-10 rounded-full border border-slate-300 bg-white
-                     text-lg font-semibold text-brand shadow-md hover:bg-brand-soft"
-        >
-          ?
-        </button>
-      </div>
+      <HelpMenu
+        open={helpOpen}
+        onToggle={() => setHelpOpen((v) => !v)}
+        onReplayTour={() => {
+          setHelpOpen(false);
+          setTourOpen(true);
+        }}
+        onReplayPractice={() => {
+          setHelpOpen(false);
+          setPracticeReplay(true);
+        }}
+      />
 
-      {/* Progress + portfolio summary */}
-      <section
-        data-tour="portfolio"
-        className="rounded-xl border border-slate-200 bg-white p-4"
-      >
-        <div className="mb-2 flex items-center justify-between text-sm">
-          <span className="font-semibold">
-            Putaran {currentRound} dari {state.rounds_total}
-          </span>
-          <span className="text-slate-500">
-            {state.resumed ? "melanjutkan sesi sebelumnya" : "sesi baru"}
-          </span>
-        </div>
-        <div className="h-2 overflow-hidden rounded-full bg-slate-100">
-          <div
-            className="h-full rounded-full bg-brand transition-all"
-            style={{
-              width: `${((currentRound - 1) / state.rounds_total) * 100}%`,
-            }}
-          />
-        </div>
-        <dl className="mt-3 grid grid-cols-3 gap-2 text-center">
-          <div>
-            <dt className="text-xs text-slate-500">Kas</dt>
-            <dd className="text-sm font-semibold">
-              {formatRupiah(state.portfolio.cash)}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-slate-500">Nilai Total</dt>
-            <dd className="text-sm font-semibold">
-              {formatRupiah(state.portfolio.total_value)}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-slate-500">Imbal Hasil</dt>
-            <dd
-              className={`text-sm font-semibold ${
-                returnPct >= 0 ? "text-emerald-700" : "text-red-700"
-              }`}
-            >
-              {formatPct(returnPct)}
-            </dd>
-          </div>
-        </dl>
-      </section>
+      <PortfolioSummary
+        currentRound={currentRound}
+        roundsTotal={state.rounds_total}
+        resumed={state.resumed}
+        cash={state.portfolio.cash}
+        totalValue={state.portfolio.total_value}
+        returnPct={returnPct}
+      />
 
       {(error || roundErrors.length > 0) && (
         <div
@@ -456,85 +357,33 @@ export default function SimulasiPage() {
       {/* Stock list — keyed by round so every ticket remounts clean */}
       <section key={currentRound} data-tour="stocks" className="grid gap-2 sm:grid-cols-2">
         {state.stock_ids.map((sid) => {
-          const meta = metaOf(sid);
           const price = prices[sid];
           const change = ((price - prevPrices[sid]) / prevPrices[sid]) * 100;
-          const held = heldQty(sid);
-          const order = pending[sid];
-          const isOpen = selected === sid;
           return (
-            <div key={sid} className="rounded-xl border border-slate-200 bg-white">
-              <button
-                onClick={() => setSelected(isOpen ? null : sid)}
-                aria-expanded={isOpen}
-                className="flex w-full items-center justify-between gap-2 p-3 text-left"
-              >
-                <div>
-                  <p className="text-sm font-semibold">
-                    {meta?.ticker ?? sid}
-                    {meta?.volatility_class === "high" && (
-                      <span className="ml-1.5 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-800">
-                        volatil tinggi
-                      </span>
-                    )}
-                  </p>
-                  <p className="text-xs text-slate-500">{meta?.name}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-semibold">{formatRupiah(price)}</p>
-                  <p
-                    className={`text-xs ${
-                      change >= 0 ? "text-emerald-700" : "text-red-700"
-                    }`}
-                  >
-                    {change >= 0 ? "▲" : "▼"} {formatPct(Math.abs(change), 2)}
-                  </p>
-                </div>
-              </button>
-              {(held > 0 || order) && (
-                <div className="flex items-center gap-2 px-3 pb-2 text-xs text-slate-500">
-                  {held > 0 && <span>Dimiliki: {held} lembar</span>}
-                  {order && (
-                    <span className="rounded bg-brand-soft px-1.5 py-0.5 font-medium text-brand">
-                      {order.action === "buy" ? "Beli" : "Jual"} {order.quantity}{" "}
-                      menunggu eksekusi
-                    </span>
-                  )}
-                </div>
-              )}
-              {isOpen && (
-                <div className="border-t border-slate-100 p-3">
-                  <div data-tour="chart">
-                    <Candlestick
-                      preHistory={state.pre_window_history[sid] ?? []}
-                      window={state.window[sid]}
-                      revealedRounds={currentRound}
-                      height={260}
-                    />
-                  </div>
-                  <div data-tour="ticket">
-                    <OrderTicket
-                      price={price}
-                      heldQty={held}
-                      spendableCash={
-                        spendableCash +
-                        (order?.action === "buy" ? order.quantity * price : 0)
-                      }
-                      existing={order ?? null}
-                      onSet={(o) =>
-                        setPending((p) =>
-                          o === null
-                            ? Object.fromEntries(
-                                Object.entries(p).filter(([k]) => k !== sid),
-                              )
-                            : { ...p, [sid]: { ...o, stock_id: sid } },
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
+            <StockCard
+              key={sid}
+              meta={metaOf(sid)}
+              fallbackId={sid}
+              price={price}
+              change={change}
+              held={heldQty(sid)}
+              order={pending[sid]}
+              isOpen={selected === sid}
+              onToggle={() => setSelected(selected === sid ? null : sid)}
+              preHistory={state.pre_window_history[sid] ?? []}
+              windowData={state.window[sid]}
+              revealedRounds={currentRound}
+              spendableCash={spendableCash}
+              onSetOrder={(o) =>
+                setPending((p) =>
+                  o === null
+                    ? Object.fromEntries(
+                        Object.entries(p).filter(([k]) => k !== sid),
+                      )
+                    : { ...p, [sid]: { ...o, stock_id: sid } },
+                )
+              }
+            />
           );
         })}
       </section>
@@ -567,180 +416,18 @@ export default function SimulasiPage() {
         </div>
       </div>
 
-      {/* F12: explicit confirmation dialog */}
       {confirmOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
-          onClick={() => setConfirmOpen(false)}
-        >
-          <div
-            ref={confirmRef}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="konfirmasi-judul"
-            tabIndex={-1}
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl outline-none"
-          >
-            <h3 id="konfirmasi-judul" className="text-base font-semibold">
-              Konfirmasi Putaran {currentRound}
-            </h3>
-            {pendingList.length > 0 ? (
-              <ul className="mt-3 space-y-1.5 text-sm">
-                {pendingList.map((o) => (
-                  <li key={o.stock_id} className="flex justify-between">
-                    <span>
-                      {o.action === "buy" ? "🟢 Beli" : "🔴 Jual"}{" "}
-                      <b>{metaOf(o.stock_id)?.ticker ?? o.stock_id}</b> ×{" "}
-                      {o.quantity}
-                    </span>
-                    <span className="text-slate-500">
-                      {formatRupiah(o.quantity * (prices[o.stock_id] ?? 0))}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                Tidak ada order pada putaran ini, jadi seluruh saham akan
-                dicatat sebagai <b>tahan</b>. Tidak masalah; menahan juga
-                keputusan investasi yang sah dan ikut dianalisis.
-              </p>
-            )}
-            {pendingList.length > 0 && autoHoldCount > 0 && (
-              <p className="mt-2 text-xs text-slate-500">
-                {autoHoldCount} saham lainnya otomatis dicatat sebagai tahan.
-              </p>
-            )}
-            <div className="mt-5 flex gap-3">
-              <button
-                onClick={() => setConfirmOpen(false)}
-                className="flex-1 rounded-lg border border-slate-300 px-4 py-2.5 text-sm"
-              >
-                Periksa Lagi
-              </button>
-              <button
-                onClick={executeRound}
-                disabled={busy}
-                className="flex-1 rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
-              >
-                {busy ? "Menyimpan…" : "Ya, Jalankan"}
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConfirmRoundDialog
+          currentRound={currentRound}
+          pendingList={pendingList}
+          autoHoldCount={autoHoldCount}
+          metaOf={metaOf}
+          prices={prices}
+          busy={busy}
+          onClose={() => setConfirmOpen(false)}
+          onConfirm={executeRound}
+        />
       )}
     </main>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// F11: order ticket with live cost preview
-// ---------------------------------------------------------------------------
-
-function OrderTicket(props: {
-  price: number;
-  heldQty: number;
-  /** Cash available to THIS ticket (other pending buys already deducted). */
-  spendableCash: number;
-  existing: Order | null;
-  onSet: (order: { action: "buy" | "sell"; quantity: number } | null) => void;
-}) {
-  const [action, setAction] = useState<"buy" | "sell">(
-    props.existing?.action ?? "buy",
-  );
-  const [qty, setQty] = useState<number>(props.existing?.quantity ?? 0);
-
-  const cost = qty * props.price;
-  const buyExceeds = action === "buy" && cost > props.spendableCash;
-  const sellExceeds = action === "sell" && qty > props.heldQty;
-  const invalid = qty <= 0 || buyExceeds || sellExceeds;
-
-  const maxBuy = Math.floor(props.spendableCash / props.price);
-
-  return (
-    <div className="mt-3 rounded-lg bg-slate-50 p-3">
-      <div className="flex gap-2">
-        {(["buy", "sell"] as const).map((a) => (
-          <button
-            key={a}
-            onClick={() => setAction(a)}
-            aria-pressed={action === a}
-            className={`flex-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-              action === a
-                ? a === "buy"
-                  ? "bg-emerald-600 text-white"
-                  : "bg-red-600 text-white"
-                : "border border-slate-300 text-slate-600"
-            }`}
-          >
-            {a === "buy" ? "Beli" : "Jual"}
-          </button>
-        ))}
-      </div>
-
-      <label className="mt-2 block text-xs font-medium text-slate-600">
-        Jumlah lembar
-        <input
-          type="number"
-          min={0}
-          value={qty || ""}
-          onChange={(e) => setQty(Math.max(0, Number(e.target.value)))}
-          className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-          placeholder={
-            action === "buy" ? `maks. ${maxBuy}` : `dimiliki ${props.heldQty}`
-          }
-        />
-      </label>
-
-      {/* F11: live preview, no manual arithmetic needed */}
-      <dl className="mt-2 space-y-0.5 text-xs text-slate-600">
-        <div className="flex justify-between">
-          <dt>
-            {action === "buy" ? "Perkiraan biaya" : "Perkiraan hasil jual"}
-          </dt>
-          <dd className="font-semibold">{formatRupiah(cost)}</dd>
-        </div>
-        <div className="flex justify-between">
-          <dt>Kas setelah eksekusi</dt>
-          <dd className={`font-semibold ${buyExceeds ? "text-red-700" : ""}`}>
-            {formatRupiah(
-              action === "buy"
-                ? props.spendableCash - cost
-                : props.spendableCash + cost,
-            )}
-          </dd>
-        </div>
-      </dl>
-
-      {buyExceeds && (
-        <p className="mt-1 text-xs text-red-700">
-          Kas Anda tidak cukup untuk jumlah ini; maksimal {maxBuy} lembar.
-        </p>
-      )}
-      {sellExceeds && (
-        <p className="mt-1 text-xs text-red-700">
-          Jumlahnya melebihi {props.heldQty} lembar yang Anda miliki.
-        </p>
-      )}
-
-      <div className="mt-3 flex gap-2">
-        <button
-          onClick={() => props.onSet({ action, quantity: qty })}
-          disabled={invalid}
-          className="flex-1 rounded-lg bg-brand px-3 py-2 text-sm font-semibold text-white disabled:opacity-40"
-        >
-          {props.existing ? "Perbarui Order" : "Tambahkan ke Order"}
-        </button>
-        {props.existing && (
-          <button
-            onClick={() => props.onSet(null)}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-600"
-          >
-            Batalkan
-          </button>
-        )}
-      </div>
-    </div>
   );
 }
