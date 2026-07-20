@@ -16,11 +16,23 @@ test("exports data, then deletes the account and frees the username", async ({
   await expect(page.getByRole("heading", { name: /Akun & Privasi/ })).toBeVisible();
 
   // Export downloads a JSON file.
-  const [download] = await Promise.all([
+  const [jsonDownload] = await Promise.all([
     page.waitForEvent("download"),
-    page.getByRole("button", { name: /Unduh Data Saya/ }).click(),
+    page.getByRole("button", { name: /Unduh \(JSON\)/ }).click(),
   ]);
-  expect(download.suggestedFilename()).toBe("data_saya_cdt.json");
+  expect(jsonDownload.suggestedFilename()).toBe("data_saya_cdt.json");
+
+  // The CSV option downloads a ZIP; validate it is a real ZIP archive
+  // (PK magic bytes) so the whole cookie-auth → binary-download path is covered.
+  const [zipDownload] = await Promise.all([
+    page.waitForEvent("download"),
+    page.getByRole("button", { name: /Unduh \(CSV\/ZIP\)/ }).click(),
+  ]);
+  expect(zipDownload.suggestedFilename()).toBe("data_saya_cdt_csv.zip");
+  const zipPath = await zipDownload.path();
+  const { readFileSync } = await import("node:fs");
+  const head = readFileSync(zipPath).subarray(0, 4);
+  expect(head.toString("latin1")).toBe("PK\x03\x04");
 
   // Delete requires the typed confirmation word.
   await page.getByRole("button", { name: /Hapus Akun Saya/ }).click();
