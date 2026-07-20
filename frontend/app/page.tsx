@@ -8,6 +8,7 @@
  */
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api, ApiError, type Me, type RegisterPayload } from "@/lib/api";
 
@@ -91,22 +92,25 @@ export default function BerandaPage() {
       )}
 
       {stage === "username" && (
-        <form onSubmit={submitUsername} className="space-y-4">
-          <label className="block text-sm font-medium">
-            Nama Pengguna
-            <input
-              className={`${inputCls} mt-1`}
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              maxLength={64}
-              placeholder="Contoh: jaka.santoso"
-              autoFocus
-            />
-          </label>
-          <button className={btnCls} disabled={busy}>
-            {busy ? "Memeriksa…" : "Lanjutkan →"}
-          </button>
-        </form>
+        <>
+          <form onSubmit={submitUsername} className="space-y-4">
+            <label className="block text-sm font-medium">
+              Nama Pengguna
+              <input
+                className={`${inputCls} mt-1`}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                maxLength={64}
+                placeholder="Contoh: jaka.santoso"
+                autoFocus
+              />
+            </label>
+            <button className={btnCls} disabled={busy}>
+              {busy ? "Memeriksa…" : "Lanjutkan →"}
+            </button>
+          </form>
+          <ValueProp />
+        </>
       )}
 
       {stage === "login" && (
@@ -127,6 +131,43 @@ export default function BerandaPage() {
         />
       )}
     </main>
+  );
+}
+
+// First-time-visitor value proposition, shown only on the username step.
+const VALUE_POINTS: [string, string, string][] = [
+  ["🎮", "Berlatih tanpa risiko", "Simulasikan keputusan jual-beli dengan data harga nyata — tanpa uang sungguhan."],
+  ["🧠", "Kenali pola Anda", "Sistem memetakan kecenderungan seperti menjual untung terlalu cepat atau menahan rugi terlalu lama."],
+  ["📈", "Tumbuh tiap sesi", "Setiap sesi menajamkan profil Anda dan memberi umpan balik yang bisa langsung dicoba."],
+];
+
+function ValueProp() {
+  return (
+    <section className="animate-fade-in mt-8 border-t border-slate-200 pt-6">
+      <h3 className="text-sm font-semibold text-slate-700">
+        Apa yang Anda dapatkan di sini?
+      </h3>
+      <ul className="mt-3 space-y-3">
+        {VALUE_POINTS.map(([icon, title, body]) => (
+          <li key={title} className="flex gap-3">
+            <span aria-hidden className="text-xl leading-none">
+              {icon}
+            </span>
+            <div>
+              <p className="text-sm font-medium text-slate-800">{title}</p>
+              <p className="text-sm leading-relaxed text-slate-600">{body}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-4 text-xs leading-relaxed text-slate-500">
+        Ini alat bantu edukasi untuk mengenali pola pengambilan keputusan, bukan
+        nasihat investasi.{" "}
+        <Link href="/metodologi" className="font-medium text-brand hover:underline">
+          Pelajari cara kerjanya →
+        </Link>
+      </p>
+    </section>
   );
 }
 

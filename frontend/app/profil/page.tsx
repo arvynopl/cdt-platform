@@ -19,6 +19,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PlotlyChart from "@/components/PlotlyChart";
 import Term from "@/components/Term";
+import { Skeleton, SkeletonChart } from "@/components/Skeleton";
 import {
   api,
   ApiError,
@@ -63,9 +64,17 @@ export default function ProfilPage() {
   }
   if (!data) {
     return (
-      <div className="flex items-center gap-3 text-sm text-slate-500">
-        <span className="h-4 w-4 animate-spin rounded-full border-2 border-brand border-t-transparent" />
-        Menyiapkan profil Anda…
+      <div className="space-y-5" role="status" aria-label="Memuat profil">
+        <div className="grid grid-cols-3 gap-2 rounded-xl border border-slate-200 bg-white p-4">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="space-y-2 text-center">
+              <Skeleton className="mx-auto h-3 w-16" />
+              <Skeleton className="mx-auto h-5 w-10" />
+            </div>
+          ))}
+        </div>
+        <SkeletonChart height={360} />
+        <SkeletonChart height={340} />
       </div>
     );
   }
@@ -178,7 +187,7 @@ function ProfileContent({ data }: { data: ProfileResponse }) {
   const maxVal = bv[maxKey];
 
   return (
-    <main className="space-y-5 pb-10">
+    <main className="animate-fade-in space-y-5 pb-10">
       <div>
         <h2 className="text-lg font-semibold">Profil Kognitif Anda</h2>
         <p className="mt-1 text-sm text-slate-500">
@@ -206,6 +215,34 @@ function ProfileContent({ data }: { data: ProfileResponse }) {
           <p className="text-base font-semibold">{rpLabel}</p>
         </div>
       </section>
+
+      {/* Value-aware interpretation of the summary numbers (openable). */}
+      <details className="group rounded-xl border border-slate-200 bg-white px-4 py-3">
+        <summary className="cursor-pointer list-none text-sm font-medium text-slate-700 marker:hidden">
+          <span className="text-brand group-open:hidden">＋ </span>
+          <span className="hidden text-brand group-open:inline">－ </span>
+          Apa arti angka ini?
+        </summary>
+        <div className="mt-2 space-y-2 text-sm leading-relaxed text-slate-600">
+          <p>
+            <b>Konsistensi Pola {formatPct(profile.stability_index * 100, 0)}</b>{" "}
+            —{" "}
+            {profile.stability_index >= 0.7
+              ? "pola keputusan Anda relatif menetap antar sesi, jadi profil di bawah bisa Anda percaya lebih kuat."
+              : profile.stability_index >= 0.4
+                ? "pola Anda sudah mulai terbentuk tetapi masih bergerak; beberapa sesi lagi akan memperjelasnya."
+                : "pola Anda masih berubah-ubah — hal yang wajar pada sesi-sesi awal ketika datanya belum banyak."}
+          </p>
+          <p>
+            <b>Preferensi Risiko: {rpLabel}</b> —{" "}
+            {rp >= 0.6
+              ? "berdasarkan keputusan Anda selama simulasi, Anda cenderung bersedia menanggung fluktuasi besar demi potensi imbal hasil lebih tinggi."
+              : rp >= 0.3
+                ? "berdasarkan keputusan Anda selama simulasi, Anda cenderung menyeimbangkan potensi imbal hasil dengan kestabilan modal."
+                : "berdasarkan keputusan Anda selama simulasi, Anda cenderung memprioritaskan menjaga modal di atas mengejar imbal hasil tinggi."}
+          </p>
+        </div>
+      </details>
 
       {/* Insight */}
       <section
