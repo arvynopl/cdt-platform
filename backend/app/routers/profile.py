@@ -13,7 +13,11 @@ from sqlalchemy.orm import Session
 from app import schemas
 from app.deps import current_user, get_db, require_csrf
 from app.security.sessions import clear_session_cookies
-from app.services.account import anonymize_user, export_user_data
+from app.services.account import (
+    anonymize_user,
+    export_user_data,
+    export_user_data_csv_zip,
+)
 from database.models import (
     BiasMetric,
     CdtSnapshot,
@@ -122,6 +126,21 @@ def export_my_data(
 ) -> dict:
     """Everything the system holds about the caller (data portability)."""
     return export_user_data(db, user.id)
+
+
+@router.get("/export/csv")
+def export_my_data_csv(
+    user: User = Depends(current_user), db: Session = Depends(get_db)
+) -> Response:
+    """Same data as /export, as a ZIP of per-table CSVs (convenience format)."""
+    payload = export_user_data_csv_zip(db, user.id)
+    return Response(
+        content=payload,
+        media_type="application/zip",
+        headers={
+            "Content-Disposition": 'attachment; filename="data_saya_cdt_csv.zip"'
+        },
+    )
 
 
 @router.post("/delete", dependencies=[Depends(require_csrf)])

@@ -66,6 +66,33 @@ class TestExport:
         # Consent is exported without the pseudonymised IP hash.
         assert data["consent"] and "ip_hash" not in data["consent"][0]
 
+    def test_csv_zip_export_has_a_csv_per_populated_section(self, db):
+        import io
+        import zipfile
+
+        from app.services.account import export_user_data_csv_zip
+
+        u = _seed_full_user(db)
+        payload = export_user_data_csv_zip(db, u.id)
+
+        with zipfile.ZipFile(io.BytesIO(payload)) as zf:
+            names = set(zf.namelist())
+            # A CSV per populated collection, plus the readme manifest.
+            assert {
+                "account.csv",
+                "profile.csv",
+                "onboarding_survey.csv",
+                "bias_metrics.csv",
+                "uat_feedback.csv",
+                "BACA-DULU.txt",
+            } <= names
+
+            account = zf.read("account.csv").decode("utf-8-sig")
+            assert "username" in account.splitlines()[0]  # header row
+            assert "dewi.lestari" in account
+            # UTF-8 BOM present so Excel reads the encoding correctly.
+            assert zf.read("account.csv").startswith(b"\xef\xbb\xbf")
+
 
 class TestAnonymize:
     def test_strips_identity_and_login_but_keeps_research(self, db):
