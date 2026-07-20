@@ -15,6 +15,7 @@ const NAV = [
   { href: "/simulasi", label: "Simulasi" },
   { href: "/profil", label: "Profil Saya" },
   { href: "/umpan-balik", label: "Umpan Balik" },
+  { href: "/akun", label: "Akun" },
 ];
 
 export default function HeaderBar() {

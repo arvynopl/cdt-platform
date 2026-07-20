@@ -7,11 +7,13 @@ visualisations from one call.
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 
 from app import schemas
 from app.deps import current_user, get_db, require_csrf
+from app.security.sessions import clear_session_cookies
+from app.services.account import anonymize_user, export_user_data
 from database.models import (
     BiasMetric,
     CdtSnapshot,
@@ -108,6 +110,31 @@ def my_history(
     """Flat per-session rows — the frontend renders these and offers CSV
     download client-side (NFR07 interoperability)."""
     return {"rows": export_user_history_csv(db, user.id)}
+
+
+# ---------------------------------------------------------------------------
+# UU PDP data-subject rights (audit F8)
+# ---------------------------------------------------------------------------
+
+@router.get("/export")
+def export_my_data(
+    user: User = Depends(current_user), db: Session = Depends(get_db)
+) -> dict:
+    """Everything the system holds about the caller (data portability)."""
+    return export_user_data(db, user.id)
+
+
+@router.post("/delete", dependencies=[Depends(require_csrf)])
+def delete_my_account(
+    response: Response,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Withdraw: anonymise the account (identity + login removed, de-identified
+    research rows kept) and end the session."""
+    anonymize_user(db, user.id)
+    clear_session_cookies(response)
+    return {"ok": True}
 
 
 # ---------------------------------------------------------------------------
