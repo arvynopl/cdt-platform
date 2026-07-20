@@ -137,6 +137,30 @@ async def _latency_middleware(request: Request, call_next):
     return response
 
 
+@app.middleware("http")
+async def _security_headers_middleware(request: Request, call_next):
+    """Defense-in-depth response headers for the JSON API.
+
+    Deliberately conservative so nothing breaks: the CSP is limited to
+    ``frame-ancestors 'none'`` (anti-framing only — it does NOT set
+    ``default-src``, so Swagger UI at /docs keeps loading its CDN assets).
+    HSTS is emitted only when cookies are Secure (i.e. served over HTTPS in
+    production); on plain-HTTP localhost it is omitted and browsers would
+    ignore it anyway.
+    """
+    response = await call_next(request)
+    response.headers.setdefault("x-content-type-options", "nosniff")
+    response.headers.setdefault("x-frame-options", "DENY")
+    response.headers.setdefault("referrer-policy", "no-referrer")
+    response.headers.setdefault("content-security-policy", "frame-ancestors 'none'")
+    if COOKIE_SECURE:
+        response.headers.setdefault(
+            "strict-transport-security",
+            "max-age=63072000; includeSubDomains; preload",
+        )
+    return response
+
+
 app.include_router(auth_router.router)
 app.include_router(simulation_router.router)
 app.include_router(profile_router.router)
