@@ -158,16 +158,9 @@ function ProfileContent({ data }: { data: ProfileResponse }) {
   }, [data, latest, metrics]);
 
   // -- line charts ---------------------------------------------------------
-  const sessions = metrics.map((m) => `Sesi ${m.session_num}`);
-  const metricLines = [
-    { y: metrics.map((m) => m.ocs), name: "Keyakinan Berlebih (OCS)", color: "#2563EB" },
-    { y: metrics.map((m) => m.dei), name: "Efek Disposisi |DEI|", color: "#9A5B00" },
-    { y: metrics.map((m) => m.lai_norm), name: "Menghindari Kerugian (LAI)", color: "#B3261E" },
-  ].map((t) => ({
-    type: "scatter", mode: "lines+markers", x: sessions, y: t.y,
-    name: t.name, line: { color: t.color, width: 2 }, marker: { size: 7 },
-  }));
-
+  // Per-session raw metrics are intentionally NOT charted: the accumulated
+  // "Perjalanan Profil" below tells the habit-level story, and anyone who
+  // wants the raw per-session numbers can export them from the history table.
   const snaps = data.cdt_snapshots;
   const snapX = snaps.map((s) => `Sesi ${s.session_number}`);
   const trajectoryLines = [
@@ -302,23 +295,6 @@ function ProfileContent({ data }: { data: ProfileResponse }) {
           ).
         </p>
       </section>
-
-      {/* Per-session metrics */}
-      {metrics.length >= 2 && (
-        <section className="rounded-xl border border-edge bg-card p-4">
-          <h3 className="mb-1 text-sm font-semibold">Metrik per Sesi</h3>
-          <PlotlyChart
-            data={metricLines}
-            height={340}
-            ariaLabel="Grafik metrik bias per sesi"
-            layout={{
-              margin: { l: 56, r: 20, t: 24, b: 64 },
-              yaxis: { range: [0, 1], title: { text: "Intensitas (0–1)", font: { size: 10 } } },
-              legend: { orientation: "h", y: -0.28 },
-            }}
-          />
-        </section>
-      )}
 
       {/* CDT trajectory */}
       {snaps.length >= 2 && (

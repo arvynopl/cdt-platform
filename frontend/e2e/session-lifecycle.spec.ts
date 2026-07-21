@@ -20,8 +20,9 @@ test("logs out and can no longer reach the simulation", async ({
   await register(page, uniqueUser());
   await expect(page.getByText(/Putaran 1 dari 14/)).toBeVisible({ timeout: 30_000 });
 
-  // Log out from the header identity cluster.
-  await page.getByRole("button", { name: /Keluar/ }).click();
+  // Log out via the account menu in the top bar.
+  await page.getByRole("button", { name: "Menu akun" }).click();
+  await page.getByRole("menuitem", { name: /Keluar/ }).click();
   await expect(page.getByText(/Selamat datang/)).toBeVisible();
 
   // The protected simulation now bounces back to the landing page.

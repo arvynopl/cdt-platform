@@ -1,15 +1,25 @@
 import type { Metadata, Viewport } from "next";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import Link from "next/link";
-import HeaderBar from "@/components/HeaderBar";
-import ThemeToggle from "@/components/ThemeToggle";
+import TopBar from "@/components/TopBar";
+import { ToastProvider } from "@/components/ui/Toast";
 import "./globals.css";
+
+// Self-hosted by next/font at build time, so no external font request (the
+// CSP blocks those anyway). Plus Jakarta Sans is an Indonesian typeface.
+const sans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-sans",
+  display: "swap",
+});
 
 // Set the theme class before paint to avoid a flash: an explicit stored choice
 // wins; otherwise fall back to the OS preference.
 const themeInitScript = `(function(){try{var t=localStorage.getItem('cdt_theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})();`;
 
 export const metadata: Metadata = {
-  title: "Kenali Pola Investasi Anda — CDT",
+  title: "CDT — Kenali Pola Investasi Anda",
   description:
     "Simulasi trading untuk memetakan bias pengambilan keputusan Anda, " +
     "ditenagai Cognitive Digital Twin (CDT).",
@@ -20,50 +30,57 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+const FOOTER_LINKS = [
+  { href: "/metodologi", label: "Metodologi dan Istilah" },
+  { href: "/umpan-balik", label: "Beri Masukan" },
+];
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" suppressHydrationWarning>
-      <body>
+    <html lang="id" className={sans.variable} suppressHydrationWarning>
+      <body className="min-h-screen">
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-        <a
-          href="#konten"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2
-                     focus:z-[100] focus:rounded-lg focus:bg-brand focus:px-3 focus:py-2
-                     focus:text-sm focus:font-semibold focus:text-white focus:shadow-lg"
-        >
-          Lompat ke konten utama
-        </a>
-        <div className="mx-auto min-h-screen max-w-3xl px-4 py-6">
-          <header className="mb-8 flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <h1 className="text-xl font-semibold">
-                Kenali Pola Investasi Anda
-              </h1>
-              <p className="text-sm text-muted">
-                Simulasi investasi yang membantu Anda mengenali kebiasaan
-                mengambil keputusan, didukung <em>Cognitive Digital Twin</em>.
-              </p>
+        <ToastProvider>
+          <a
+            href="#konten"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2
+                       focus:z-[100] focus:rounded-lg focus:bg-brand focus:px-3 focus:py-2
+                       focus:text-sm focus:font-semibold focus:text-white focus:shadow-lg"
+          >
+            Lompat ke konten utama
+          </a>
+
+          <h1 className="sr-only">CDT, kenali pola investasi Anda</h1>
+
+          <TopBar />
+
+          <div className="mx-auto max-w-6xl px-4 py-6">
+            <div id="konten" tabIndex={-1} className="outline-none">
+              {children}
             </div>
-            <div className="flex items-start gap-2">
-              <ThemeToggle />
-              <HeaderBar />
-            </div>
-          </header>
-          <div id="konten" tabIndex={-1} className="outline-none">
-            {children}
           </div>
-          <footer className="mt-12 border-t border-edge pt-4 text-xs text-muted">
-            <Link href="/metodologi" className="hover:text-strong hover:underline">
-              Metodologi &amp; istilah
-            </Link>
-            <span className="mx-2">·</span>
-            Alat bantu edukasi, bukan nasihat investasi.
+
+          <footer className="mt-8 border-t border-edge">
+            <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-6 text-xs text-muted">
+              {FOOTER_LINKS.map((l) => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className="hover:text-strong hover:underline"
+                >
+                  {l.label}
+                </Link>
+              ))}
+              <span className="ml-auto">
+                Alat bantu edukasi, bukan nasihat investasi.
+              </span>
+            </div>
           </footer>
-        </div>
+        </ToastProvider>
       </body>
     </html>
   );
