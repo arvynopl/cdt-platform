@@ -182,10 +182,10 @@ function ProfileContent({ data }: { data: ProfileResponse }) {
   return (
     <main className="animate-fade-in space-y-5 pb-10">
       <div>
-        <h2 className="text-lg font-semibold">Profil Kognitif Anda</h2>
-        <p className="mt-1 text-sm text-muted">
-          Gambaran pola pengambilan keputusan Anda yang diperbarui setelah
-          setiap sesi. Semakin sering berlatih, semakin jernih potretnya.
+        <h2 className="text-xl font-bold tracking-tight">Profil Kognitif Anda</h2>
+        <p className="mt-1 text-sm text-bodytext">
+          Gambaran kebiasaan Anda mengambil keputusan. Makin sering berlatih,
+          makin jernih potretnya.
         </p>
       </div>
 
@@ -216,25 +216,32 @@ function ProfileContent({ data }: { data: ProfileResponse }) {
           <span className="hidden text-brand group-open:inline">－ </span>
           Apa arti angka ini?
         </summary>
-        <div className="mt-2 space-y-2 text-sm leading-relaxed text-bodytext">
-          <p>
-            <b>Konsistensi Pola {formatPct(profile.stability_index * 100, 0)}</b>{" "}
-            —{" "}
-            {profile.stability_index >= 0.7
-              ? "pola keputusan Anda relatif menetap antar sesi, jadi profil di bawah bisa Anda percaya lebih kuat."
-              : profile.stability_index >= 0.4
-                ? "pola Anda sudah mulai terbentuk tetapi masih bergerak; beberapa sesi lagi akan memperjelasnya."
-                : "pola Anda masih berubah-ubah — hal yang wajar pada sesi-sesi awal ketika datanya belum banyak."}
-          </p>
-          <p>
-            <b>Preferensi Risiko: {rpLabel}</b> —{" "}
-            {rp >= 0.6
-              ? "berdasarkan keputusan Anda selama simulasi, Anda cenderung bersedia menanggung fluktuasi besar demi potensi imbal hasil lebih tinggi."
-              : rp >= 0.3
-                ? "berdasarkan keputusan Anda selama simulasi, Anda cenderung menyeimbangkan potensi imbal hasil dengan kestabilan modal."
-                : "berdasarkan keputusan Anda selama simulasi, Anda cenderung memprioritaskan menjaga modal di atas mengejar imbal hasil tinggi."}
-          </p>
-        </div>
+        <dl className="mt-3 space-y-3 text-sm leading-relaxed">
+          <div>
+            <dt className="font-semibold text-strong">
+              Konsistensi Pola {formatPct(profile.stability_index * 100, 0)}
+            </dt>
+            <dd className="text-bodytext">
+              {profile.stability_index >= 0.7
+                ? "Pola keputusan Anda sudah menetap antar sesi. Profil di bawah bisa Anda percaya lebih kuat."
+                : profile.stability_index >= 0.4
+                  ? "Pola Anda mulai terbentuk tetapi masih bergerak. Beberapa sesi lagi akan memperjelasnya."
+                  : "Pola Anda masih berubah-ubah. Itu wajar pada sesi awal karena datanya belum banyak."}
+            </dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-strong">
+              Preferensi Risiko {rpLabel}
+            </dt>
+            <dd className="text-bodytext">
+              {rp >= 0.6
+                ? "Selama simulasi Anda bersedia menanggung fluktuasi besar demi potensi imbal hasil lebih tinggi."
+                : rp >= 0.3
+                  ? "Selama simulasi Anda menyeimbangkan potensi imbal hasil dengan kestabilan modal."
+                  : "Selama simulasi Anda lebih memilih menjaga modal daripada mengejar imbal hasil tinggi."}
+            </dd>
+          </div>
+        </dl>
       </details>
 
       {/* Insight */}
@@ -366,23 +373,23 @@ const INTERACTION_PAIRS: {
     label: "Keyakinan Berlebih ↔ Efek Disposisi",
     strong: (pos) =>
       pos
-        ? "Saat Anda banyak bertransaksi, kecenderungan menjual saham yang untung terlalu cepat ikut menguat. Coba beri ruang lebih bagi posisi yang sedang menguntungkan."
-        : "Menariknya, saat transaksi Anda meningkat, Anda justru lebih sabar menahan posisi yang untung — sebuah tanda kehati-hatian.",
+        ? "Saat Anda banyak bertransaksi, dorongan menjual saham yang untung ikut menguat. Beri ruang lebih bagi posisi yang sedang menguntungkan."
+        : "Saat transaksi Anda meningkat, Anda justru lebih sabar menahan posisi yang untung. Itu tanda kehati-hatian.",
   },
   {
     key: "ocs_lai",
     label: "Keyakinan Berlebih ↔ Menghindari Kerugian",
     strong: (pos) =>
       pos
-        ? "Makin sering Anda bertransaksi, makin lama pula Anda menahan posisi yang rugi. Kombinasi ini dapat menggerus modal; pertimbangkan batas kerugian yang jelas."
-        : "Saat aktif bertransaksi, Anda justru lebih disiplin memotong kerugian — kebiasaan yang sehat.",
+        ? "Makin sering Anda bertransaksi, makin lama Anda menahan posisi yang rugi. Kombinasi ini menggerus modal. Tetapkan batas kerugian yang jelas."
+        : "Saat aktif bertransaksi, Anda justru lebih disiplin memotong kerugian. Itu kebiasaan yang sehat.",
   },
   {
     key: "dei_lai",
     label: "Efek Disposisi ↔ Menghindari Kerugian",
     strong: (pos) =>
       pos
-        ? "Dua pola saling memperkuat: menjual yang untung terlalu cepat sekaligus menahan yang rugi terlalu lama. Dampaknya ke portofolio lebih besar daripada masing-masing sendiri."
+        ? "Dua pola ini saling memperkuat. Anda menjual yang untung terlalu cepat sekaligus menahan yang rugi terlalu lama. Dampaknya lebih besar daripada satu pola yang berdiri sendiri."
         : "Kedua kebiasaan ini cenderung saling mengimbangi, bukan muncul bersamaan.",
   },
 ];

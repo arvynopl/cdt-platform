@@ -114,13 +114,13 @@ function HasilContent() {
   return (
     <main className="animate-fade-in space-y-5">
       <div>
-        <h2 className="text-lg font-semibold">
-          {review ? "Hasil Sesi Anda" : "Hasil Analisis & Umpan Balik"}
+        <h2 className="text-xl font-bold tracking-tight">
+          {review ? "Hasil Sesi Anda" : "Hasil Analisis"}
         </h2>
-        <p className="mt-1 text-sm text-muted">
+        <p className="mt-1 text-sm text-bodytext">
           {review
-            ? "Anda meninjau kembali hasil salah satu sesi. Bacalah dengan santai; tidak ada nilai baik atau buruk, yang penting Anda semakin mengenali kebiasaan sendiri."
-            : "Begini pola pengambilan keputusan Anda pada sesi ini. Bacalah dengan santai; tidak ada nilai baik atau buruk, yang penting Anda semakin mengenali kebiasaan sendiri."}
+            ? "Anda sedang meninjau sesi yang sudah lewat. Tidak ada nilai baik atau buruk di sini."
+            : "Inilah pola keputusan Anda pada sesi ini. Tidak ada nilai baik atau buruk di sini."}
         </p>
       </div>
 

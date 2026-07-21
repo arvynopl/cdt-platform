@@ -48,7 +48,7 @@ test("resumes an in-progress session after navigating away", async ({
 
   // The session resumes where it left off (round 2), not a fresh session.
   await expect(page.getByText(/Putaran 2 dari 14/)).toBeVisible({ timeout: 30_000 });
-  await expect(page.getByText(/melanjutkan sesi sebelumnya/)).toBeVisible();
+  await expect(page.getByText(/melanjutkan sesi sebelumnya/i)).toBeVisible();
 });
 
 /**

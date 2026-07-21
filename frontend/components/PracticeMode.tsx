@@ -152,7 +152,7 @@ export default function PracticeMode({ onComplete, replay = false, onExit }: Pra
       return {
         title: "Order beli sudah siap",
         body:
-          "Bagus. Order Anda belum dijalankan; ia menunggu di daftar order. " +
+          "Bagus. Order Anda belum dijalankan. Order itu menunggu di daftar. " +
           "Sekarang tekan “Eksekusi Putaran” untuk menjalankannya.",
       };
     }

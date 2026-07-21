@@ -93,9 +93,8 @@ export default function UmpanBalikPage() {
         <h2 className="text-lg font-semibold">Terima kasih!</h2>
         <p className="text-sm leading-relaxed text-bodytext">
           Tanggapan Anda sudah tersimpan dan sangat berarti untuk perbaikan
-          sistem. Bila pendapat Anda berubah setelah memakai sistem lebih
-          lama, silakan isi ulang kapan saja; tanggapan terbaru yang akan
-          dipakai.
+          sistem. Bila pendapat Anda berubah setelah memakai sistem lebih lama,
+          silakan isi ulang kapan saja. Tanggapan terbaru yang akan dipakai.
         </p>
         <button
           onClick={() => router.push("/simulasi")}

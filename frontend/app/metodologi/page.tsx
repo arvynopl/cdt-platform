@@ -3,7 +3,7 @@ import Link from "next/link";
 import { GLOSSARY } from "@/lib/glossary";
 
 export const metadata: Metadata = {
-  title: "Metodologi & Istilah — CDT",
+  title: "Metodologi dan Istilah",
   description:
     "Cara kerja Cognitive Digital Twin (CDT) dan penjelasan istilah bias " +
     "pengambilan keputusan yang dipakai di aplikasi ini.",
@@ -47,11 +47,13 @@ export default function MetodologiPage() {
   return (
     <main className="space-y-6 pb-12">
       <div>
-        <h2 className="text-lg font-semibold">Metodologi &amp; Istilah</h2>
+        <h2 className="text-xl font-bold tracking-tight">
+          Metodologi dan Istilah
+        </h2>
         <p className="mt-1 text-sm leading-relaxed text-bodytext">
-          Halaman ini menjelaskan secara ringkas cara kerja aplikasi dan arti
-          istilah yang Anda temui di halaman hasil dan profil. Tujuannya satu:
-          angka yang Anda lihat bukan kotak hitam.
+          Halaman ini menjelaskan cara kerja aplikasi dan arti istilah yang Anda
+          temui di halaman hasil dan profil. Angka yang Anda lihat bukan kotak
+          hitam.
         </p>
       </div>
 

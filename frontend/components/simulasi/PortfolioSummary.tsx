@@ -2,9 +2,12 @@
 
 /**
  * PortfolioSummary — the round-progress bar and the cash / total-value /
- * return figures shown above the stock list.
+ * return figures. Laid out like a trading terminal's account strip: figures
+ * right-aligned with tabular digits, and the return is the only element
+ * allowed to carry gain/loss colour.
  */
 
+import Stat from "@/components/ui/Stat";
 import { formatPct, formatRupiah } from "@/lib/api";
 
 export default function PortfolioSummary(props: {
@@ -15,49 +18,49 @@ export default function PortfolioSummary(props: {
   totalValue: number;
   returnPct: number;
 }) {
+  const pct = ((props.currentRound - 1) / props.roundsTotal) * 100;
+
   return (
     <section
       data-tour="portfolio"
-      className="rounded-xl border border-edge bg-card p-4"
+      className="rounded-xl border border-edge bg-card"
     >
-      <div className="mb-2 flex items-center justify-between text-sm">
-        <span className="font-semibold">
-          Putaran {props.currentRound} dari {props.roundsTotal}
+      <div className="flex items-center justify-between gap-3 px-4 pt-3">
+        <span className="text-sm font-semibold text-strong">
+          Putaran <span className="tnum">{props.currentRound}</span> dari{" "}
+          <span className="tnum">{props.roundsTotal}</span>
         </span>
-        <span className="text-muted">
-          {props.resumed ? "melanjutkan sesi sebelumnya" : "sesi baru"}
+        <span className="text-xs text-muted">
+          {props.resumed ? "Melanjutkan sesi sebelumnya" : "Sesi baru"}
         </span>
       </div>
-      <div className="h-2 overflow-hidden rounded-full bg-panel">
+
+      <div className="px-4 pt-2">
         <div
-          className="h-full rounded-full bg-brand transition-all"
-          style={{
-            width: `${((props.currentRound - 1) / props.roundsTotal) * 100}%`,
-          }}
+          className="h-1 overflow-hidden rounded-full bg-panel"
+          role="progressbar"
+          aria-valuenow={props.currentRound - 1}
+          aria-valuemin={0}
+          aria-valuemax={props.roundsTotal}
+          aria-label="Kemajuan sesi"
+        >
+          <div
+            className="h-full rounded-full bg-brand transition-all"
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-3 border-t border-edge px-4 py-3 mt-3">
+        <Stat label="Kas" value={formatRupiah(props.cash)} />
+        <Stat label="Nilai Total" value={formatRupiah(props.totalValue)} />
+        <Stat
+          label="Imbal Hasil"
+          value={formatPct(props.returnPct)}
+          tone={props.returnPct >= 0 ? "gain" : "loss"}
+          align="right"
         />
       </div>
-      <dl className="mt-3 grid grid-cols-3 gap-2 text-center">
-        <div>
-          <dt className="text-xs text-muted">Kas</dt>
-          <dd className="text-sm font-semibold">{formatRupiah(props.cash)}</dd>
-        </div>
-        <div>
-          <dt className="text-xs text-muted">Nilai Total</dt>
-          <dd className="text-sm font-semibold">
-            {formatRupiah(props.totalValue)}
-          </dd>
-        </div>
-        <div>
-          <dt className="text-xs text-muted">Imbal Hasil</dt>
-          <dd
-            className={`text-sm font-semibold ${
-              props.returnPct >= 0 ? "text-emerald-700 dark:text-emerald-300" : "text-red-700 dark:text-red-300"
-            }`}
-          >
-            {formatPct(props.returnPct)}
-          </dd>
-        </div>
-      </dl>
     </section>
   );
 }

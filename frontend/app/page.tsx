@@ -16,11 +16,11 @@ type Stage = "username" | "login" | "register";
 
 const LIKERT = [1, 2, 3, 4, 5] as const;
 const LIKERT_LABELS: Record<number, string> = {
-  1: "1 — Sangat Tidak Setuju",
-  2: "2 — Tidak Setuju",
-  3: "3 — Netral",
-  4: "4 — Setuju",
-  5: "5 — Sangat Setuju",
+  1: "1 · Sangat Tidak Setuju",
+  2: "2 · Tidak Setuju",
+  3: "3 · Netral",
+  4: "4 · Setuju",
+  5: "5 · Sangat Setuju",
 };
 
 // 9 onboarding items — 3 per bias (DEI, OCS, LAI); wording identical to the
@@ -136,7 +136,7 @@ export default function BerandaPage() {
 
 // First-time-visitor value proposition, shown only on the username step.
 const VALUE_POINTS: [string, string, string][] = [
-  ["🎮", "Berlatih tanpa risiko", "Simulasikan keputusan jual-beli dengan data harga nyata — tanpa uang sungguhan."],
+  ["🎮", "Berlatih tanpa risiko", "Simulasikan keputusan jual dan beli dengan data harga nyata. Tanpa uang sungguhan."],
   ["🧠", "Kenali pola Anda", "Sistem memetakan kecenderungan seperti menjual untung terlalu cepat atau menahan rugi terlalu lama."],
   ["📈", "Tumbuh tiap sesi", "Setiap sesi menajamkan profil Anda dan memberi umpan balik yang bisa langsung dicoba."],
 ];
