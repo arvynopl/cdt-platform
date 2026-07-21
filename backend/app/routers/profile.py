@@ -7,18 +7,23 @@ visualisations from one call.
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from sqlalchemy.orm import Session
 
 from app import schemas
 from app.deps import current_user, get_db, require_csrf
-from app.security.sessions import clear_session_cookies
+from app.security.sessions import (
+    clear_session_cookies,
+    create_auth_session,
+    set_session_cookies,
+)
 from app.services.account import (
     anonymize_user,
     export_user_data,
     export_user_data_csv_zip,
 )
 from database.models import (
+    AuthSession,
     BiasMetric,
     CdtSnapshot,
     CognitiveProfile,
@@ -26,11 +31,13 @@ from database.models import (
     SessionSummary,
     UATFeedback,
     User,
+    UserProfile,
 )
 from modules.analytics.personal_baseline import (
     compute_personal_thresholds,
     normalised_scientific_thresholds,
 )
+from modules.auth.passwords import hash_password, verify_password
 from modules.utils.export import export_user_history_csv
 
 router = APIRouter(prefix="/api/me", tags=["profile"])
@@ -114,6 +121,98 @@ def my_history(
     """Flat per-session rows — the frontend renders these and offers CSV
     download client-side (NFR07 interoperability)."""
     return {"rows": export_user_history_csv(db, user.id)}
+
+
+# ---------------------------------------------------------------------------
+# Account management (Manajemen Akun)
+# ---------------------------------------------------------------------------
+
+# Mirrors the mapping applied at registration in modules/auth/service.py.
+_CAPABILITY_TO_LEVEL = {
+    "pemula": "beginner",
+    "menengah": "intermediate",
+    "berpengalaman": "advanced",
+}
+
+
+@router.get("/account")
+def my_account(
+    user: User = Depends(current_user), db: Session = Depends(get_db)
+) -> dict:
+    """Account identity plus the editable profile fields."""
+    profile = db.query(UserProfile).filter_by(user_id=user.id).first()
+    return {
+        "username": user.username,
+        "experience_level": user.experience_level,
+        "created_at": user.created_at.isoformat() if user.created_at else None,
+        "profile": None if profile is None else {
+            "full_name": profile.full_name,
+            "age": profile.age,
+            "gender": profile.gender,
+            "risk_profile": profile.risk_profile,
+            "investing_capability": profile.investing_capability,
+        },
+    }
+
+
+@router.patch("/profile", dependencies=[Depends(require_csrf)])
+def update_my_profile(
+    payload: schemas.ProfileUpdateIn,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Update the editable profile fields.
+
+    Username is not accepted here on purpose: it is the login identity and the
+    key research records are grouped by, so it stays immutable.
+    """
+    profile = db.query(UserProfile).filter_by(user_id=user.id).first()
+    if profile is None:
+        raise HTTPException(404, "Profil tidak ditemukan.")
+
+    profile.full_name = payload.full_name
+    profile.age = payload.age
+    profile.gender = payload.gender
+    profile.risk_profile = payload.risk_profile
+    profile.investing_capability = payload.investing_capability
+    # Keep the denormalised level on User consistent with the capability.
+    user.experience_level = _CAPABILITY_TO_LEVEL[payload.investing_capability]
+    return {"status": "ok"}
+
+
+@router.post("/password", dependencies=[Depends(require_csrf)])
+def change_my_password(
+    payload: schemas.PasswordChangeIn,
+    request: Request,
+    response: Response,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Change the password after re-verifying the current one.
+
+    All existing sessions are revoked, because a password change should sign
+    out every other device. A fresh session is then issued for THIS browser so
+    the caller is not thrown out of the page they are standing on; the new CSRF
+    token rides back in the body for the cross-site frontend to cache.
+    """
+    if not verify_password(payload.current_password, user.password_hash or ""):
+        raise HTTPException(400, "Kata sandi saat ini tidak cocok.")
+    if payload.new_password == payload.current_password:
+        raise HTTPException(
+            400, "Kata sandi baru harus berbeda dari kata sandi sekarang."
+        )
+
+    user.password_hash = hash_password(payload.new_password)
+    db.query(AuthSession).filter_by(user_id=user.id).delete(
+        synchronize_session=False
+    )
+    db.flush()
+
+    token, csrf = create_auth_session(
+        db, user.id, request.headers.get("user-agent")
+    )
+    set_session_cookies(response, token, csrf)
+    return {"status": "ok", "csrf_token": csrf}
 
 
 # ---------------------------------------------------------------------------

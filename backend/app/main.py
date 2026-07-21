@@ -111,7 +111,9 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["GET", "POST"],
+    # PATCH is needed by /api/me/profile; without it the cross-origin
+    # preflight from the Vercel frontend fails before the request is sent.
+    allow_methods=["GET", "POST", "PATCH"],
     allow_headers=[
         "content-type",
         "x-csrf-token",

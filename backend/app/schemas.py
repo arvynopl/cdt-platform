@@ -68,6 +68,27 @@ class MeOut(BaseModel):
 
 
 # ---------------------------------------------------------------------------
+# Account management (Manajemen Akun)
+# ---------------------------------------------------------------------------
+
+
+class ProfileUpdateIn(BaseModel):
+    """Editable demographic/trait fields. Username is deliberately absent: it
+    is the login identity and the research key, so it stays immutable."""
+
+    full_name: str = Field(min_length=2, max_length=128)
+    age: int = Field(ge=17, le=100)
+    gender: Literal["laki-laki", "perempuan", "lainnya"]
+    risk_profile: Literal["konservatif", "moderat", "agresif"]
+    investing_capability: Literal["pemula", "menengah", "berpengalaman"]
+
+
+class PasswordChangeIn(BaseModel):
+    current_password: str = Field(min_length=1, max_length=128)
+    new_password: str = Field(min_length=8, max_length=128)
+
+
+# ---------------------------------------------------------------------------
 # Simulation
 # ---------------------------------------------------------------------------
 

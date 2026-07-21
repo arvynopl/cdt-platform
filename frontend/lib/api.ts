@@ -51,7 +51,7 @@ async function detailFromResponse(resp: Response): Promise<string> {
 }
 
 async function request<T>(
-  method: "GET" | "POST",
+  method: "GET" | "POST" | "PATCH",
   path: string,
   body?: unknown,
   extraHeaders?: Record<string, string>,
@@ -81,6 +81,7 @@ export const api = {
   get: <T>(path: string, extraHeaders?: Record<string, string>) =>
     request<T>("GET", path, undefined, extraHeaders),
   post: <T>(path: string, body?: unknown) => request<T>("POST", path, body),
+  patch: <T>(path: string, body?: unknown) => request<T>("PATCH", path, body),
 };
 
 /**
@@ -133,6 +134,22 @@ export interface Me {
   username: string;
   experience_level: string;
   csrf_token?: string;
+}
+
+/** Editable account data behind Manajemen Akun. Username is read-only. */
+export interface AccountProfile {
+  full_name: string;
+  age: number;
+  gender: "laki-laki" | "perempuan" | "lainnya";
+  risk_profile: "konservatif" | "moderat" | "agresif";
+  investing_capability: "pemula" | "menengah" | "berpengalaman";
+}
+
+export interface AccountInfo {
+  username: string;
+  experience_level: string;
+  created_at: string | null;
+  profile: AccountProfile | null;
 }
 
 export interface OnboardingSurvey {

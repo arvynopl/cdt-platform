@@ -126,6 +126,94 @@ class TestAnonymize:
         assert fb.sus_q1 == 4
 
 
+class TestAccountManagement:
+    """Manajemen Akun: read profile, edit profile, change password."""
+
+    def _register(self, api_client, username="rani.putri"):
+        resp = api_client.post("/api/auth/register", json=_register_payload(username))
+        assert resp.status_code == 201
+
+    def test_account_returns_identity_and_profile(self, api_client):
+        self._register(api_client)
+        body = api_client.get("/api/me/account").json()
+        assert body["username"] == "rani.putri"
+        assert body["profile"]["full_name"] == "Budi Santoso"
+        assert body["profile"]["investing_capability"] in {
+            "pemula", "menengah", "berpengalaman",
+        }
+
+    def test_profile_update_persists_and_syncs_experience_level(self, api_client):
+        self._register(api_client)
+        ok = api_client.patch(
+            "/api/me/profile",
+            headers=csrf_headers(api_client),
+            json={
+                "full_name": "Rani Putri",
+                "age": 31,
+                "gender": "perempuan",
+                "risk_profile": "agresif",
+                "investing_capability": "berpengalaman",
+            },
+        )
+        assert ok.status_code == 200
+
+        body = api_client.get("/api/me/account").json()
+        assert body["profile"]["full_name"] == "Rani Putri"
+        assert body["profile"]["age"] == 31
+        assert body["profile"]["risk_profile"] == "agresif"
+        # The denormalised level on User follows the capability.
+        assert body["experience_level"] == "advanced"
+        # Username is not editable through this endpoint.
+        assert body["username"] == "rani.putri"
+
+    def test_profile_update_requires_csrf(self, api_client):
+        self._register(api_client)
+        resp = api_client.patch(
+            "/api/me/profile",
+            json={
+                "full_name": "Tanpa CSRF",
+                "age": 30,
+                "gender": "perempuan",
+                "risk_profile": "moderat",
+                "investing_capability": "pemula",
+            },
+        )
+        assert resp.status_code == 403
+
+    def test_password_change_rejects_wrong_current_password(self, api_client):
+        self._register(api_client)
+        resp = api_client.post(
+            "/api/me/password",
+            headers=csrf_headers(api_client),
+            json={"current_password": "salah-sekali", "new_password": "sandi-baru-123"},
+        )
+        assert resp.status_code == 400
+
+    def test_password_change_rotates_credentials_and_keeps_caller_signed_in(
+        self, api_client
+    ):
+        self._register(api_client)
+        resp = api_client.post(
+            "/api/me/password",
+            headers=csrf_headers(api_client),
+            json={"current_password": "rahasia-123", "new_password": "sandi-baru-123"},
+        )
+        assert resp.status_code == 200
+        # A fresh session is issued, so this browser stays signed in.
+        assert api_client.get("/api/auth/me").status_code == 200
+
+        api_client.post("/api/auth/logout", headers=csrf_headers(api_client))
+        # The old password no longer works; the new one does.
+        assert api_client.post(
+            "/api/auth/login",
+            json={"username": "rani.putri", "password": "rahasia-123"},
+        ).status_code == 401
+        assert api_client.post(
+            "/api/auth/login",
+            json={"username": "rani.putri", "password": "sandi-baru-123"},
+        ).status_code == 200
+
+
 class TestAccountApi:
     def test_export_then_delete_ends_session_and_blocks_relogin(self, api_client):
         resp = api_client.post(
