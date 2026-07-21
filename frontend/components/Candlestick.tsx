@@ -29,6 +29,7 @@ export default function Candlestick({
     const el = ref.current;
     if (!el) return;
     let cancelled = false;
+    let observer: ResizeObserver | null = null;
 
     (async () => {
       const Plotly = (await import("plotly.js-dist-min")).default;
@@ -92,10 +93,18 @@ export default function Candlestick({
         },
         { displayModeBar: false, responsive: true },
       );
+
+      // Plotly's `responsive` only watches the WINDOW. In a grid layout the
+      // container can change width on its own (or reflow a tick after the
+      // window event), which left the chart drawn at a stale width. Watch the
+      // container itself instead.
+      observer = new ResizeObserver(() => Plotly.Plots.resize(el));
+      observer.observe(el);
     })();
 
     return () => {
       cancelled = true;
+      observer?.disconnect();
       if (el) {
         import("plotly.js-dist-min").then((m) => m.default.purge(el));
       }

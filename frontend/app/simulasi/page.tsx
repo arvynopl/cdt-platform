@@ -25,14 +25,19 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import CoachTour from "@/components/CoachTour";
 import PracticeMode, { TOUR_STEPS } from "@/components/PracticeMode";
+import Candlestick from "@/components/Candlestick";
 import AnalysisPending from "@/components/simulasi/AnalysisPending";
 import ConfirmRoundDialog from "@/components/simulasi/ConfirmRoundDialog";
 import HelpMenu from "@/components/simulasi/HelpMenu";
+import InstrumentRow from "@/components/simulasi/InstrumentRow";
+import OrderTicket from "@/components/simulasi/OrderTicket";
 import PortfolioSummary from "@/components/simulasi/PortfolioSummary";
-import StockCard from "@/components/simulasi/StockCard";
+import Button from "@/components/ui/Button";
+import Panel from "@/components/ui/Panel";
 import {
   api,
   ApiError,
+  formatRupiah,
   type AnalysisStatus,
   type Me,
   type Order,
@@ -297,6 +302,9 @@ export default function SimulasiPage() {
   const pendingList = Object.values(pending);
   const autoHoldCount = state.stock_ids.length - pendingList.length;
   const metaOf = (sid: string) => state.stocks.find((s) => s.stock_id === sid);
+  // A trading screen always shows something, so fall back to the first
+  // instrument rather than leaving the chart pane empty.
+  const selectedId: string | null = selected ?? state.stock_ids[0] ?? null;
   const returnPct =
     ((state.portfolio.total_value - 10_000_000) / 10_000_000) * 100;
 
@@ -354,65 +362,128 @@ export default function SimulasiPage() {
         </div>
       )}
 
-      {/* Stock list — keyed by round so every ticket remounts clean */}
-      <section key={currentRound} data-tour="stocks" className="grid gap-2 sm:grid-cols-2">
-        {state.stock_ids.map((sid) => {
-          const price = prices[sid];
-          const change = ((price - prevPrices[sid]) / prevPrices[sid]) * 100;
-          return (
-            <StockCard
-              key={sid}
-              meta={metaOf(sid)}
-              fallbackId={sid}
-              price={price}
-              change={change}
-              held={heldQty(sid)}
-              order={pending[sid]}
-              isOpen={selected === sid}
-              onToggle={() => setSelected(selected === sid ? null : sid)}
-              preHistory={state.pre_window_history[sid] ?? []}
-              windowData={state.window[sid]}
-              revealedRounds={currentRound}
-              spendableCash={spendableCash}
-              onSetOrder={(o) =>
-                setPending((p) =>
-                  o === null
-                    ? Object.fromEntries(
-                        Object.entries(p).filter(([k]) => k !== sid),
+      {/* Trading workspace: watchlist on the left, chart and ticket beside it */}
+      <div className="grid gap-4 lg:grid-cols-[19rem_1fr]">
+        <section
+          data-tour="stocks"
+          className="self-start overflow-hidden rounded-xl border border-edge bg-card"
+        >
+          <header className="border-b border-edge px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-muted">
+            Daftar Saham
+          </header>
+          <div className="divide-y divide-edge">
+            {state.stock_ids.map((sid) => {
+              const price = prices[sid];
+              const change =
+                ((price - prevPrices[sid]) / prevPrices[sid]) * 100;
+              return (
+                <InstrumentRow
+                  key={sid}
+                  meta={metaOf(sid)}
+                  fallbackId={sid}
+                  price={price}
+                  change={change}
+                  held={heldQty(sid)}
+                  order={pending[sid]}
+                  selected={selectedId === sid}
+                  onSelect={() => setSelected(sid)}
+                />
+              );
+            })}
+          </div>
+        </section>
+
+        <div className="space-y-4">
+          {selectedId ? (
+            <>
+              <Panel
+                title={metaOf(selectedId)?.ticker ?? selectedId}
+                subtitle={metaOf(selectedId)?.name}
+                action={
+                  <span className="tnum text-sm font-semibold text-strong">
+                    {formatRupiah(prices[selectedId])}
+                  </span>
+                }
+              >
+                <div data-tour="chart">
+                  <Candlestick
+                    preHistory={state.pre_window_history[selectedId] ?? []}
+                    window={state.window[selectedId]}
+                    revealedRounds={currentRound}
+                    height={300}
+                  />
+                </div>
+              </Panel>
+
+              <Panel title="Buat Order">
+                {/* Keyed so the draft quantity clears when the round advances
+                    or the user switches instrument. */}
+                <div data-tour="ticket">
+                  <OrderTicket
+                    key={`${selectedId}-${currentRound}`}
+                    price={prices[selectedId]}
+                    heldQty={heldQty(selectedId)}
+                    spendableCash={
+                      spendableCash +
+                      (pending[selectedId]?.action === "buy"
+                        ? pending[selectedId].quantity * prices[selectedId]
+                        : 0)
+                    }
+                    existing={pending[selectedId] ?? null}
+                    onSet={(o) =>
+                      setPending((p) =>
+                        o === null
+                          ? Object.fromEntries(
+                              Object.entries(p).filter(
+                                ([k]) => k !== selectedId,
+                              ),
+                            )
+                          : {
+                              ...p,
+                              [selectedId]: { ...o, stock_id: selectedId },
+                            },
                       )
-                    : { ...p, [sid]: { ...o, stock_id: sid } },
-                )
-              }
-            />
-          );
-        })}
-      </section>
+                    }
+                  />
+                </div>
+              </Panel>
+            </>
+          ) : (
+            <Panel>
+              <p className="py-10 text-center text-sm text-muted">
+                Pilih saham di daftar untuk melihat grafik dan membuat order.
+              </p>
+            </Panel>
+          )}
+        </div>
+      </div>
 
       {/* F12: pending tray */}
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-edge bg-card/95 px-4 py-3 backdrop-blur">
-        <div className="mx-auto flex max-w-3xl items-center justify-between gap-3">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-edge bg-card/95 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
           <p className="text-sm text-bodytext">
             {pendingList.length > 0 ? (
               <>
-                <b>{pendingList.length}</b> order menunggu ·{" "}
+                <b className="tnum">{pendingList.length}</b> order menunggu
                 <span className="text-muted">
-                  {autoHoldCount} saham lainnya ditahan
+                  {" · "}
+                  <span className="tnum">{autoHoldCount}</span> saham lain
+                  ditahan
                 </span>
               </>
             ) : (
               <span className="text-muted">
-                Belum ada order; seluruh saham akan ditahan
+                Belum ada order. Seluruh saham akan ditahan.
               </span>
             )}
           </p>
-          <button
+          <Button
             data-tour="execute"
             onClick={() => setConfirmOpen(true)}
             disabled={busy}
-            className="rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
           >
-            Eksekusi Putaran {currentRound} →
-          </button>
+            Eksekusi Putaran {currentRound}
+          </Button>
         </div>
       </div>
 

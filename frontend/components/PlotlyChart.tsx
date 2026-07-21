@@ -22,6 +22,7 @@ export default function PlotlyChart({ data, layout, height = 320, ariaLabel }: P
     const el = ref.current;
     if (!el) return;
     let cancelled = false;
+    let observer: ResizeObserver | null = null;
 
     (async () => {
       const Plotly = (await import("plotly.js-dist-min")).default;
@@ -42,10 +43,16 @@ export default function PlotlyChart({ data, layout, height = 320, ariaLabel }: P
         },
         { displayModeBar: false, responsive: true },
       );
+
+      // `responsive` only watches the window; watch the container too so the
+      // chart refits when the layout (not the viewport) changes its width.
+      observer = new ResizeObserver(() => Plotly.Plots.resize(el));
+      observer.observe(el);
     })();
 
     return () => {
       cancelled = true;
+      observer?.disconnect();
       if (el) {
         import("plotly.js-dist-min").then((m) => m.default.purge(el));
       }

@@ -40,9 +40,10 @@ export async function executeRound(page: Page): Promise<void> {
   await page.getByRole("button", { name: /Ya, Jalankan/ }).click();
 }
 
-/** Add a buy order for the first stock card in the real trading interface. */
+/** Add a buy order for the first instrument in the real trading interface. */
 export async function buyFirstStock(page: Page, shares: number): Promise<void> {
-  await page.locator('[data-tour="stocks"] button[aria-expanded]').first().click();
+  // Watchlist rows select (aria-pressed); the chart and ticket render beside them.
+  await page.locator('[data-tour="stocks"] button').first().click();
   const ticket = page.locator('[data-tour="ticket"]');
   await expect(ticket).toBeVisible();
   await ticket.locator('input[type="number"]').fill(String(shares));
