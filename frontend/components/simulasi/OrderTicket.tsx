@@ -32,7 +32,7 @@ export default function OrderTicket(props: {
   const maxBuy = Math.floor(props.spendableCash / props.price);
 
   return (
-    <div className="mt-3 rounded-lg bg-slate-50 p-3">
+    <div className="mt-3 rounded-lg bg-panel p-3">
       <div className="flex gap-2">
         {(["buy", "sell"] as const).map((a) => (
           <button
@@ -44,7 +44,7 @@ export default function OrderTicket(props: {
                 ? a === "buy"
                   ? "bg-emerald-600 text-white"
                   : "bg-red-600 text-white"
-                : "border border-slate-300 text-slate-600"
+                : "border border-edge2 text-bodytext"
             }`}
           >
             {a === "buy" ? "Beli" : "Jual"}
@@ -52,14 +52,14 @@ export default function OrderTicket(props: {
         ))}
       </div>
 
-      <label className="mt-2 block text-xs font-medium text-slate-600">
+      <label className="mt-2 block text-xs font-medium text-bodytext">
         Jumlah lembar
         <input
           type="number"
           min={0}
           value={qty || ""}
           onChange={(e) => setQty(Math.max(0, Number(e.target.value)))}
-          className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          className="mt-1 w-full rounded-lg border border-edge2 px-3 py-2 text-sm"
           placeholder={
             action === "buy" ? `maks. ${maxBuy}` : `dimiliki ${props.heldQty}`
           }
@@ -67,7 +67,7 @@ export default function OrderTicket(props: {
       </label>
 
       {/* F11: live preview, no manual arithmetic needed */}
-      <dl className="mt-2 space-y-0.5 text-xs text-slate-600">
+      <dl className="mt-2 space-y-0.5 text-xs text-bodytext">
         <div className="flex justify-between">
           <dt>
             {action === "buy" ? "Perkiraan biaya" : "Perkiraan hasil jual"}
@@ -76,7 +76,7 @@ export default function OrderTicket(props: {
         </div>
         <div className="flex justify-between">
           <dt>Kas setelah eksekusi</dt>
-          <dd className={`font-semibold ${buyExceeds ? "text-red-700" : ""}`}>
+          <dd className={`font-semibold ${buyExceeds ? "text-red-700 dark:text-red-300" : ""}`}>
             {formatRupiah(
               action === "buy"
                 ? props.spendableCash - cost
@@ -87,12 +87,12 @@ export default function OrderTicket(props: {
       </dl>
 
       {buyExceeds && (
-        <p className="mt-1 text-xs text-red-700">
+        <p className="mt-1 text-xs text-red-700 dark:text-red-300">
           Kas Anda tidak cukup untuk jumlah ini; maksimal {maxBuy} lembar.
         </p>
       )}
       {sellExceeds && (
-        <p className="mt-1 text-xs text-red-700">
+        <p className="mt-1 text-xs text-red-700 dark:text-red-300">
           Jumlahnya melebihi {props.heldQty} lembar yang Anda miliki.
         </p>
       )}
@@ -108,7 +108,7 @@ export default function OrderTicket(props: {
         {props.existing && (
           <button
             onClick={() => props.onSet(null)}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-600"
+            className="rounded-lg border border-edge2 px-3 py-2 text-sm text-bodytext"
           >
             Batalkan
           </button>

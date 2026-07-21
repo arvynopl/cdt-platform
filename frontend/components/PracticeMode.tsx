@@ -229,13 +229,13 @@ export default function PracticeMode({ onComplete, replay = false, onExit }: Pra
       <main className="mx-auto max-w-md space-y-4 pt-8 text-center">
         <div className="text-4xl">🎓</div>
         <h2 className="text-lg font-semibold">Latihan selesai!</h2>
-        <p className="text-sm leading-relaxed text-slate-600">
+        <p className="text-sm leading-relaxed text-bodytext">
           Anda menutup posisi latihan dengan hasil{" "}
-          <b className="text-emerald-700">{formatRupiah(profit)}</b>. Seluruh
+          <b className="text-emerald-700 dark:text-emerald-300">{formatRupiah(profit)}</b>. Seluruh
           alur sudah Anda kuasai: memasang order, mengeksekusi putaran, dan
           membaca dampaknya pada portofolio.
         </p>
-        <p className="text-sm leading-relaxed text-slate-600">
+        <p className="text-sm leading-relaxed text-bodytext">
           {replay
             ? "Ingatan sudah segar kembali. Silakan lanjutkan sesi Anda."
             : "Sekarang saatnya yang sebenarnya: 14 putaran dengan 12 saham IDX dan data historis asli. Selamat berlatih mengenali gaya Anda sendiri."}
@@ -274,24 +274,24 @@ export default function PracticeMode({ onComplete, replay = false, onExit }: Pra
           {replay && onExit && (
             <button
               onClick={onExit}
-              className="text-xs font-medium text-slate-500 underline-offset-2 hover:underline"
+              className="text-xs font-medium text-muted underline-offset-2 hover:underline"
             >
               Kembali ke simulasi
             </button>
           )}
         </div>
         <h2 className="mt-0.5 text-sm font-semibold">{narration.title}</h2>
-        <p className="mt-1 text-sm leading-relaxed text-slate-700">
+        <p className="mt-1 text-sm leading-relaxed text-strong">
           {narration.body}
         </p>
-        <p className="mt-1.5 text-xs text-slate-500">
+        <p className="mt-1.5 text-xs text-muted">
           Keputusan pada mode latihan tidak direkam dan tidak memengaruhi
           analisis Anda.
         </p>
       </div>
 
       {flash && (
-        <p className="rounded-lg bg-amber-50 px-4 py-2.5 text-sm text-amber-800">
+        <p className="rounded-lg bg-amber-50 dark:bg-amber-950/40 px-4 py-2.5 text-sm text-amber-800 dark:text-amber-300">
           {flash}
         </p>
       )}
@@ -299,13 +299,13 @@ export default function PracticeMode({ onComplete, replay = false, onExit }: Pra
       {/* Portfolio summary */}
       <section
         data-tour="portfolio"
-        className="rounded-xl border border-slate-200 bg-white p-4"
+        className="rounded-xl border border-edge bg-card p-4"
       >
         <div className="mb-2 flex items-center justify-between text-sm">
           <span className="font-semibold">Latihan {round} dari 3</span>
-          <span className="text-slate-500">saham fiktif, harga terskrip</span>
+          <span className="text-muted">saham fiktif, harga terskrip</span>
         </div>
-        <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+        <div className="h-2 overflow-hidden rounded-full bg-panel">
           <div
             className="h-full rounded-full bg-brand transition-all"
             style={{ width: `${((round - 1) / 3) * 100}%` }}
@@ -313,18 +313,18 @@ export default function PracticeMode({ onComplete, replay = false, onExit }: Pra
         </div>
         <dl className="mt-3 grid grid-cols-3 gap-2 text-center">
           <div>
-            <dt className="text-xs text-slate-500">Kas</dt>
+            <dt className="text-xs text-muted">Kas</dt>
             <dd className="text-sm font-semibold">{formatRupiah(s.cash)}</dd>
           </div>
           <div>
-            <dt className="text-xs text-slate-500">Nilai Total</dt>
+            <dt className="text-xs text-muted">Nilai Total</dt>
             <dd className="text-sm font-semibold">{formatRupiah(totalValue)}</dd>
           </div>
           <div>
-            <dt className="text-xs text-slate-500">Imbal Hasil</dt>
+            <dt className="text-xs text-muted">Imbal Hasil</dt>
             <dd
               className={`text-sm font-semibold ${
-                totalValue >= CAPITAL ? "text-emerald-700" : "text-red-700"
+                totalValue >= CAPITAL ? "text-emerald-700 dark:text-emerald-300" : "text-red-700 dark:text-red-300"
               }`}
             >
               {formatPct(((totalValue - CAPITAL) / CAPITAL) * 100)}
@@ -334,23 +334,23 @@ export default function PracticeMode({ onComplete, replay = false, onExit }: Pra
       </section>
 
       {/* The one practice stock */}
-      <section data-tour="stocks" className="rounded-xl border border-slate-200 bg-white">
+      <section data-tour="stocks" className="rounded-xl border border-edge bg-card">
         <div className="flex w-full items-center justify-between gap-2 p-3 text-left">
           <div>
             <p className="text-sm font-semibold">{STOCK.ticker}</p>
-            <p className="text-xs text-slate-500">{STOCK.name}</p>
+            <p className="text-xs text-muted">{STOCK.name}</p>
           </div>
           <div className="text-right">
             <p className="text-sm font-semibold">{formatRupiah(price)}</p>
             {round > 1 && (
-              <p className="text-xs text-emerald-700">
+              <p className="text-xs text-emerald-700 dark:text-emerald-300">
                 ▲ {formatPct(((price - PRICES[round - 2]) / PRICES[round - 2]) * 100, 2)}
               </p>
             )}
           </div>
         </div>
         {s.shares > 0 && (
-          <p className="px-3 pb-1 text-xs text-slate-500">
+          <p className="px-3 pb-1 text-xs text-muted">
             Dimiliki: {s.shares} lembar
           </p>
         )}
@@ -362,7 +362,7 @@ export default function PracticeMode({ onComplete, replay = false, onExit }: Pra
           </p>
         )}
 
-        <div className="border-t border-slate-100 p-3">
+        <div className="border-t border-edge p-3">
           <div data-tour="chart">
             <Candlestick
               preHistory={PRE_HISTORY}
@@ -373,11 +373,11 @@ export default function PracticeMode({ onComplete, replay = false, onExit }: Pra
           </div>
 
           {/* Simplified ticket: the action is fixed by the current lesson */}
-          <div data-tour="ticket" className="mt-3 rounded-lg bg-slate-50 p-3">
-            <p className="text-xs font-medium text-slate-600">
+          <div data-tour="ticket" className="mt-3 rounded-lg bg-panel p-3">
+            <p className="text-xs font-medium text-bodytext">
               {round === 3 ? "Jual" : "Beli"} {STOCK.ticker}
             </p>
-            <label className="mt-1.5 block text-xs font-medium text-slate-600">
+            <label className="mt-1.5 block text-xs font-medium text-bodytext">
               Jumlah lembar
               <input
                 type="number"
@@ -385,7 +385,7 @@ export default function PracticeMode({ onComplete, replay = false, onExit }: Pra
                 value={qty || ""}
                 onChange={(e) => setQty(Math.max(0, Number(e.target.value)))}
                 disabled={round === 2}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100"
+                className="mt-1 w-full rounded-lg border border-edge2 px-3 py-2 text-sm disabled:bg-panel"
                 placeholder={
                   round === 3
                     ? `dimiliki ${s.shares}`
@@ -395,7 +395,7 @@ export default function PracticeMode({ onComplete, replay = false, onExit }: Pra
                 }
               />
             </label>
-            <dl className="mt-2 space-y-0.5 text-xs text-slate-600">
+            <dl className="mt-2 space-y-0.5 text-xs text-bodytext">
               <div className="flex justify-between">
                 <dt>{round === 3 ? "Perkiraan hasil jual" : "Perkiraan biaya"}</dt>
                 <dd className="font-semibold">{formatRupiah(qty * price)}</dd>
@@ -422,9 +422,9 @@ export default function PracticeMode({ onComplete, replay = false, onExit }: Pra
       </section>
 
       {/* Execute bar */}
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-edge bg-card/95 px-4 py-3 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-3">
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-bodytext">
             {pendingBuy > 0 || pendingSell > 0 ? (
               <>
                 <b>1</b> order menunggu eksekusi

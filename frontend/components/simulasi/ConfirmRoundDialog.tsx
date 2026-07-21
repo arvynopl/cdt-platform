@@ -45,7 +45,7 @@ export default function ConfirmRoundDialog(props: {
         aria-labelledby="konfirmasi-judul"
         tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl outline-none"
+        className="w-full max-w-md rounded-xl bg-card p-6 shadow-xl outline-none"
       >
         <h3 id="konfirmasi-judul" className="text-base font-semibold">
           Konfirmasi Putaran {props.currentRound}
@@ -59,28 +59,28 @@ export default function ConfirmRoundDialog(props: {
                   <b>{props.metaOf(o.stock_id)?.ticker ?? o.stock_id}</b> ×{" "}
                   {o.quantity}
                 </span>
-                <span className="text-slate-500">
+                <span className="text-muted">
                   {formatRupiah(o.quantity * (props.prices[o.stock_id] ?? 0))}
                 </span>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="mt-3 text-sm leading-relaxed text-slate-600">
+          <p className="mt-3 text-sm leading-relaxed text-bodytext">
             Tidak ada order pada putaran ini, jadi seluruh saham akan dicatat
             sebagai <b>tahan</b>. Tidak masalah; menahan juga keputusan investasi
             yang sah dan ikut dianalisis.
           </p>
         )}
         {props.pendingList.length > 0 && props.autoHoldCount > 0 && (
-          <p className="mt-2 text-xs text-slate-500">
+          <p className="mt-2 text-xs text-muted">
             {props.autoHoldCount} saham lainnya otomatis dicatat sebagai tahan.
           </p>
         )}
         <div className="mt-5 flex gap-3">
           <button
             onClick={props.onClose}
-            className="flex-1 rounded-lg border border-slate-300 px-4 py-2.5 text-sm"
+            className="flex-1 rounded-lg border border-edge2 px-4 py-2.5 text-sm"
           >
             Periksa Lagi
           </button>

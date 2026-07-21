@@ -29,7 +29,7 @@ export default function AkunPage() {
 
   if (!ready) {
     return (
-      <div className="flex items-center gap-3 text-sm text-slate-500">
+      <div className="flex items-center gap-3 text-sm text-muted">
         <span className="h-4 w-4 animate-spin rounded-full border-2 border-brand border-t-transparent" />
         Memuat…
       </div>
@@ -40,7 +40,7 @@ export default function AkunPage() {
     <main className="animate-fade-in space-y-5 pb-10">
       <div>
         <h2 className="text-lg font-semibold">Akun &amp; Privasi</h2>
-        <p className="mt-1 text-sm leading-relaxed text-slate-500">
+        <p className="mt-1 text-sm leading-relaxed text-muted">
           Anda memegang kendali atas data Anda. Di sini Anda bisa mengunduh
           seluruh data yang kami simpan, atau menarik diri dari penelitian.
         </p>
@@ -98,29 +98,29 @@ function ExportSection() {
   }
 
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-4">
+    <section className="rounded-xl border border-edge bg-card p-4">
       <h3 className="text-sm font-semibold">Unduh Data Saya</h3>
-      <p className="mt-1 text-sm leading-relaxed text-slate-600">
+      <p className="mt-1 text-sm leading-relaxed text-bodytext">
         Berisi profil, jawaban survei, seluruh sesi, dan umpan balik Anda.
         Pilih <b>JSON</b> untuk satu berkas lengkap, atau <b>CSV</b> (berkas ZIP
         berisi satu tabel per jenis data) agar mudah dibuka di aplikasi lembar
         kerja seperti Excel.
       </p>
-      {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
+      {error && <p className="mt-2 text-xs text-red-600 dark:text-red-400">{error}</p>}
       <div className="mt-3 flex flex-wrap gap-2">
         <button
           onClick={downloadJson}
           disabled={busy !== null}
-          className="rounded-lg border border-slate-300 px-4 py-2 text-sm
-                     font-medium text-slate-700 hover:bg-slate-100 disabled:opacity-50"
+          className="rounded-lg border border-edge2 px-4 py-2 text-sm
+                     font-medium text-strong hover:bg-panel disabled:opacity-50"
         >
           {busy === "json" ? "Menyiapkan…" : "⤓ Unduh (JSON)"}
         </button>
         <button
           onClick={downloadCsv}
           disabled={busy !== null}
-          className="rounded-lg border border-slate-300 px-4 py-2 text-sm
-                     font-medium text-slate-700 hover:bg-slate-100 disabled:opacity-50"
+          className="rounded-lg border border-edge2 px-4 py-2 text-sm
+                     font-medium text-strong hover:bg-panel disabled:opacity-50"
         >
           {busy === "csv" ? "Menyiapkan…" : "⤓ Unduh (CSV/ZIP)"}
         </button>
@@ -160,40 +160,40 @@ function DeleteSection({ onDeleted }: { onDeleted: () => void }) {
   }
 
   return (
-    <section className="rounded-xl border border-red-200 bg-white p-4">
-      <h3 className="text-sm font-semibold text-red-700">Hapus Akun</h3>
-      <p className="mt-1 text-sm leading-relaxed text-slate-600">
+    <section className="rounded-xl border border-red-200 dark:border-red-900 bg-card p-4">
+      <h3 className="text-sm font-semibold text-red-700 dark:text-red-300">Hapus Akun</h3>
+      <p className="mt-1 text-sm leading-relaxed text-bodytext">
         Tindakan ini menarik Anda dari penelitian dan{" "}
         <b>tidak dapat dibatalkan</b>. Identitas dan akses masuk Anda (nama
         pengguna dan kata sandi) dihapus permanen, sehingga akun ini tidak bisa
         digunakan lagi.
       </p>
-      <p className="mt-2 text-sm leading-relaxed text-slate-600">
+      <p className="mt-2 text-sm leading-relaxed text-bodytext">
         Data hasil latihan Anda (metrik bias dan lintasan CDT) tetap disimpan
         dalam bentuk yang <b>tidak lagi bisa dikaitkan dengan Anda</b>, sesuai
         persetujuan penelitian yang Anda berikan di awal. Ingin salinannya?
         Unduh data Anda dahulu di atas.
       </p>
 
-      {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
+      {error && <p className="mt-2 text-xs text-red-600 dark:text-red-400">{error}</p>}
 
       {!open ? (
         <button
           onClick={() => setOpen(true)}
-          className="mt-3 rounded-lg border border-red-300 px-4 py-2 text-sm
-                     font-medium text-red-700 hover:bg-red-50"
+          className="mt-3 rounded-lg border border-red-300 dark:border-red-800 px-4 py-2 text-sm
+                     font-medium text-red-700 dark:text-red-300 hover:bg-red-50 dark:bg-red-950/40"
         >
           Hapus Akun Saya…
         </button>
       ) : (
-        <div className="mt-3 space-y-3 rounded-lg bg-red-50 p-3">
-          <label className="block text-sm text-slate-700">
+        <div className="mt-3 space-y-3 rounded-lg bg-red-50 dark:bg-red-950/40 p-3">
+          <label className="block text-sm text-strong">
             Untuk memastikan, ketik <b>{CONFIRM_WORD}</b> di bawah ini:
             <input
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               autoComplete="off"
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm
+              className="mt-1 w-full rounded-lg border border-edge2 px-3 py-2 text-sm
                          focus:border-red-400 focus:outline-none focus:ring-1 focus:ring-red-400"
             />
           </label>
@@ -203,8 +203,8 @@ function DeleteSection({ onDeleted }: { onDeleted: () => void }) {
                 setOpen(false);
                 setConfirm("");
               }}
-              className="flex-1 rounded-lg border border-slate-300 px-4 py-2 text-sm
-                         font-medium text-slate-700 hover:bg-slate-100"
+              className="flex-1 rounded-lg border border-edge2 px-4 py-2 text-sm
+                         font-medium text-strong hover:bg-panel"
             >
               Batal
             </button>

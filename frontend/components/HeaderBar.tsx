@@ -51,13 +51,13 @@ export default function HeaderBar() {
   return (
     <div className="flex w-full flex-col gap-2 sm:w-auto sm:items-end">
       <div className="flex items-center gap-3 text-sm">
-        <span className="text-slate-500">
-          Masuk sebagai <b className="text-slate-800">{me.username}</b>
+        <span className="text-muted">
+          Masuk sebagai <b className="text-strong">{me.username}</b>
         </span>
         <button
           onClick={logout}
-          className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs
-                     font-medium text-slate-600 hover:bg-slate-100"
+          className="rounded-lg border border-edge2 px-3 py-1.5 text-xs
+                     font-medium text-bodytext hover:bg-panel"
         >
           Keluar
         </button>
@@ -72,7 +72,7 @@ export default function HeaderBar() {
               className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                 active
                   ? "bg-brand text-white"
-                  : "text-slate-600 hover:bg-slate-100"
+                  : "text-bodytext hover:bg-panel"
               }`}
             >
               {item.label}

@@ -57,7 +57,7 @@ export default function ProfilPage() {
 
   if (error) {
     return (
-      <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+      <div className="rounded-lg bg-red-50 dark:bg-red-950/40 px-4 py-3 text-sm text-red-700 dark:text-red-300">
         {error}
       </div>
     );
@@ -65,7 +65,7 @@ export default function ProfilPage() {
   if (!data) {
     return (
       <div className="space-y-5" role="status" aria-label="Memuat profil">
-        <div className="grid grid-cols-3 gap-2 rounded-xl border border-slate-200 bg-white p-4">
+        <div className="grid grid-cols-3 gap-2 rounded-xl border border-edge bg-card p-4">
           {[0, 1, 2].map((i) => (
             <div key={i} className="space-y-2 text-center">
               <Skeleton className="mx-auto h-3 w-16" />
@@ -84,7 +84,7 @@ export default function ProfilPage() {
       <main className="mx-auto max-w-md space-y-4 pt-10 text-center">
         <div className="text-4xl">🧠</div>
         <h2 className="text-lg font-semibold">Profil Anda belum terbentuk</h2>
-        <p className="text-sm leading-relaxed text-slate-600">
+        <p className="text-sm leading-relaxed text-bodytext">
           Profil kognitif tersusun dari keputusan Anda selama simulasi.
           Selesaikan sesi pertama, dan halaman ini akan mulai bercerita.
         </p>
@@ -190,20 +190,20 @@ function ProfileContent({ data }: { data: ProfileResponse }) {
     <main className="animate-fade-in space-y-5 pb-10">
       <div>
         <h2 className="text-lg font-semibold">Profil Kognitif Anda</h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-muted">
           Gambaran pola pengambilan keputusan Anda yang diperbarui setelah
           setiap sesi. Semakin sering berlatih, semakin jernih potretnya.
         </p>
       </div>
 
       {/* Summary stats */}
-      <section className="grid grid-cols-3 gap-2 rounded-xl border border-slate-200 bg-white p-4 text-center">
+      <section className="grid grid-cols-3 gap-2 rounded-xl border border-edge bg-card p-4 text-center">
         <div>
-          <p className="text-xs text-slate-500">Total Sesi</p>
+          <p className="text-xs text-muted">Total Sesi</p>
           <p className="text-base font-semibold">{profile.session_count}</p>
         </div>
         <div>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-muted">
             <Term id="stability">Konsistensi Pola</Term>
           </p>
           <p className="text-base font-semibold">
@@ -211,19 +211,19 @@ function ProfileContent({ data }: { data: ProfileResponse }) {
           </p>
         </div>
         <div>
-          <p className="text-xs text-slate-500">Preferensi Risiko</p>
+          <p className="text-xs text-muted">Preferensi Risiko</p>
           <p className="text-base font-semibold">{rpLabel}</p>
         </div>
       </section>
 
       {/* Value-aware interpretation of the summary numbers (openable). */}
-      <details className="group rounded-xl border border-slate-200 bg-white px-4 py-3">
-        <summary className="cursor-pointer list-none text-sm font-medium text-slate-700 marker:hidden">
+      <details className="group rounded-xl border border-edge bg-card px-4 py-3">
+        <summary className="cursor-pointer list-none text-sm font-medium text-strong marker:hidden">
           <span className="text-brand group-open:hidden">＋ </span>
           <span className="hidden text-brand group-open:inline">－ </span>
           Apa arti angka ini?
         </summary>
-        <div className="mt-2 space-y-2 text-sm leading-relaxed text-slate-600">
+        <div className="mt-2 space-y-2 text-sm leading-relaxed text-bodytext">
           <p>
             <b>Konsistensi Pola {formatPct(profile.stability_index * 100, 0)}</b>{" "}
             —{" "}
@@ -248,10 +248,10 @@ function ProfileContent({ data }: { data: ProfileResponse }) {
       <section
         className={`rounded-xl px-4 py-3 text-sm leading-relaxed ${
           maxVal < 0.15
-            ? "bg-emerald-50 text-emerald-900"
+            ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200"
             : maxVal < 0.4
-              ? "bg-brand-soft text-slate-700"
-              : "bg-amber-50 text-amber-900"
+              ? "bg-brand-soft text-strong"
+              : "bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200"
         }`}
       >
         {maxVal < 0.15 ? (
@@ -280,7 +280,7 @@ function ProfileContent({ data }: { data: ProfileResponse }) {
       <InteractionSection scores={profile.interaction_scores} />
 
       {/* Radar */}
-      <section className="rounded-xl border border-slate-200 bg-white p-4">
+      <section className="rounded-xl border border-edge bg-card p-4">
         <h3 className="mb-1 text-sm font-semibold">Peta Bias Anda</h3>
         <PlotlyChart
           data={radar}
@@ -291,7 +291,7 @@ function ProfileContent({ data }: { data: ProfileResponse }) {
             legend: { orientation: "h", y: -0.12 },
           }}
         />
-        <p className="mt-1 text-xs leading-relaxed text-slate-500">
+        <p className="mt-1 text-xs leading-relaxed text-muted">
           Biru pekat menunjukkan sesi terakhir, cokelat rata-rata seluruh sesi
           Anda. Garis merah adalah ambang waspada dari literatur, sedangkan
           garis biru putus-putus adalah ambang pribadi Anda (rata-rata riwayat
@@ -305,7 +305,7 @@ function ProfileContent({ data }: { data: ProfileResponse }) {
 
       {/* Per-session metrics */}
       {metrics.length >= 2 && (
-        <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <section className="rounded-xl border border-edge bg-card p-4">
           <h3 className="mb-1 text-sm font-semibold">Metrik per Sesi</h3>
           <PlotlyChart
             data={metricLines}
@@ -322,11 +322,11 @@ function ProfileContent({ data }: { data: ProfileResponse }) {
 
       {/* CDT trajectory */}
       {snaps.length >= 2 && (
-        <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <section className="rounded-xl border border-edge bg-card p-4">
           <h3 className="mb-1 text-sm font-semibold">
             Perjalanan Profil Anda
           </h3>
-          <p className="mb-2 text-xs text-slate-500">
+          <p className="mb-2 text-xs text-muted">
             Berbeda dengan grafik per sesi di atas, garis ini adalah profil
             yang terakumulasi: setiap sesi baru menggesernya sedikit demi
             sedikit, sehingga arahnya mencerminkan kebiasaan, bukan kebetulan
@@ -352,8 +352,8 @@ function ProfileContent({ data }: { data: ProfileResponse }) {
           onClick={() =>
             router.push(`/hasil?sid=${latest.session_id}&review=1`)
           }
-          className="flex-1 rounded-lg border border-slate-300 px-4 py-2.5
-                     text-sm font-medium text-slate-700 hover:bg-slate-100"
+          className="flex-1 rounded-lg border border-edge2 px-4 py-2.5
+                     text-sm font-medium text-strong hover:bg-panel"
         >
           Lihat Hasil Sesi Terakhir
         </button>
@@ -428,11 +428,11 @@ function InteractionSection({
   };
 
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-4">
+    <section className="rounded-xl border border-edge bg-card p-4">
       <h3 className="mb-1 text-sm font-semibold">
         <Term id="interaction">Keterkaitan Antar-Bias</Term>
       </h3>
-      <p className="mb-3 text-xs leading-relaxed text-slate-500">
+      <p className="mb-3 text-xs leading-relaxed text-muted">
         Selain seberapa kuat tiap bias, penting melihat apakah beberapa bias
         cenderung muncul bersamaan. Angka berikut mengukur keterkaitan pola Anda
         selama beberapa sesi terakhir (−1 sampai +1; makin jauh dari nol, makin
@@ -446,7 +446,7 @@ function InteractionSection({
             <li
               key={p.key}
               className={`rounded-lg px-3 py-2 text-sm ${
-                isStrong ? "bg-amber-50 text-amber-900" : "bg-slate-50 text-slate-700"
+                isStrong ? "bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200" : "bg-panel text-strong"
               }`}
             >
               <div className="flex items-center justify-between gap-2">
@@ -462,7 +462,7 @@ function InteractionSection({
           );
         })}
       </ul>
-      <p className="mt-3 text-xs leading-relaxed text-slate-500">
+      <p className="mt-3 text-xs leading-relaxed text-muted">
         Keterkaitan mulai dihitung setelah tiga sesi. Tanda “—” berarti ragam
         data pada sesi-sesi tersebut belum cukup untuk menyimpulkan keterkaitan.
       </p>
@@ -506,13 +506,13 @@ function HistoryTable() {
   }
 
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-4">
+    <section className="rounded-xl border border-edge bg-card p-4">
       <div className="mb-2 flex items-center justify-between gap-2">
         <h3 className="text-sm font-semibold">Riwayat Sesi</h3>
         <button
           onClick={downloadCsv}
-          className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs
-                     font-medium text-slate-600 hover:bg-slate-100"
+          className="rounded-lg border border-edge2 px-3 py-1.5 text-xs
+                     font-medium text-bodytext hover:bg-panel"
         >
           Unduh CSV
         </button>
@@ -520,7 +520,7 @@ function HistoryTable() {
       <div className="overflow-x-auto">
         <table className="w-full min-w-[560px] text-left text-xs">
           <thead>
-            <tr className="border-b border-slate-200 text-slate-500">
+            <tr className="border-b border-edge text-muted">
               {headers.map((h) => (
                 <th key={h} className="py-1.5 pr-3 font-medium">
                   {h}
@@ -531,7 +531,7 @@ function HistoryTable() {
           </thead>
           <tbody>
             {rows.map((r, i) => (
-              <tr key={i} className="border-b border-slate-100">
+              <tr key={i} className="border-b border-edge">
                 {headers.map((h) => (
                   <td key={h} className="py-1.5 pr-3">
                     {r[h] == null ? "—" : String(r[h])}

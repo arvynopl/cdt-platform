@@ -17,7 +17,7 @@ export default function AnalysisPending(props: {
       <h2 className="text-lg font-semibold">Sesi Selesai 🎯</h2>
       {!props.failed ? (
         <div role="status" aria-live="polite" className="space-y-4">
-          <p className="text-sm leading-relaxed text-slate-600">
+          <p className="text-sm leading-relaxed text-bodytext">
             Seluruh {props.roundsTotal} putaran sudah Anda selesaikan. Tunggu
             sebentar, sistem sedang membaca pola keputusan Anda.
           </p>
@@ -25,7 +25,7 @@ export default function AnalysisPending(props: {
         </div>
       ) : (
         <div role="alert" className="space-y-4">
-          <p className="text-sm leading-relaxed text-slate-600">
+          <p className="text-sm leading-relaxed text-bodytext">
             Keputusan Anda pada seluruh putaran sudah tersimpan dengan aman.
             Hanya tahap analisisnya yang sempat gagal, jadi cukup jalankan ulang.
           </p>
@@ -35,7 +35,7 @@ export default function AnalysisPending(props: {
           >
             Jalankan Analisis Ulang
           </button>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-muted">
             Bila masalah berlanjut, hubungi tim kami dengan kode sesi{" "}
             <code>{props.sessionIdShort}</code>.
           </p>

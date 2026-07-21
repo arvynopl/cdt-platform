@@ -266,14 +266,14 @@ export default function SimulasiPage() {
         {error ? (
           <div
             role="alert"
-            className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700"
+            className="rounded-lg bg-red-50 dark:bg-red-950/40 px-4 py-3 text-sm text-red-700 dark:text-red-300"
           >
             {error}
           </div>
         ) : (
           <div
             role="status"
-            className="flex items-center gap-3 text-sm text-slate-500"
+            className="flex items-center gap-3 text-sm text-muted"
           >
             <span className="h-4 w-4 animate-spin rounded-full border-2 border-brand border-t-transparent" />
             Menyiapkan sesi Anda…
@@ -340,13 +340,13 @@ export default function SimulasiPage() {
       {(error || roundErrors.length > 0) && (
         <div
           role="alert"
-          className="space-y-1 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800"
+          className="space-y-1 rounded-lg bg-amber-50 dark:bg-amber-950/40 px-4 py-3 text-sm text-amber-800 dark:text-amber-300"
         >
           {error && <p>{error}</p>}
           {roundErrors.map((e, i) => (
             <p key={i}>
               {e}{" "}
-              <span className="text-amber-600">
+              <span className="text-amber-600 dark:text-amber-400">
                 (order tersebut dicatat sebagai tahan)
               </span>
             </p>
@@ -389,18 +389,18 @@ export default function SimulasiPage() {
       </section>
 
       {/* F12: pending tray */}
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-edge bg-card/95 px-4 py-3 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-3">
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-bodytext">
             {pendingList.length > 0 ? (
               <>
                 <b>{pendingList.length}</b> order menunggu ·{" "}
-                <span className="text-slate-500">
+                <span className="text-muted">
                   {autoHoldCount} saham lainnya ditahan
                 </span>
               </>
             ) : (
-              <span className="text-slate-500">
+              <span className="text-muted">
                 Belum ada order; seluruh saham akan ditahan
               </span>
             )}

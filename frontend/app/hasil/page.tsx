@@ -32,10 +32,10 @@ const BIAS_TERM: Record<string, string> = {
 };
 
 const SEVERITY_STYLE: Record<string, string> = {
-  none: "bg-emerald-100 text-emerald-800",
-  mild: "bg-yellow-100 text-yellow-800",
-  moderate: "bg-amber-100 text-amber-800",
-  severe: "bg-red-100 text-red-800",
+  none: "bg-emerald-100 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300",
+  mild: "bg-yellow-100 dark:bg-yellow-950/50 text-yellow-800 dark:text-yellow-300",
+  moderate: "bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300",
+  severe: "bg-red-100 dark:bg-red-950/50 text-red-800 dark:text-red-300",
 };
 
 const SEVERITY_LABEL: Record<string, string> = {
@@ -47,7 +47,7 @@ const SEVERITY_LABEL: Record<string, string> = {
 
 export default function HasilPage() {
   return (
-    <Suspense fallback={<p className="text-sm text-slate-500">Memuat…</p>}>
+    <Suspense fallback={<p className="text-sm text-muted">Memuat…</p>}>
       <HasilContent />
     </Suspense>
   );
@@ -81,7 +81,7 @@ function HasilContent() {
 
   if (error) {
     return (
-      <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+      <div className="rounded-lg bg-red-50 dark:bg-red-950/40 px-4 py-3 text-sm text-red-700 dark:text-red-300">
         {error}
       </div>
     );
@@ -90,7 +90,7 @@ function HasilContent() {
     return (
       <div className="space-y-5" role="status" aria-label="Memuat hasil">
         <Skeleton className="h-6 w-56" />
-        <div className="grid grid-cols-2 gap-2 rounded-xl border border-slate-200 bg-white p-4">
+        <div className="grid grid-cols-2 gap-2 rounded-xl border border-edge bg-card p-4">
           {[0, 1].map((i) => (
             <div key={i} className="space-y-2 text-center">
               <Skeleton className="mx-auto h-3 w-24" />
@@ -117,7 +117,7 @@ function HasilContent() {
         <h2 className="text-lg font-semibold">
           {review ? "Hasil Sesi Anda" : "Hasil Analisis & Umpan Balik"}
         </h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-muted">
           {review
             ? "Anda meninjau kembali hasil salah satu sesi. Bacalah dengan santai; tidak ada nilai baik atau buruk, yang penting Anda semakin mengenali kebiasaan sendiri."
             : "Begini pola pengambilan keputusan Anda pada sesi ini. Bacalah dengan santai; tidak ada nilai baik atau buruk, yang penting Anda semakin mengenali kebiasaan sendiri."}
@@ -125,9 +125,9 @@ function HasilContent() {
       </div>
 
       {/* Financial summary */}
-      <section className="grid grid-cols-2 gap-2 rounded-xl border border-slate-200 bg-white p-4 text-center">
+      <section className="grid grid-cols-2 gap-2 rounded-xl border border-edge bg-card p-4 text-center">
         <div>
-          <p className="text-xs text-slate-500">Nilai Akhir Portofolio</p>
+          <p className="text-xs text-muted">Nilai Akhir Portofolio</p>
           <p className="text-sm font-semibold">
             {results.final_portfolio_value != null
               ? formatRupiah(results.final_portfolio_value)
@@ -135,10 +135,10 @@ function HasilContent() {
           </p>
         </div>
         <div>
-          <p className="text-xs text-slate-500">Imbal Hasil Sesi</p>
+          <p className="text-xs text-muted">Imbal Hasil Sesi</p>
           <p
             className={`text-sm font-semibold ${
-              (returnPct ?? 0) >= 0 ? "text-emerald-700" : "text-red-700"
+              (returnPct ?? 0) >= 0 ? "text-emerald-700 dark:text-emerald-300" : "text-red-700 dark:text-red-300"
             }`}
           >
             {returnPct != null ? formatPct(returnPct) : "—"}
@@ -147,7 +147,7 @@ function HasilContent() {
       </section>
 
       {results.metric.ci_low_confidence && (
-        <p className="rounded-lg bg-slate-100 px-4 py-3 text-xs text-slate-600">
+        <p className="rounded-lg bg-panel px-4 py-3 text-xs text-bodytext">
           Transaksi yang terealisasi pada sesi ini masih sedikit, jadi angka di
           bawah sebaiknya dibaca sebagai indikasi awal. Semakin banyak sesi
           yang Anda selesaikan, semakin tajam pula profilnya.
@@ -158,7 +158,7 @@ function HasilContent() {
       {results.feedback.map((f) => (
         <section
           key={f.bias_type}
-          className="rounded-xl border border-slate-200 bg-white p-4"
+          className="rounded-xl border border-edge bg-card p-4"
         >
           <div className="mb-2 flex items-center justify-between gap-2">
             <h3 className="text-sm font-semibold">
@@ -172,19 +172,19 @@ function HasilContent() {
             </h3>
             <span
               className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                SEVERITY_STYLE[f.severity] ?? "bg-slate-100 text-slate-600"
+                SEVERITY_STYLE[f.severity] ?? "bg-panel text-bodytext"
               }`}
             >
               {SEVERITY_LABEL[f.severity] ?? f.severity}
             </span>
           </div>
           {f.explanation_text && (
-            <p className="text-sm leading-relaxed text-slate-700">
+            <p className="text-sm leading-relaxed text-strong">
               {f.explanation_text}
             </p>
           )}
           {f.recommendation_text && (
-            <p className="mt-2 rounded-lg bg-brand-soft px-3 py-2 text-sm leading-relaxed text-slate-700">
+            <p className="mt-2 rounded-lg bg-brand-soft px-3 py-2 text-sm leading-relaxed text-strong">
               💡 {f.recommendation_text}
             </p>
           )}
@@ -196,8 +196,8 @@ function HasilContent() {
       <div className="flex gap-3 pb-8">
         <button
           onClick={() => router.push("/profil")}
-          className="flex-1 rounded-lg border border-slate-300 px-4 py-2.5
-                     text-sm font-medium text-slate-700 hover:bg-slate-100"
+          className="flex-1 rounded-lg border border-edge2 px-4 py-2.5
+                     text-sm font-medium text-strong hover:bg-panel"
         >
           Lihat Profil Saya
         </button>
@@ -245,7 +245,7 @@ function PostSessionSurvey({ sessionId }: { sessionId: string }) {
 
   if (sent) {
     return (
-      <p className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+      <p className="rounded-xl bg-emerald-50 dark:bg-emerald-950/40 px-4 py-3 text-sm text-emerald-800 dark:text-emerald-300">
         Terima kasih, penilaian Anda sudah tersimpan. Jawaban ini membantu
         sistem memahami seberapa selaras hasil analisis dengan pengalaman Anda.
       </p>
@@ -255,10 +255,10 @@ function PostSessionSurvey({ sessionId }: { sessionId: string }) {
   return (
     <form
       onSubmit={submit}
-      className="space-y-3 rounded-xl border border-slate-200 bg-white p-4"
+      className="space-y-3 rounded-xl border border-edge bg-card p-4"
     >
       <h3 className="text-sm font-semibold">Sebelum lanjut, dua menit untuk refleksi</h3>
-      <p className="text-xs text-slate-500">
+      <p className="text-xs text-muted">
         Nilai 1 berarti tidak menyadari sama sekali (atau tidak berguna),
         nilai 5 berarti sangat menyadari (atau sangat berguna).
       </p>
@@ -272,7 +272,7 @@ function PostSessionSurvey({ sessionId }: { sessionId: string }) {
                 className={`flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border text-sm ${
                   values[item.key] === v
                     ? "border-brand bg-brand text-white"
-                    : "border-slate-300 text-slate-600"
+                    : "border-edge2 text-bodytext"
                 }`}
               >
                 <input
@@ -288,7 +288,7 @@ function PostSessionSurvey({ sessionId }: { sessionId: string }) {
           </div>
         </div>
       ))}
-      {error && <p className="text-xs text-red-700">{error}</p>}
+      {error && <p className="text-xs text-red-700 dark:text-red-300">{error}</p>}
       <button className="w-full rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-white">
         Kirim Penilaian
       </button>

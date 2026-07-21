@@ -55,8 +55,8 @@ export default function Term({
         aria-controls={open ? panelId : undefined}
         onClick={() => setOpen((v) => !v)}
         className="inline-flex h-4 w-4 items-center justify-center rounded-full
-                   border border-slate-300 text-[10px] font-semibold leading-none
-                   text-slate-500 hover:bg-slate-100 focus:outline-none
+                   border border-edge2 text-[10px] font-semibold leading-none
+                   text-muted hover:bg-panel focus:outline-none
                    focus:ring-2 focus:ring-brand"
       >
         i
@@ -65,11 +65,11 @@ export default function Term({
         <span
           id={panelId}
           role="tooltip"
-          className="absolute left-0 top-6 z-10 w-64 rounded-lg border border-slate-200
-                     bg-white p-3 text-left text-xs font-normal leading-relaxed
-                     text-slate-600 shadow-lg"
+          className="absolute left-0 top-6 z-10 w-64 rounded-lg border border-edge
+                     bg-card p-3 text-left text-xs font-normal leading-relaxed
+                     text-bodytext shadow-lg"
         >
-          <span className="mb-0.5 block font-semibold text-slate-800">
+          <span className="mb-0.5 block font-semibold text-strong">
             {entry.label}
           </span>
           {entry.short}

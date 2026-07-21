@@ -18,7 +18,7 @@ export function Skeleton({
 /** A titled card block with a few text lines — the app's default surface. */
 export function SkeletonCard({ lines = 3 }: { lines?: number }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4">
+    <div className="rounded-xl border border-edge bg-card p-4">
       <Skeleton className="h-4 w-40" />
       <div className="mt-3 space-y-2">
         {Array.from({ length: lines }).map((_, i) => (
@@ -35,7 +35,7 @@ export function SkeletonCard({ lines = 3 }: { lines?: number }) {
 /** A chart-shaped block: heading + a tall area. */
 export function SkeletonChart({ height = 300 }: { height?: number }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4">
+    <div className="rounded-xl border border-edge bg-card p-4">
       <Skeleton className="mb-3 h-4 w-32" />
       <Skeleton className="w-full" style={{ height }} />
     </div>

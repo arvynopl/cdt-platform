@@ -1,7 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import HeaderBar from "@/components/HeaderBar";
+import ThemeToggle from "@/components/ThemeToggle";
 import "./globals.css";
+
+// Set the theme class before paint to avoid a flash: an explicit stored choice
+// wins; otherwise fall back to the OS preference.
+const themeInitScript = `(function(){try{var t=localStorage.getItem('cdt_theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})();`;
 
 export const metadata: Metadata = {
   title: "Kenali Pola Investasi Anda — CDT",
@@ -21,8 +26,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id">
+    <html lang="id" suppressHydrationWarning>
       <body>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <a
           href="#konten"
           className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2
@@ -37,18 +43,21 @@ export default function RootLayout({
               <h1 className="text-xl font-semibold">
                 Kenali Pola Investasi Anda
               </h1>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-muted">
                 Simulasi investasi yang membantu Anda mengenali kebiasaan
                 mengambil keputusan, didukung <em>Cognitive Digital Twin</em>.
               </p>
             </div>
-            <HeaderBar />
+            <div className="flex items-start gap-2">
+              <ThemeToggle />
+              <HeaderBar />
+            </div>
           </header>
           <div id="konten" tabIndex={-1} className="outline-none">
             {children}
           </div>
-          <footer className="mt-12 border-t border-slate-200 pt-4 text-xs text-slate-500">
-            <Link href="/metodologi" className="hover:text-slate-700 hover:underline">
+          <footer className="mt-12 border-t border-edge pt-4 text-xs text-muted">
+            <Link href="/metodologi" className="hover:text-strong hover:underline">
               Metodologi &amp; istilah
             </Link>
             <span className="mx-2">·</span>

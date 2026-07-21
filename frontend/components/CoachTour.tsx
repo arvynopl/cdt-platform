@@ -99,7 +99,7 @@ export default function CoachTour({ steps, onBeforeStep, onFinish, onSkip }: Pro
       {/* Tooltip card */}
       <div
         className="absolute left-1/2 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2
-                   rounded-xl bg-white p-5 shadow-2xl"
+                   rounded-xl bg-card p-5 shadow-2xl"
         style={{ top: cardTop }}
         role="dialog"
         aria-label={step.title}
@@ -108,13 +108,13 @@ export default function CoachTour({ steps, onBeforeStep, onFinish, onSkip }: Pro
           Panduan {idx + 1} dari {steps.length}
         </p>
         <h3 className="mt-1 text-sm font-semibold">{step.title}</h3>
-        <p className="mt-1.5 text-sm leading-relaxed text-slate-600">
+        <p className="mt-1.5 text-sm leading-relaxed text-bodytext">
           {step.body}
         </p>
         <div className="mt-4 flex items-center justify-between gap-2">
           <button
             onClick={onSkip}
-            className="text-xs text-slate-500 hover:text-slate-700"
+            className="text-xs text-muted hover:text-strong"
           >
             Lewati panduan
           </button>
@@ -122,7 +122,7 @@ export default function CoachTour({ steps, onBeforeStep, onFinish, onSkip }: Pro
             {idx > 0 && (
               <button
                 onClick={() => setIdx(idx - 1)}
-                className="rounded-lg border border-slate-300 px-3.5 py-2 text-sm"
+                className="rounded-lg border border-edge2 px-3.5 py-2 text-sm"
               >
                 Kembali
               </button>

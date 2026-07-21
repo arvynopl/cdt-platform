@@ -68,6 +68,8 @@ export default function Candlestick({
         },
       ];
 
+      const dark = document.documentElement.classList.contains("dark");
+      const grid = dark ? "rgba(148,163,184,0.18)" : "rgba(100,116,139,0.15)";
       await Plotly.newPlot(
         el,
         data,
@@ -76,10 +78,17 @@ export default function Candlestick({
           margin: { l: 48, r: 8, t: 8, b: 24 },
           showlegend: true,
           legend: { orientation: "h", y: 1.08 },
-          xaxis: { rangeslider: { visible: false }, type: "category", nticks: 8 },
-          yaxis: { fixedrange: true, tickformat: ",d" },
+          xaxis: {
+            rangeslider: { visible: false },
+            type: "category",
+            nticks: 8,
+            gridcolor: grid,
+          },
+          yaxis: { fixedrange: true, tickformat: ",d", gridcolor: grid },
           dragmode: false,
-          font: { size: 10 },
+          font: { size: 10, color: dark ? "#cbd5e1" : "#334155" },
+          paper_bgcolor: "rgba(0,0,0,0)",
+          plot_bgcolor: "rgba(0,0,0,0)",
         },
         { displayModeBar: false, responsive: true },
       );

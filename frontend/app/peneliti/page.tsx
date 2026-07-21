@@ -108,15 +108,15 @@ function Gate({ onUnlock }: { onUnlock: (k: Keys) => void }) {
     <main className="mx-auto max-w-md space-y-4 pt-6">
       <div>
         <h2 className="text-lg font-semibold">Dasbor Peneliti</h2>
-        <p className="mt-1 text-sm leading-relaxed text-slate-600">
+        <p className="mt-1 text-sm leading-relaxed text-bodytext">
           Halaman ini menampilkan data kohort dan hanya untuk peneliti.
           Masukkan kunci akses untuk melanjutkan. Kunci disimpan sebatas di tab
           ini dan hilang saat tab ditutup.
         </p>
       </div>
-      <form onSubmit={submit} className="space-y-4 rounded-xl border border-slate-200 bg-white p-5">
+      <form onSubmit={submit} className="space-y-4 rounded-xl border border-edge bg-card p-5">
         <div>
-          <label htmlFor="rkey" className="block text-sm font-medium text-slate-700">
+          <label htmlFor="rkey" className="block text-sm font-medium text-strong">
             Kunci Peneliti
           </label>
           <input
@@ -125,13 +125,13 @@ function Gate({ onUnlock }: { onUnlock: (k: Keys) => void }) {
             autoComplete="off"
             value={researcher}
             onChange={(e) => setResearcher(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm
+            className="mt-1 w-full rounded-lg border border-edge2 px-3 py-2 text-sm
                        focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
           />
         </div>
         <div>
-          <label htmlFor="akey" className="block text-sm font-medium text-slate-700">
-            Token Admin <span className="font-normal text-slate-500">(opsional)</span>
+          <label htmlFor="akey" className="block text-sm font-medium text-strong">
+            Token Admin <span className="font-normal text-muted">(opsional)</span>
           </label>
           <input
             id="akey"
@@ -139,10 +139,10 @@ function Gate({ onUnlock }: { onUnlock: (k: Keys) => void }) {
             autoComplete="off"
             value={admin}
             onChange={(e) => setAdmin(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm
+            className="mt-1 w-full rounded-lg border border-edge2 px-3 py-2 text-sm
                        focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
           />
-          <p className="mt-1 text-xs text-slate-500">
+          <p className="mt-1 text-xs text-muted">
             Diperlukan hanya untuk ringkasan operasional. Biarkan kosong jika
             Anda tidak memilikinya.
           </p>
@@ -250,27 +250,27 @@ function Dashboard({ keys, onLock }: { keys: Keys; onLock: () => void }) {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold">Dasbor Peneliti</h2>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-muted">
             Ringkasan kohort partisipan. Angka KPI dan ekspor dibatasi pada
             partisipan sah (akun uji dan non-partisipan dikecualikan).
           </p>
         </div>
         <button
           onClick={onLock}
-          className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium
-                     text-slate-600 hover:bg-slate-100"
+          className="rounded-lg border border-edge2 px-3 py-1.5 text-xs font-medium
+                     text-bodytext hover:bg-panel"
         >
           Kunci ulang
         </button>
       </div>
 
       {error && (
-        <div className="space-y-3 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="space-y-3 rounded-xl bg-red-50 dark:bg-red-950/40 px-4 py-3 text-sm text-red-700 dark:text-red-300">
           <p>{error}</p>
           <button
             onClick={onLock}
-            className="rounded-lg border border-red-300 px-3 py-1.5 text-xs font-medium
-                       text-red-700 hover:bg-red-100"
+            className="rounded-lg border border-red-300 dark:border-red-800 px-3 py-1.5 text-xs font-medium
+                       text-red-700 dark:text-red-300 hover:bg-red-100 dark:bg-red-950/50"
           >
             Ganti kunci
           </button>
@@ -283,7 +283,7 @@ function Dashboard({ keys, onLock }: { keys: Keys; onLock: () => void }) {
             {Array.from({ length: 8 }).map((_, i) => (
               <div
                 key={i}
-                className="space-y-2 rounded-xl border border-slate-200 bg-white p-3"
+                className="space-y-2 rounded-xl border border-edge bg-card p-3"
               >
                 <Skeleton className="h-3 w-20" />
                 <Skeleton className="h-5 w-12" />
@@ -314,7 +314,7 @@ function Dashboard({ keys, onLock }: { keys: Keys; onLock: () => void }) {
               value={formatPct(summary.mean_stability_index * 100, 0)}
             />
           </section>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-muted">
             {summary.users_with_consent} menyetujui keikutsertaan ·{" "}
             {summary.users_with_survey} mengisi survei awal ·{" "}
             {summary.excluded_non_participants} akun non-partisipan dikecualikan.
@@ -323,9 +323,9 @@ function Dashboard({ keys, onLock }: { keys: Keys; onLock: () => void }) {
           {/* Progression + distribution */}
           {hasSessions ? (
             <>
-              <section className="rounded-xl border border-slate-200 bg-white p-4">
+              <section className="rounded-xl border border-edge bg-card p-4">
                 <h3 className="mb-1 text-sm font-semibold">Progres Bias per Sesi</h3>
-                <p className="mb-2 text-xs text-slate-500">
+                <p className="mb-2 text-xs text-muted">
                   Rata-rata intensitas tiap bias pada urutan sesi ke-n
                   lintas partisipan. Berguna melihat apakah bias mereda seiring
                   latihan.
@@ -342,9 +342,9 @@ function Dashboard({ keys, onLock }: { keys: Keys; onLock: () => void }) {
                 />
               </section>
 
-              <section className="rounded-xl border border-slate-200 bg-white p-4">
+              <section className="rounded-xl border border-edge bg-card p-4">
                 <h3 className="mb-1 text-sm font-semibold">Distribusi Intensitas Bias</h3>
-                <p className="mb-2 text-xs text-slate-500">
+                <p className="mb-2 text-xs text-muted">
                   Sebaran intensitas seluruh sesi tercatat, dikelompokkan per
                   0,1. Puncak di kiri berarti mayoritas sesi berbias rendah.
                 </p>
@@ -363,7 +363,7 @@ function Dashboard({ keys, onLock }: { keys: Keys; onLock: () => void }) {
               </section>
             </>
           ) : (
-            <section className="rounded-xl border border-dashed border-slate-300 bg-white px-4 py-6 text-center text-sm text-slate-500">
+            <section className="rounded-xl border border-dashed border-edge2 bg-card px-4 py-6 text-center text-sm text-muted">
               Belum ada sesi selesai pada kohort. Grafik akan muncul setelah
               partisipan menyelesaikan sesi pertama.
             </section>
@@ -374,13 +374,13 @@ function Dashboard({ keys, onLock }: { keys: Keys; onLock: () => void }) {
             <section className="space-y-2">
               <h3 className="text-sm font-semibold">Ringkasan Operasional</h3>
               {adminErr ? (
-                <div className="rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                <div className="rounded-xl bg-amber-50 dark:bg-amber-950/40 px-4 py-3 text-sm text-amber-800 dark:text-amber-300">
                   {adminErr}
                 </div>
               ) : admin ? (
                 <AdminCards admin={admin} />
               ) : (
-                <p className="text-sm text-slate-500">Memuat ringkasan operasional…</p>
+                <p className="text-sm text-muted">Memuat ringkasan operasional…</p>
               )}
             </section>
           )}
@@ -410,10 +410,10 @@ function Stat({
   sub?: string;
 }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4">
-      <p className="text-xs text-slate-500">{label}</p>
+    <div className="rounded-xl border border-edge bg-card p-4">
+      <p className="text-xs text-muted">{label}</p>
       <p className="mt-1 text-lg font-semibold tabular-nums">{value}</p>
-      {sub && <p className="mt-0.5 text-xs text-slate-500">{sub}</p>}
+      {sub && <p className="mt-0.5 text-xs text-muted">{sub}</p>}
     </div>
   );
 }
@@ -422,19 +422,19 @@ function AdminCards({ admin }: { admin: AdminSummary }) {
   const sus = admin.avg_sus_score;
   const susTone =
     sus == null
-      ? "border-slate-200"
+      ? "border-edge"
       : sus >= 68
-        ? "border-emerald-300 bg-emerald-50"
-        : "border-amber-300 bg-amber-50";
+        ? "border-emerald-300 bg-emerald-50 dark:bg-emerald-950/40"
+        : "border-amber-300 bg-amber-50 dark:bg-amber-950/40";
   return (
     <>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         <div className={`rounded-xl border p-4 ${susTone}`}>
-          <p className="text-xs text-slate-500">Rata-rata SUS</p>
+          <p className="text-xs text-muted">Rata-rata SUS</p>
           <p className="mt-1 text-lg font-semibold tabular-nums">
             {sus == null ? "—" : dec(sus, 1)}
           </p>
-          <p className="mt-0.5 text-xs text-slate-500">Target ≥68 · skripsi 64,0</p>
+          <p className="mt-0.5 text-xs text-muted">Target ≥68 · skripsi 64,0</p>
         </div>
         <Stat label="Umpan Balik UAT" value={admin.total_uat_feedback} />
         <Stat
@@ -444,16 +444,16 @@ function AdminCards({ admin }: { admin: AdminSummary }) {
         />
         <Stat label="Baris Metrik Bias" value={admin.total_bias_metrics} />
       </div>
-      <div className="mt-2 rounded-xl border border-slate-200 bg-white p-4">
-        <p className="mb-2 text-xs font-medium text-slate-500">Sesi menurut status</p>
+      <div className="mt-2 rounded-xl border border-edge bg-card p-4">
+        <p className="mb-2 text-xs font-medium text-muted">Sesi menurut status</p>
         <div className="flex flex-wrap gap-2">
           {Object.entries(admin.sessions_by_status).length === 0 ? (
-            <span className="text-xs text-slate-500">Belum ada sesi.</span>
+            <span className="text-xs text-muted">Belum ada sesi.</span>
           ) : (
             Object.entries(admin.sessions_by_status).map(([status, count]) => (
               <span
                 key={status}
-                className="rounded-lg bg-slate-100 px-2.5 py-1 text-xs text-slate-600"
+                className="rounded-lg bg-panel px-2.5 py-1 text-xs text-bodytext"
               >
                 {status}: <b className="tabular-nums">{count}</b>
               </span>
@@ -469,9 +469,9 @@ function MlSection({ ml }: { ml: MlPerformance | null }) {
   if (!ml) return null;
   if (!ml.available) {
     return (
-      <section className="rounded-xl border border-slate-200 bg-white p-4">
+      <section className="rounded-xl border border-edge bg-card p-4">
         <h3 className="mb-1 text-sm font-semibold">Validasi Model</h3>
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-muted">
           Belum ada laporan validasi model. Jalankan skrip validasi ML untuk
           mengisinya, lalu muat ulang halaman ini.
         </p>
@@ -483,16 +483,16 @@ function MlSection({ ml }: { ml: MlPerformance | null }) {
   );
   const report = ml.classification_report ?? [];
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-4">
+    <section className="rounded-xl border border-edge bg-card p-4">
       <h3 className="mb-1 text-sm font-semibold">Validasi Model</h3>
       {ml.generated_at && (
-        <p className="mb-2 text-xs text-slate-500">Dibuat {ml.generated_at}</p>
+        <p className="mb-2 text-xs text-muted">Dibuat {ml.generated_at}</p>
       )}
       {summaryEntries.length > 0 && (
         <div className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
           {summaryEntries.map(([k, v]) => (
-            <div key={k} className="rounded-lg bg-slate-50 px-3 py-2">
-              <p className="text-xs text-slate-500">{k}</p>
+            <div key={k} className="rounded-lg bg-panel px-3 py-2">
+              <p className="text-xs text-muted">{k}</p>
               <p className="text-sm font-semibold tabular-nums">{String(v)}</p>
             </div>
           ))}
@@ -502,7 +502,7 @@ function MlSection({ ml }: { ml: MlPerformance | null }) {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[420px] text-left text-xs">
             <thead>
-              <tr className="border-b border-slate-200 text-slate-500">
+              <tr className="border-b border-edge text-muted">
                 {Object.keys(report[0]).map((h) => (
                   <th key={h} className="py-1.5 pr-3 font-medium">
                     {h}
@@ -512,7 +512,7 @@ function MlSection({ ml }: { ml: MlPerformance | null }) {
             </thead>
             <tbody>
               {report.map((row, i) => (
-                <tr key={i} className="border-b border-slate-100">
+                <tr key={i} className="border-b border-edge">
                   {Object.keys(report[0]).map((h) => (
                     <td key={h} className="py-1.5 pr-3 tabular-nums">
                       {row[h] === "" || row[h] == null ? "—" : row[h]}
@@ -557,9 +557,9 @@ function Downloads({ researcherKey }: { researcherKey: string }) {
   }
 
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-4">
+    <section className="rounded-xl border border-edge bg-card p-4">
       <h3 className="mb-1 text-sm font-semibold">Ekspor Dataset</h3>
-      <p className="mb-3 text-xs text-slate-500">
+      <p className="mb-3 text-xs text-muted">
         Unduh CSV (partisipan sah). Cocok diolah lanjut di Python atau
         spreadsheet.
       </p>
@@ -569,14 +569,14 @@ function Downloads({ researcherKey }: { researcherKey: string }) {
             key={d.slug}
             onClick={() => download(d.slug, d.file)}
             disabled={busy !== null}
-            className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium
-                       text-slate-600 hover:bg-slate-100 disabled:opacity-50"
+            className="rounded-lg border border-edge2 px-3 py-1.5 text-xs font-medium
+                       text-bodytext hover:bg-panel disabled:opacity-50"
           >
             {busy === d.slug ? "Menyiapkan…" : `⤓ ${d.label}`}
           </button>
         ))}
       </div>
-      {err && <p className="mt-2 text-xs text-red-600">{err}</p>}
+      {err && <p className="mt-2 text-xs text-red-600 dark:text-red-400">{err}</p>}
     </section>
   );
 }

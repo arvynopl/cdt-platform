@@ -91,7 +91,7 @@ export default function UmpanBalikPage() {
       <main className="mx-auto max-w-md space-y-4 pt-10 text-center">
         <div className="text-4xl">🙏</div>
         <h2 className="text-lg font-semibold">Terima kasih!</h2>
-        <p className="text-sm leading-relaxed text-slate-600">
+        <p className="text-sm leading-relaxed text-bodytext">
           Tanggapan Anda sudah tersimpan dan sangat berarti untuk perbaikan
           sistem. Bila pendapat Anda berubah setelah memakai sistem lebih
           lama, silakan isi ulang kapan saja; tanggapan terbaru yang akan
@@ -111,7 +111,7 @@ export default function UmpanBalikPage() {
     <main className="animate-fade-in space-y-5 pb-10">
       <div>
         <h2 className="text-lg font-semibold">Umpan Balik Anda</h2>
-        <p className="mt-1 text-sm leading-relaxed text-slate-500">
+        <p className="mt-1 text-sm leading-relaxed text-muted">
           Sepuluh pernyataan singkat ditambah tiga pertanyaan terbuka;
           seluruhnya sekitar tiga menit. Jawaban Anda dipakai murni untuk
           memperbaiki sistem, dan Anda boleh mengisi ulang kapan pun pendapat
@@ -120,17 +120,17 @@ export default function UmpanBalikPage() {
       </div>
 
       {error && (
-        <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p className="rounded-lg bg-red-50 dark:bg-red-950/40 px-4 py-3 text-sm text-red-700 dark:text-red-300">
           {error}
         </p>
       )}
 
       <form onSubmit={submit} className="space-y-5">
-        <section className="space-y-4 rounded-xl border border-slate-200 bg-white p-4">
+        <section className="space-y-4 rounded-xl border border-edge bg-card p-4">
           <h3 className="text-sm font-semibold">
             Bagian 1: Seberapa nyaman sistem ini digunakan?
           </h3>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-muted">
             Nilai 1 berarti sangat tidak setuju, nilai 5 berarti sangat setuju.
           </p>
           {SUS_ITEMS.map(([key, label]) => (
@@ -143,7 +143,7 @@ export default function UmpanBalikPage() {
                     className={`flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border text-sm transition-colors ${
                       sus[key] === v
                         ? "border-brand bg-brand text-white"
-                        : "border-slate-300 text-slate-600 hover:bg-slate-50"
+                        : "border-edge2 text-bodytext hover:bg-panel"
                     }`}
                   >
                     <input
@@ -161,11 +161,11 @@ export default function UmpanBalikPage() {
           ))}
         </section>
 
-        <section className="space-y-4 rounded-xl border border-slate-200 bg-white p-4">
+        <section className="space-y-4 rounded-xl border border-edge bg-card p-4">
           <h3 className="text-sm font-semibold">
             Bagian 2: Cerita Anda (opsional)
           </h3>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-muted">
             Sekecil apa pun, cerita Anda membantu kami memahami angka-angka di
             atas.
           </p>
@@ -178,7 +178,7 @@ export default function UmpanBalikPage() {
                 maxLength={2000}
                 rows={3}
                 placeholder={item.placeholder}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm
+                className="mt-1 w-full rounded-lg border border-edge2 px-3 py-2 text-sm
                            focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
               />
             </label>

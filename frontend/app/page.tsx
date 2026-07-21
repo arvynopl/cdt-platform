@@ -38,14 +38,14 @@ const ONBOARDING_ITEMS: [keyof RegisterPayload["onboarding_survey"], string][] =
 ];
 
 const inputCls =
-  "w-full rounded-lg border border-slate-300 px-3 py-2 text-sm " +
+  "w-full rounded-lg border border-edge2 px-3 py-2 text-sm " +
   "focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand";
 const btnCls =
   "w-full rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-white " +
   "hover:bg-blue-700 disabled:opacity-50";
 const btnGhostCls =
-  "w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm " +
-  "font-medium text-slate-600 hover:bg-slate-100";
+  "w-full rounded-lg border border-edge2 px-4 py-2.5 text-sm " +
+  "font-medium text-bodytext hover:bg-panel";
 
 export default function BerandaPage() {
   const router = useRouter();
@@ -80,13 +80,13 @@ export default function BerandaPage() {
   return (
     <main className="mx-auto max-w-md">
       <h2 className="mb-1 text-lg font-semibold">Selamat datang!</h2>
-      <p className="mb-6 text-sm leading-relaxed text-slate-500">
+      <p className="mb-6 text-sm leading-relaxed text-muted">
         Masukkan nama pengguna Anda untuk mulai. Kalau Anda baru pertama kali
         di sini, kami akan memandu pendaftaran singkat, kurang dari dua menit.
       </p>
 
       {error && (
-        <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="mb-4 rounded-lg bg-red-50 dark:bg-red-950/40 px-4 py-3 text-sm text-red-700 dark:text-red-300">
           {error}
         </div>
       )}
@@ -143,8 +143,8 @@ const VALUE_POINTS: [string, string, string][] = [
 
 function ValueProp() {
   return (
-    <section className="animate-fade-in mt-8 border-t border-slate-200 pt-6">
-      <h3 className="text-sm font-semibold text-slate-700">
+    <section className="animate-fade-in mt-8 border-t border-edge pt-6">
+      <h3 className="text-sm font-semibold text-strong">
         Apa yang Anda dapatkan di sini?
       </h3>
       <ul className="mt-3 space-y-3">
@@ -154,13 +154,13 @@ function ValueProp() {
               {icon}
             </span>
             <div>
-              <p className="text-sm font-medium text-slate-800">{title}</p>
-              <p className="text-sm leading-relaxed text-slate-600">{body}</p>
+              <p className="text-sm font-medium text-strong">{title}</p>
+              <p className="text-sm leading-relaxed text-bodytext">{body}</p>
             </div>
           </li>
         ))}
       </ul>
-      <p className="mt-4 text-xs leading-relaxed text-slate-500">
+      <p className="mt-4 text-xs leading-relaxed text-muted">
         Ini alat bantu edukasi untuk mengenali pola pengambilan keputusan, bukan
         nasihat investasi.{" "}
         <Link href="/metodologi" className="font-medium text-brand hover:underline">
@@ -290,7 +290,7 @@ function RegisterForm(props: {
   ) => (
     <fieldset className="text-sm">
       <legend className="font-medium">{label}</legend>
-      {help && <p className="mb-1 text-xs text-slate-500">{help}</p>}
+      {help && <p className="mb-1 text-xs text-muted">{help}</p>}
       <div className="mt-1 flex flex-wrap gap-3">
         {options.map((opt) => (
           <label key={opt} className="flex items-center gap-1.5 capitalize">
@@ -380,7 +380,7 @@ function RegisterForm(props: {
       <h3 className="border-b pb-1 text-sm font-semibold">
         Survei Awal Kecenderungan Bias
       </h3>
-      <p className="text-xs text-slate-500">
+      <p className="text-xs text-muted">
         Sembilan pernyataan singkat ini membantu sistem mengenali titik awal
         Anda. Tidak ada jawaban benar atau salah; pilih saja yang paling
         menggambarkan diri Anda.

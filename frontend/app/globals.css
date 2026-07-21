@@ -2,8 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
+/* --- Theme tokens ------------------------------------------------------- */
+/* Colours are stored as space-separated RGB channels so Tailwind's
+   `rgb(var(--x) / <alpha-value>)` colours support opacity modifiers
+   (e.g. bg-card/95). Dark values live only here — flip the `.dark` class
+   on <html> (the header toggle does this) to switch the whole app. */
+:root {
+  --page: 248 250 252; /* slate-50  */
+  --card: 255 255 255; /* white     */
+  --panel: 241 245 249; /* slate-100 (nested panels) */
+  --edge: 226 232 240; /* slate-200 */
+  --edge2: 203 213 225; /* slate-300 */
+  --strong: 30 41 59; /* slate-800 (headings)   */
+  --body: 71 85 105; /* slate-600 (body text)  */
+  --muted: 100 116 139; /* slate-500 (secondary)  */
+  --brandsoft: 235 241 254; /* brand-soft */
+}
+.dark {
+  --page: 15 23 42; /* slate-900 */
+  --card: 30 41 59; /* slate-800 */
+  --panel: 51 65 85; /* slate-700 */
+  --edge: 51 65 85; /* slate-700 */
+  --edge2: 71 85 105; /* slate-600 */
+  --strong: 241 245 249; /* slate-100 */
+  --body: 203 213 225; /* slate-300 */
+  --muted: 148 163 184; /* slate-400 */
+  --brandsoft: 30 58 95; /* deep blue */
+}
+
+/* Tells the browser which palette to use for native widgets (checkboxes,
+   radios, scrollbars, spinners) so they don't stay light in dark mode. */
+:root {
+  color-scheme: light;
+}
+.dark {
+  color-scheme: dark;
+}
+
 body {
-  @apply bg-slate-50 text-brand-ink antialiased;
+  background-color: rgb(var(--page));
+  color: rgb(var(--strong));
+  @apply antialiased;
+}
+
+/* Text form controls have no Tailwind preflight background, so they would
+   keep the UA default (white). Bind them to the theme tokens. */
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  background-color: rgb(var(--card));
+  color: rgb(var(--strong));
+}
+input::placeholder,
+textarea::placeholder {
+  color: rgb(var(--muted));
 }
 
 /* --- Keyboard focus: a consistent, visible outline for all controls ----- */
@@ -13,10 +65,10 @@ body {
   border-radius: 3px;
 }
 
-
 /* --- Skeleton loading placeholder -------------------------------------- */
 .skeleton {
-  @apply relative overflow-hidden rounded bg-slate-200;
+  @apply relative overflow-hidden rounded;
+  background-color: rgb(var(--edge));
 }
 .skeleton::after {
   content: "";
@@ -26,7 +78,7 @@ body {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.6),
+    rgb(var(--card) / 0.55),
     transparent
   );
   animation: cdt-shimmer 1.5s infinite;

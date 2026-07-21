@@ -48,14 +48,14 @@ export default function MetodologiPage() {
     <main className="space-y-6 pb-12">
       <div>
         <h2 className="text-lg font-semibold">Metodologi &amp; Istilah</h2>
-        <p className="mt-1 text-sm leading-relaxed text-slate-600">
+        <p className="mt-1 text-sm leading-relaxed text-bodytext">
           Halaman ini menjelaskan secara ringkas cara kerja aplikasi dan arti
           istilah yang Anda temui di halaman hasil dan profil. Tujuannya satu:
           angka yang Anda lihat bukan kotak hitam.
         </p>
       </div>
 
-      <section className="rounded-xl border border-slate-200 bg-white p-4">
+      <section className="rounded-xl border border-edge bg-card p-4">
         <h3 className="mb-3 text-sm font-semibold">Cara kerja singkat</h3>
         <ol className="space-y-3">
           {STEPS.map((s) => (
@@ -68,23 +68,23 @@ export default function MetodologiPage() {
                 {s.n}
               </span>
               <div>
-                <p className="text-sm font-medium text-slate-800">{s.title}</p>
-                <p className="text-sm leading-relaxed text-slate-600">{s.body}</p>
+                <p className="text-sm font-medium text-strong">{s.title}</p>
+                <p className="text-sm leading-relaxed text-bodytext">{s.body}</p>
               </div>
             </li>
           ))}
         </ol>
       </section>
 
-      <section className="rounded-xl border border-slate-200 bg-white p-4">
+      <section className="rounded-xl border border-edge bg-card p-4">
         <h3 className="mb-3 text-sm font-semibold">Istilah yang sering muncul</h3>
         <dl className="space-y-4">
           {Object.entries(GLOSSARY).map(([key, entry]) => (
             <div key={key}>
-              <dt className="text-sm font-semibold text-slate-800">
+              <dt className="text-sm font-semibold text-strong">
                 {entry.label}
               </dt>
-              <dd className="mt-0.5 text-sm leading-relaxed text-slate-600">
+              <dd className="mt-0.5 text-sm leading-relaxed text-bodytext">
                 {entry.long}
               </dd>
             </div>
@@ -92,7 +92,7 @@ export default function MetodologiPage() {
         </dl>
       </section>
 
-      <p className="text-xs leading-relaxed text-slate-500">
+      <p className="text-xs leading-relaxed text-muted">
         Aplikasi ini adalah alat bantu edukasi untuk mengenali pola pengambilan
         keputusan, bukan nasihat investasi. Metrik bersifat indikatif dan paling
         bermakna setelah beberapa sesi.

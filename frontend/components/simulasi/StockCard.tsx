@@ -37,7 +37,7 @@ export default function StockCard(props: {
   const { meta, price, change, held, order, isOpen } = props;
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white">
+    <div className="rounded-xl border border-edge bg-card">
       <button
         onClick={props.onToggle}
         aria-expanded={isOpen}
@@ -47,18 +47,18 @@ export default function StockCard(props: {
           <p className="text-sm font-semibold">
             {meta?.ticker ?? props.fallbackId}
             {meta?.volatility_class === "high" && (
-              <span className="ml-1.5 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-800">
+              <span className="ml-1.5 rounded bg-amber-100 dark:bg-amber-950/50 px-1.5 py-0.5 text-[10px] font-medium text-amber-800 dark:text-amber-300">
                 volatil tinggi
               </span>
             )}
           </p>
-          <p className="text-xs text-slate-500">{meta?.name}</p>
+          <p className="text-xs text-muted">{meta?.name}</p>
         </div>
         <div className="text-right">
           <p className="text-sm font-semibold">{formatRupiah(price)}</p>
           <p
             className={`text-xs ${
-              change >= 0 ? "text-emerald-700" : "text-red-700"
+              change >= 0 ? "text-emerald-700 dark:text-emerald-300" : "text-red-700 dark:text-red-300"
             }`}
           >
             {change >= 0 ? "▲" : "▼"} {formatPct(Math.abs(change), 2)}
@@ -66,7 +66,7 @@ export default function StockCard(props: {
         </div>
       </button>
       {(held > 0 || order) && (
-        <div className="flex items-center gap-2 px-3 pb-2 text-xs text-slate-500">
+        <div className="flex items-center gap-2 px-3 pb-2 text-xs text-muted">
           {held > 0 && <span>Dimiliki: {held} lembar</span>}
           {order && (
             <span className="rounded bg-brand-soft px-1.5 py-0.5 font-medium text-brand">
@@ -77,7 +77,7 @@ export default function StockCard(props: {
         </div>
       )}
       {isOpen && (
-        <div className="border-t border-slate-100 p-3">
+        <div className="border-t border-edge p-3">
           <div data-tour="chart">
             <Candlestick
               preHistory={props.preHistory}

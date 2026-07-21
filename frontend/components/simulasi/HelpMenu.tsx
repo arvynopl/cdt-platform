@@ -15,13 +15,13 @@ export default function HelpMenu(props: {
   return (
     <div className="fixed bottom-20 right-4 z-40 flex flex-col items-end gap-2">
       {props.open && (
-        <div className="w-56 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl">
+        <div className="w-56 rounded-xl border border-edge bg-card p-1.5 shadow-xl">
           <button
             onClick={props.onReplayTour}
             className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-brand-soft"
           >
             Putar ulang panduan halaman
-            <span className="block text-xs text-slate-500">
+            <span className="block text-xs text-muted">
               Tur singkat mengenal setiap bagian layar
             </span>
           </button>
@@ -30,7 +30,7 @@ export default function HelpMenu(props: {
             className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-brand-soft"
           >
             Ulangi mode latihan
-            <span className="block text-xs text-slate-500">
+            <span className="block text-xs text-muted">
               Tiga putaran percobaan; sesi Anda tetap aman
             </span>
           </button>
@@ -40,7 +40,7 @@ export default function HelpMenu(props: {
         onClick={props.onToggle}
         aria-label="Bantuan"
         aria-expanded={props.open}
-        className="h-10 w-10 rounded-full border border-slate-300 bg-white
+        className="h-10 w-10 rounded-full border border-edge2 bg-card
                    text-lg font-semibold text-brand shadow-md hover:bg-brand-soft"
       >
         ?
