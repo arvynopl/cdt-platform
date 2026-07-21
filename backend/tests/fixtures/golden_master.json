@@ -24,19 +24,19 @@
       "feedback": [
         {
           "bias_type": "disposition_effect",
-          "explanation_text": "Kamu menunjukkan efek disposisi yang cukup signifikan pada sesi ini. DEI kamu adalah -0.27 — kamu merealisasi 3 keuntungan (PGR = 0.73) tetapi hanya 2 kerugian (PLR = 1.00). Pola ini menunjukkan kamu cenderung 'mengunci' keuntungan kecil sambil membiarkan posisi merugi terus menggerogoti portofoliomu.",
+          "explanation_text": "Anda menunjukkan efek disposisi yang cukup signifikan pada sesi ini. DEI Anda adalah -0.27 — Anda merealisasi 3 keuntungan (PGR = 0.73) tetapi hanya 2 kerugian (PLR = 1.00). Pola ini menunjukkan Anda cenderung 'mengunci' keuntungan kecil sambil membiarkan posisi merugi terus menggerogoti portofolio Anda.",
           "recommendation_text": "Terapkan strategi stop-loss yang tegas: tentukan batas kerugian maksimal (misalnya 5–10%) sebelum masuk posisi, dan patuhi aturan tersebut. Di sisi lain, gunakan strategi trailing stop untuk membiarkan keuntungan tumbuh sebelum keluar dari posisi yang bagus.",
           "severity": "moderate"
         },
         {
           "bias_type": "loss_aversion",
-          "explanation_text": "Loss aversion yang sangat kuat terdeteksi (LAI = 2.62). Kamu menahan posisi merugi hampir 2.6x lebih lama dari posisi untung. Ini adalah salah satu bias paling merusak dalam investasi jangka panjang karena modal terjebak dalam posisi yang terus menurun nilainya. Posisi merugi yang kamu pertahankan mengunci modal yang bisa digunakan untuk peluang investasi lainnya.",
+          "explanation_text": "Loss aversion yang sangat kuat terdeteksi (LAI = 2.62). Anda menahan posisi merugi hampir 2.6x lebih lama dari posisi untung. Ini adalah salah satu bias paling merusak dalam investasi jangka panjang karena modal terjebak dalam posisi yang terus menurun nilainya. Posisi merugi yang Anda pertahankan mengunci modal yang bisa digunakan untuk peluang investasi lainnya.",
           "recommendation_text": "Implementasikan sistem stop-loss yang tidak bisa diabaikan: tetapkan alert otomatis saat harga turun 10% dari harga beli. Ingat bahwa cut loss bukan 'kalah' — itu adalah manajemen risiko yang bijak. Modal yang diselamatkan dari posisi rugi bisa digunakan untuk peluang investasi yang lebih baik.",
           "severity": "severe"
         },
         {
           "bias_type": "overconfidence",
-          "explanation_text": "Tingkat aktivitas trading kamu sedikit di atas rata-rata dengan skor kepercayaan diri berlebih (OCS) sebesar 0.37. Dalam 11 transaksi, performa portofoliomu masih terjaga. Namun perlu diperhatikan bahwa frekuensi trading yang tinggi meningkatkan biaya transaksi.",
+          "explanation_text": "Tingkat aktivitas trading Anda sedikit di atas rata-rata dengan skor kepercayaan diri berlebih (OCS) sebesar 0.37. Dalam 11 transaksi, performa portofolio Anda masih terjaga. Namun perlu diperhatikan bahwa frekuensi trading yang tinggi meningkatkan biaya transaksi.",
           "recommendation_text": "Sebelum setiap transaksi, luangkan waktu 30 detik untuk menanyakan: 'Apa informasi baru yang mendorong saya untuk trading sekarang?' Jika jawabannya tidak ada, pertimbangkan untuk menahan.",
           "severity": "mild"
         }
@@ -99,19 +99,19 @@
       "feedback": [
         {
           "bias_type": "disposition_effect",
-          "explanation_text": "Data transaksi tidak cukup untuk menganalisis disposition effect pada sesi ini. Cobalah untuk melakukan beberapa transaksi beli dan jual pada sesi berikutnya agar sistem dapat mengevaluasi pola keputusanmu.",
+          "explanation_text": "Data transaksi tidak cukup untuk menganalisis disposition effect pada sesi ini. Cobalah untuk melakukan beberapa transaksi beli dan jual pada sesi berikutnya agar sistem dapat mengevaluasi pola keputusan Anda.",
           "recommendation_text": "Lakukan setidaknya beberapa transaksi beli dan jual pada sesi berikutnya untuk memungkinkan analisis bias yang bermakna.",
           "severity": "none"
         },
         {
           "bias_type": "loss_aversion",
-          "explanation_text": "Data transaksi tidak cukup untuk menganalisis loss aversion pada sesi ini. Cobalah untuk melakukan beberapa transaksi beli dan jual pada sesi berikutnya agar sistem dapat mengevaluasi pola keputusanmu.",
+          "explanation_text": "Data transaksi tidak cukup untuk menganalisis loss aversion pada sesi ini. Cobalah untuk melakukan beberapa transaksi beli dan jual pada sesi berikutnya agar sistem dapat mengevaluasi pola keputusan Anda.",
           "recommendation_text": "Lakukan setidaknya beberapa transaksi beli dan jual pada sesi berikutnya untuk memungkinkan analisis bias yang bermakna.",
           "severity": "none"
         },
         {
           "bias_type": "overconfidence",
-          "explanation_text": "Data transaksi tidak cukup untuk menganalisis overconfidence pada sesi ini. Cobalah untuk melakukan beberapa transaksi beli dan jual pada sesi berikutnya agar sistem dapat mengevaluasi pola keputusanmu.",
+          "explanation_text": "Data transaksi tidak cukup untuk menganalisis overconfidence pada sesi ini. Cobalah untuk melakukan beberapa transaksi beli dan jual pada sesi berikutnya agar sistem dapat mengevaluasi pola keputusan Anda.",
           "recommendation_text": "Lakukan setidaknya beberapa transaksi beli dan jual pada sesi berikutnya untuk memungkinkan analisis bias yang bermakna.",
           "severity": "none"
         }
@@ -174,20 +174,20 @@
       "feedback": [
         {
           "bias_type": "disposition_effect",
-          "explanation_text": "Efek disposisi yang kamu tunjukkan sangat kuat (DEI = 1.00). Kamu merealisasi hampir semua keuntungan (PGR = 1.00) tetapi sangat jarang menjual posisi yang merugi (PLR = 0.00). Pola ini secara signifikan menurunkan performa portofoliomu secara jangka panjang. Contoh: kamu menjual VOLH.JK di putaran 5 dengan keuntungan Rp 1,500. Jika kamu menahan 3 putaran lebih lama, estimasi keuntungan bisa mencapai Rp 1,800 (tambahan ≈ Rp 300).",
-          "recommendation_text": "Lakukan evaluasi menyeluruh terhadap setiap posisi yang merugi: apakah alasan fundamentalmu untuk membeli masih valid? Jika tidak, pertimbangkan untuk cut loss. Setiap minggu, tinjau semua posisi merugi dan tanyakan: 'Apakah saya akan membeli saham ini hari ini di harga ini?' Jika jawabannya tidak, pertimbangkan untuk keluar dari posisi tersebut.",
+          "explanation_text": "Efek disposisi yang Anda tunjukkan sangat kuat (DEI = 1.00). Anda merealisasi hampir semua keuntungan (PGR = 1.00) tetapi sangat jarang menjual posisi yang merugi (PLR = 0.00). Pola ini secara signifikan menurunkan performa portofolio Anda secara jangka panjang. Contoh: Anda menjual VOLH.JK di putaran 5 dengan keuntungan Rp 1,500. Jika Anda menahan 3 putaran lebih lama, estimasi keuntungan bisa mencapai Rp 1,800 (tambahan ≈ Rp 300).",
+          "recommendation_text": "Lakukan evaluasi menyeluruh terhadap setiap posisi yang merugi: apakah alasan fundamental Anda untuk membeli masih valid? Jika tidak, pertimbangkan untuk cut loss. Setiap minggu, tinjau semua posisi merugi dan tanyakan: 'Apakah saya akan membeli saham ini hari ini di harga ini?' Jika jawabannya tidak, pertimbangkan untuk keluar dari posisi tersebut.",
           "severity": "severe"
         },
         {
           "bias_type": "loss_aversion",
           "explanation_text": "Tidak terdeteksi bias loss aversion yang signifikan pada sesi ini. Pertahankan pola pengambilan keputusan yang baik ini!",
-          "recommendation_text": "Terus pantau keputusan investasimu dan jaga konsistensi.",
+          "recommendation_text": "Terus pantau keputusan investasi Anda dan jaga konsistensi.",
           "severity": "none"
         },
         {
           "bias_type": "overconfidence",
           "explanation_text": "Tidak terdeteksi bias overconfidence yang signifikan pada sesi ini. Pertahankan pola pengambilan keputusan yang baik ini!",
-          "recommendation_text": "Terus pantau keputusan investasimu dan jaga konsistensi.",
+          "recommendation_text": "Terus pantau keputusan investasi Anda dan jaga konsistensi.",
           "severity": "none"
         }
       ],
@@ -247,20 +247,20 @@
       "feedback": [
         {
           "bias_type": "disposition_effect",
-          "explanation_text": "Efek disposisi yang kamu tunjukkan sangat kuat (DEI = -1.00). Kamu merealisasi hampir semua keuntungan (PGR = 0.00) tetapi sangat jarang menjual posisi yang merugi (PLR = 1.00). Pola ini secara signifikan menurunkan performa portofoliomu secara jangka panjang. ",
-          "recommendation_text": "Lakukan evaluasi menyeluruh terhadap setiap posisi yang merugi: apakah alasan fundamentalmu untuk membeli masih valid? Jika tidak, pertimbangkan untuk cut loss. Setiap minggu, tinjau semua posisi merugi dan tanyakan: 'Apakah saya akan membeli saham ini hari ini di harga ini?' Jika jawabannya tidak, pertimbangkan untuk keluar dari posisi tersebut.",
+          "explanation_text": "Efek disposisi yang Anda tunjukkan sangat kuat (DEI = -1.00). Anda merealisasi hampir semua keuntungan (PGR = 0.00) tetapi sangat jarang menjual posisi yang merugi (PLR = 1.00). Pola ini secara signifikan menurunkan performa portofolio Anda secara jangka panjang. ",
+          "recommendation_text": "Lakukan evaluasi menyeluruh terhadap setiap posisi yang merugi: apakah alasan fundamental Anda untuk membeli masih valid? Jika tidak, pertimbangkan untuk cut loss. Setiap minggu, tinjau semua posisi merugi dan tanyakan: 'Apakah saya akan membeli saham ini hari ini di harga ini?' Jika jawabannya tidak, pertimbangkan untuk keluar dari posisi tersebut.",
           "severity": "severe"
         },
         {
           "bias_type": "loss_aversion",
-          "explanation_text": "Loss aversion yang sangat kuat terdeteksi (LAI = 6.50). Kamu menahan posisi merugi hampir 6.5x lebih lama dari posisi untung. Ini adalah salah satu bias paling merusak dalam investasi jangka panjang karena modal terjebak dalam posisi yang terus menurun nilainya. Posisi merugi yang kamu pertahankan mengunci modal yang bisa digunakan untuk peluang investasi lainnya.",
+          "explanation_text": "Loss aversion yang sangat kuat terdeteksi (LAI = 6.50). Anda menahan posisi merugi hampir 6.5x lebih lama dari posisi untung. Ini adalah salah satu bias paling merusak dalam investasi jangka panjang karena modal terjebak dalam posisi yang terus menurun nilainya. Posisi merugi yang Anda pertahankan mengunci modal yang bisa digunakan untuk peluang investasi lainnya.",
           "recommendation_text": "Implementasikan sistem stop-loss yang tidak bisa diabaikan: tetapkan alert otomatis saat harga turun 10% dari harga beli. Ingat bahwa cut loss bukan 'kalah' — itu adalah manajemen risiko yang bijak. Modal yang diselamatkan dari posisi rugi bisa digunakan untuk peluang investasi yang lebih baik.",
           "severity": "severe"
         },
         {
           "bias_type": "overconfidence",
           "explanation_text": "Tidak terdeteksi bias overconfidence yang signifikan pada sesi ini. Pertahankan pola pengambilan keputusan yang baik ini!",
-          "recommendation_text": "Terus pantau keputusan investasimu dan jaga konsistensi.",
+          "recommendation_text": "Terus pantau keputusan investasi Anda dan jaga konsistensi.",
           "severity": "none"
         }
       ],
@@ -320,19 +320,19 @@
       "feedback": [
         {
           "bias_type": "disposition_effect",
-          "explanation_text": "Kamu menunjukkan efek disposisi yang cukup signifikan pada sesi ini. DEI kamu adalah -0.27 — kamu merealisasi 3 keuntungan (PGR = 0.73) tetapi hanya 2 kerugian (PLR = 1.00). Pola ini menunjukkan kamu cenderung 'mengunci' keuntungan kecil sambil membiarkan posisi merugi terus menggerogoti portofoliomu. Perkembangan positif: kecenderungan bias ini menurun dibanding sesi sebelumnya.",
+          "explanation_text": "Anda menunjukkan efek disposisi yang cukup signifikan pada sesi ini. DEI Anda adalah -0.27 — Anda merealisasi 3 keuntungan (PGR = 0.73) tetapi hanya 2 kerugian (PLR = 1.00). Pola ini menunjukkan Anda cenderung 'mengunci' keuntungan kecil sambil membiarkan posisi merugi terus menggerogoti portofolio Anda. Perkembangan positif: kecenderungan bias ini menurun dibanding sesi sebelumnya.",
           "recommendation_text": "Terapkan strategi stop-loss yang tegas: tentukan batas kerugian maksimal (misalnya 5–10%) sebelum masuk posisi, dan patuhi aturan tersebut. Di sisi lain, gunakan strategi trailing stop untuk membiarkan keuntungan tumbuh sebelum keluar dari posisi yang bagus.",
           "severity": "moderate"
         },
         {
           "bias_type": "loss_aversion",
-          "explanation_text": "Loss aversion yang sangat kuat terdeteksi (LAI = 2.62). Kamu menahan posisi merugi hampir 2.6x lebih lama dari posisi untung. Ini adalah salah satu bias paling merusak dalam investasi jangka panjang karena modal terjebak dalam posisi yang terus menurun nilainya. Posisi merugi yang kamu pertahankan mengunci modal yang bisa digunakan untuk peluang investasi lainnya.",
+          "explanation_text": "Loss aversion yang sangat kuat terdeteksi (LAI = 2.62). Anda menahan posisi merugi hampir 2.6x lebih lama dari posisi untung. Ini adalah salah satu bias paling merusak dalam investasi jangka panjang karena modal terjebak dalam posisi yang terus menurun nilainya. Posisi merugi yang Anda pertahankan mengunci modal yang bisa digunakan untuk peluang investasi lainnya.",
           "recommendation_text": "Implementasikan sistem stop-loss yang tidak bisa diabaikan: tetapkan alert otomatis saat harga turun 10% dari harga beli. Ingat bahwa cut loss bukan 'kalah' — itu adalah manajemen risiko yang bijak. Modal yang diselamatkan dari posisi rugi bisa digunakan untuk peluang investasi yang lebih baik.",
           "severity": "severe"
         },
         {
           "bias_type": "overconfidence",
-          "explanation_text": "Tingkat aktivitas trading kamu sedikit di atas rata-rata dengan skor kepercayaan diri berlebih (OCS) sebesar 0.37. Dalam 11 transaksi, performa portofoliomu masih terjaga. Namun perlu diperhatikan bahwa frekuensi trading yang tinggi meningkatkan biaya transaksi. Perhatian: intensitas bias ini meningkat dari sesi sebelumnya.",
+          "explanation_text": "Tingkat aktivitas trading Anda sedikit di atas rata-rata dengan skor kepercayaan diri berlebih (OCS) sebesar 0.37. Dalam 11 transaksi, performa portofolio Anda masih terjaga. Namun perlu diperhatikan bahwa frekuensi trading yang tinggi meningkatkan biaya transaksi. Perhatian: intensitas bias ini meningkat dari sesi sebelumnya.",
           "recommendation_text": "Sebelum setiap transaksi, luangkan waktu 30 detik untuk menanyakan: 'Apa informasi baru yang mendorong saya untuk trading sekarang?' Jika jawabannya tidak ada, pertimbangkan untuk menahan.",
           "severity": "mild"
         }
@@ -399,20 +399,20 @@
       "feedback": [
         {
           "bias_type": "disposition_effect",
-          "explanation_text": "Efek disposisi yang kamu tunjukkan sangat kuat (DEI = -1.00). Kamu merealisasi hampir semua keuntungan (PGR = 0.00) tetapi sangat jarang menjual posisi yang merugi (PLR = 1.00). Pola ini secara signifikan menurunkan performa portofoliomu secara jangka panjang. ",
-          "recommendation_text": "Lakukan evaluasi menyeluruh terhadap setiap posisi yang merugi: apakah alasan fundamentalmu untuk membeli masih valid? Jika tidak, pertimbangkan untuk cut loss. Setiap minggu, tinjau semua posisi merugi dan tanyakan: 'Apakah saya akan membeli saham ini hari ini di harga ini?' Jika jawabannya tidak, pertimbangkan untuk keluar dari posisi tersebut.",
+          "explanation_text": "Efek disposisi yang Anda tunjukkan sangat kuat (DEI = -1.00). Anda merealisasi hampir semua keuntungan (PGR = 0.00) tetapi sangat jarang menjual posisi yang merugi (PLR = 1.00). Pola ini secara signifikan menurunkan performa portofolio Anda secara jangka panjang. ",
+          "recommendation_text": "Lakukan evaluasi menyeluruh terhadap setiap posisi yang merugi: apakah alasan fundamental Anda untuk membeli masih valid? Jika tidak, pertimbangkan untuk cut loss. Setiap minggu, tinjau semua posisi merugi dan tanyakan: 'Apakah saya akan membeli saham ini hari ini di harga ini?' Jika jawabannya tidak, pertimbangkan untuk keluar dari posisi tersebut.",
           "severity": "severe"
         },
         {
           "bias_type": "loss_aversion",
-          "explanation_text": "Loss aversion yang sangat kuat terdeteksi (LAI = 10.00). Kamu menahan posisi merugi hampir 10.0x lebih lama dari posisi untung. Ini adalah salah satu bias paling merusak dalam investasi jangka panjang karena modal terjebak dalam posisi yang terus menurun nilainya. Posisi merugi yang kamu pertahankan mengunci modal yang bisa digunakan untuk peluang investasi lainnya.",
+          "explanation_text": "Loss aversion yang sangat kuat terdeteksi (LAI = 10.00). Anda menahan posisi merugi hampir 10.0x lebih lama dari posisi untung. Ini adalah salah satu bias paling merusak dalam investasi jangka panjang karena modal terjebak dalam posisi yang terus menurun nilainya. Posisi merugi yang Anda pertahankan mengunci modal yang bisa digunakan untuk peluang investasi lainnya.",
           "recommendation_text": "Implementasikan sistem stop-loss yang tidak bisa diabaikan: tetapkan alert otomatis saat harga turun 10% dari harga beli. Ingat bahwa cut loss bukan 'kalah' — itu adalah manajemen risiko yang bijak. Modal yang diselamatkan dari posisi rugi bisa digunakan untuk peluang investasi yang lebih baik.",
           "severity": "severe"
         },
         {
           "bias_type": "overconfidence",
           "explanation_text": "Tidak terdeteksi bias overconfidence yang signifikan pada sesi ini. Pertahankan pola pengambilan keputusan yang baik ini!",
-          "recommendation_text": "Terus pantau keputusan investasimu dan jaga konsistensi.",
+          "recommendation_text": "Terus pantau keputusan investasi Anda dan jaga konsistensi.",
           "severity": "none"
         }
       ],
@@ -474,20 +474,20 @@
       "feedback": [
         {
           "bias_type": "disposition_effect",
-          "explanation_text": "Efek disposisi yang kamu tunjukkan sangat kuat (DEI = -1.00). Kamu merealisasi hampir semua keuntungan (PGR = 0.00) tetapi sangat jarang menjual posisi yang merugi (PLR = 1.00). Pola ini secara signifikan menurunkan performa portofoliomu secara jangka panjang. ",
-          "recommendation_text": "Lakukan evaluasi menyeluruh terhadap setiap posisi yang merugi: apakah alasan fundamentalmu untuk membeli masih valid? Jika tidak, pertimbangkan untuk cut loss. Setiap minggu, tinjau semua posisi merugi dan tanyakan: 'Apakah saya akan membeli saham ini hari ini di harga ini?' Jika jawabannya tidak, pertimbangkan untuk keluar dari posisi tersebut.",
+          "explanation_text": "Efek disposisi yang Anda tunjukkan sangat kuat (DEI = -1.00). Anda merealisasi hampir semua keuntungan (PGR = 0.00) tetapi sangat jarang menjual posisi yang merugi (PLR = 1.00). Pola ini secara signifikan menurunkan performa portofolio Anda secara jangka panjang. ",
+          "recommendation_text": "Lakukan evaluasi menyeluruh terhadap setiap posisi yang merugi: apakah alasan fundamental Anda untuk membeli masih valid? Jika tidak, pertimbangkan untuk cut loss. Setiap minggu, tinjau semua posisi merugi dan tanyakan: 'Apakah saya akan membeli saham ini hari ini di harga ini?' Jika jawabannya tidak, pertimbangkan untuk keluar dari posisi tersebut.",
           "severity": "severe"
         },
         {
           "bias_type": "loss_aversion",
-          "explanation_text": "Loss aversion yang sangat kuat terdeteksi (LAI = 6.50). Kamu menahan posisi merugi hampir 6.5x lebih lama dari posisi untung. Ini adalah salah satu bias paling merusak dalam investasi jangka panjang karena modal terjebak dalam posisi yang terus menurun nilainya. Posisi merugi yang kamu pertahankan mengunci modal yang bisa digunakan untuk peluang investasi lainnya.",
+          "explanation_text": "Loss aversion yang sangat kuat terdeteksi (LAI = 6.50). Anda menahan posisi merugi hampir 6.5x lebih lama dari posisi untung. Ini adalah salah satu bias paling merusak dalam investasi jangka panjang karena modal terjebak dalam posisi yang terus menurun nilainya. Posisi merugi yang Anda pertahankan mengunci modal yang bisa digunakan untuk peluang investasi lainnya.",
           "recommendation_text": "Implementasikan sistem stop-loss yang tidak bisa diabaikan: tetapkan alert otomatis saat harga turun 10% dari harga beli. Ingat bahwa cut loss bukan 'kalah' — itu adalah manajemen risiko yang bijak. Modal yang diselamatkan dari posisi rugi bisa digunakan untuk peluang investasi yang lebih baik.",
           "severity": "severe"
         },
         {
           "bias_type": "overconfidence",
           "explanation_text": "Tidak terdeteksi bias overconfidence yang signifikan pada sesi ini. Pertahankan pola pengambilan keputusan yang baik ini!",
-          "recommendation_text": "Terus pantau keputusan investasimu dan jaga konsistensi.",
+          "recommendation_text": "Terus pantau keputusan investasi Anda dan jaga konsistensi.",
           "severity": "none"
         }
       ],
@@ -549,20 +549,20 @@
       "feedback": [
         {
           "bias_type": "disposition_effect",
-          "explanation_text": "Efek disposisi yang kamu tunjukkan sangat kuat (DEI = 1.00). Kamu merealisasi hampir semua keuntungan (PGR = 1.00) tetapi sangat jarang menjual posisi yang merugi (PLR = 0.00). Pola ini secara signifikan menurunkan performa portofoliomu secara jangka panjang. Contoh: kamu menjual VOLH.JK di putaran 5 dengan keuntungan Rp 1,500. Jika kamu menahan 3 putaran lebih lama, estimasi keuntungan bisa mencapai Rp 1,800 (tambahan ≈ Rp 300).",
-          "recommendation_text": "Lakukan evaluasi menyeluruh terhadap setiap posisi yang merugi: apakah alasan fundamentalmu untuk membeli masih valid? Jika tidak, pertimbangkan untuk cut loss. Setiap minggu, tinjau semua posisi merugi dan tanyakan: 'Apakah saya akan membeli saham ini hari ini di harga ini?' Jika jawabannya tidak, pertimbangkan untuk keluar dari posisi tersebut.",
+          "explanation_text": "Efek disposisi yang Anda tunjukkan sangat kuat (DEI = 1.00). Anda merealisasi hampir semua keuntungan (PGR = 1.00) tetapi sangat jarang menjual posisi yang merugi (PLR = 0.00). Pola ini secara signifikan menurunkan performa portofolio Anda secara jangka panjang. Contoh: Anda menjual VOLH.JK di putaran 5 dengan keuntungan Rp 1,500. Jika Anda menahan 3 putaran lebih lama, estimasi keuntungan bisa mencapai Rp 1,800 (tambahan ≈ Rp 300).",
+          "recommendation_text": "Lakukan evaluasi menyeluruh terhadap setiap posisi yang merugi: apakah alasan fundamental Anda untuk membeli masih valid? Jika tidak, pertimbangkan untuk cut loss. Setiap minggu, tinjau semua posisi merugi dan tanyakan: 'Apakah saya akan membeli saham ini hari ini di harga ini?' Jika jawabannya tidak, pertimbangkan untuk keluar dari posisi tersebut.",
           "severity": "severe"
         },
         {
           "bias_type": "loss_aversion",
           "explanation_text": "Tidak terdeteksi bias loss aversion yang signifikan pada sesi ini. Pertahankan pola pengambilan keputusan yang baik ini!",
-          "recommendation_text": "Terus pantau keputusan investasimu dan jaga konsistensi.",
+          "recommendation_text": "Terus pantau keputusan investasi Anda dan jaga konsistensi.",
           "severity": "none"
         },
         {
           "bias_type": "overconfidence",
           "explanation_text": "Tidak terdeteksi bias overconfidence yang signifikan pada sesi ini. Pertahankan pola pengambilan keputusan yang baik ini!",
-          "recommendation_text": "Terus pantau keputusan investasimu dan jaga konsistensi.",
+          "recommendation_text": "Terus pantau keputusan investasi Anda dan jaga konsistensi.",
           "severity": "none"
         }
       ],

@@ -122,9 +122,9 @@ def compute_counterfactual(
 
     additional = projected_gain - actual_gain
     return (
-        f"Contoh: kamu menjual {best['stock_id']} di putaran {best['sell_round']} "
+        f"Contoh: Anda menjual {best['stock_id']} di putaran {best['sell_round']} "
         f"dengan keuntungan Rp {actual_gain:,.0f}. "
-        f"Jika kamu menahan {actual_extra} putaran lebih lama, "
+        f"Jika Anda menahan {actual_extra} putaran lebih lama, "
         f"estimasi keuntungan bisa mencapai Rp {projected_gain:,.0f} "
         f"(tambahan ≈ Rp {additional:,.0f})."
     )
@@ -326,7 +326,7 @@ def _get_cdt_modifier(
     if trajectory == "improving" and current_severity != "none":
         modifiers.append(
             "Tren positif terdeteksi: intensitas bias ini menurun secara konsisten "
-            "dalam 3 sesi terakhir — umpan balik yang kamu terima menunjukkan dampak."
+            "dalam 3 sesi terakhir — umpan balik yang Anda terima menunjukkan dampak."
         )
     elif trajectory == "improving" and current_severity == "none":
         modifiers.append(
@@ -336,12 +336,12 @@ def _get_cdt_modifier(
     elif trajectory == "worsening":
         modifiers.append(
             "Perhatian: intensitas bias ini meningkat secara konsisten dalam 3 sesi "
-            "terakhir. Tinjau kembali strategi keputusan investasimu secara mendasar."
+            "terakhir. Tinjau kembali strategi keputusan investasi Anda secara mendasar."
         )
     elif trajectory == "volatile":
         modifiers.append(
             "Pola tidak konsisten: bias ini berfluktuasi antar sesi, mengindikasikan "
-            "bahwa keputusanmu mungkin dipengaruhi oleh kondisi pasar sesi tertentu "
+            "bahwa keputusan Anda mungkin dipengaruhi oleh kondisi pasar sesi tertentu "
             "daripada pola perilaku yang menetap."
         )
     elif trajectory == "insufficient":
@@ -374,7 +374,7 @@ def _get_cdt_modifier(
     ):
         modifiers.append(
             "Pola ini terdeteksi konsisten di beberapa sesi terakhir — "
-            "pertimbangkan untuk mengubah strategi tradingmu secara lebih mendasar."
+            "pertimbangkan untuk mengubah strategi trading Anda secara lebih mendasar."
         )
 
     return " ".join(modifiers)
@@ -420,7 +420,7 @@ def _get_interaction_modifier(profile: CognitiveProfile) -> list[str]:
         else:
             insights.append(
                 "Pola kompensasi terdeteksi: ketika frekuensi trading meningkat, "
-                "kamu justru cenderung menahan posisi menguntungkan lebih lama — "
+                "Anda justru cenderung menahan posisi menguntungkan lebih lama — "
                 "ini mengindikasikan kehati-hatian yang lebih besar saat aktif trading."
             )
 
@@ -428,8 +428,8 @@ def _get_interaction_modifier(profile: CognitiveProfile) -> list[str]:
     if ocs_lai is not None and abs(ocs_lai) >= _INTERACTION_THRESHOLD:
         if ocs_lai > 0:
             insights.append(
-                "Pola menarik terdeteksi: semakin sering kamu bertransaksi, semakin "
-                "lama kamu menahan posisi yang merugi. Ini mengindikasikan bahwa "
+                "Pola menarik terdeteksi: semakin sering Anda bertransaksi, semakin "
+                "lama Anda menahan posisi yang merugi. Ini mengindikasikan bahwa "
                 "aktivitas trading yang tinggi mungkin dipengaruhi oleh keengganan "
                 "untuk merealisasi kerugian — kombinasi yang dapat menggerus modal "
                 "secara signifikan."
@@ -447,7 +447,7 @@ def _get_interaction_modifier(profile: CognitiveProfile) -> list[str]:
         if dei_lai > 0:
             insights.append(
                 "Dua pola bias yang saling memperkuat terdeteksi secara konsisten: "
-                "kamu cenderung menjual keuntungan terlalu cepat sekaligus menahan "
+                "Anda cenderung menjual keuntungan terlalu cepat sekaligus menahan "
                 "kerugian terlalu lama. Kombinasi ini secara bersamaan memperbesar "
                 "kerugian dan memperkecil keuntungan — dampaknya terhadap portofolio "
                 "lebih besar dari kedua bias secara terpisah."
@@ -455,7 +455,7 @@ def _get_interaction_modifier(profile: CognitiveProfile) -> list[str]:
         else:
             insights.append(
                 "Pola kompensasi terdeteksi antara efek disposisi dan loss aversion: "
-                "keduanya tidak selalu muncul bersamaan dalam perilaku tradingmu, "
+                "keduanya tidak selalu muncul bersamaan dalam perilaku trading Anda, "
                 "menandakan pengendalian diri yang mulai berkembang pada salah satu dimensi."
             )
 
@@ -526,12 +526,12 @@ def generate_feedback(
         else ""
     )
     counterfactual_oc = (
-        "Dengan mengurangi frekuensi trading, kamu bisa menghemat lebih banyak modal "
+        "Dengan mengurangi frekuensi trading, Anda bisa menghemat lebih banyak modal "
         "untuk peluang yang benar-benar menjanjikan."
         if ocs_val_pre >= OCS_SEVERE else ""
     )
     counterfactual_la = (
-        "Posisi merugi yang kamu pertahankan mengunci modal yang bisa digunakan "
+        "Posisi merugi yang Anda pertahankan mengunci modal yang bisa digunakan "
         "untuk peluang investasi lainnya."
         if lai_val_pre >= LAI_SEVERE else ""
     )
@@ -642,7 +642,7 @@ def generate_feedback(
                 f"Data transaksi tidak cukup untuk menganalisis "
                 f"{cfg['bias_type'].replace('_', ' ')} pada sesi ini. "
                 f"Cobalah untuk melakukan beberapa transaksi beli dan jual "
-                f"pada sesi berikutnya agar sistem dapat mengevaluasi pola keputusanmu."
+                f"pada sesi berikutnya agar sistem dapat mengevaluasi pola keputusan Anda."
             )
             recommendation = (
                 "Lakukan setidaknya beberapa transaksi beli dan jual pada sesi berikutnya "
@@ -654,7 +654,7 @@ def generate_feedback(
                 f"signifikan pada sesi ini. Pertahankan pola pengambilan keputusan "
                 f"yang baik ini!"
             )
-            recommendation = "Terus pantau keputusan investasimu dan jaga konsistensi."
+            recommendation = "Terus pantau keputusan investasi Anda dan jaga konsistensi."
         else:
             tmpl = TEMPLATES[cfg["bias_type"]][severity]
             # Use defaultdict so missing slots become empty strings (Bug 7 fix)

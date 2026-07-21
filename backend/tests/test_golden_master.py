@@ -12,6 +12,17 @@ change is intentional, approved, and documented:
 
     cd tests/fixtures
     PYTHONPATH=<repo-to-record> python parity_scenarios.py golden_master.json
+
+Documented re-records
+---------------------
+2026-07-21 — register harmonisation, feedback TEXT only. The feedback
+templates were changed from the informal "kamu" to the formal "Anda" so the
+backend matches the frontend's register (owner-approved). The fixture was
+re-recorded against THIS repo and then diffed field-by-field against the
+previous recording: **every numeric/boolean field was byte-identical**
+(0 differences); only 29 strings under ``.feedback`` changed. So the
+metric-level parity with the thesis-defense build (DEI/OCS/LAI/CI/CDT) is
+still genuinely locked — only the presentation wording moved.
 """
 
 from __future__ import annotations
